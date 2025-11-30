@@ -1,0 +1,24 @@
+﻿Hi, thanks for downloading! (FOR BUILT-IN UNITY ONLY)
+
+1) Create an atmosphere:
+- You need a Main Camera, and you must attach the "Custom Post Processing" script.
+- In the Project Manager, right-click → Create → Custom Post Effect → Atmosphere. Rename it, for example, to "Earth Atmosphere".
+- Add the "Earth Atmosphere" object to your Main Camera → Custom Post Processing → Element 0 (you can create new elements by pressing +).
+- In the "Earth Atmosphere" object, assign the Custom/AtmosphereShader to the Shader field.
+- Planet Centre is the position of your planet.
+- Atmosphere Radius is the size of the atmosphere.
+- Planet Radius is the size of the planet.
+- Density Falloff controls the density curve (around 5 for Earth).
+- Num Optical Depth Points is the number of points used for light sampling (around 10).
+- Num In-Scattering Points controls the light projection (around 10).
+- Wavelengths is the color array (use 700, 530, 460 for Earth).
+- Scattering Strength defines how strong the wavelength scattering is.
+
+You can add multiple atmospheres, You need a Directinal main light.
+
+If no atmosphere appears after entering Play Mode or after creating a new atmosphere, click on Tools in the top menu bar and select "Reimport Selected Script (Atmosphere Reload)".
+New Project -> If no atmosphere appears (again) enter in the AtmosphereGenerator.cs, put a space inside the file, save and go back to unitu, the scene will compile
+Resources:
+Wikipedia – https://en.wikipedia.org/wiki/Rayleigh_scattering
+Sebastian Lague Video – https://www.youtube.com/watch?v=DxfEbulyFcY&t=784s
+NVIDIA – https://developer.nvidia.com/gpugems/gpugems2/part-ii-shading-lighting-and-shadows/chapter-16-accurate-atmospheric-scattering
