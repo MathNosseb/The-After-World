@@ -25,6 +25,8 @@ public class CelestialBody : MonoBehaviour
     [HideInInspector]
     public float mass;
 
+    public float distanceBeforeRotation;
+
     private void OnValidate()
     {
         constantValue = GameObject.Find("Universe").GetComponent<constant>();
@@ -44,6 +46,7 @@ public class CelestialBody : MonoBehaviour
     {
         if (useAtmosphere) { planetAtmosphere.planetCentre = transform.position; }
     }
+
 
     void Awake()
     {

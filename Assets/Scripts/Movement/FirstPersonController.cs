@@ -117,6 +117,7 @@ public class FirstPersonController : MonoBehaviour
         canMove = false;
         transform.position = playerHolderSpaceShip.transform.position; //on se met à l arriere du vaisseau
         transform.rotation = playerHolderSpaceShip.transform.rotation;//meme orientation que le vaisseau
+        cameraT.rotation = playerHolderSpaceShip.transform.rotation; //bonne orientation de cam
 
     }
 
@@ -174,18 +175,21 @@ public class FirstPersonController : MonoBehaviour
     }
 
 
-    //s aligner a la Terre
+    //s aligner a la planete cible
     void AllignToPlanet(Transform self, CelestialBody reference, float PLanetDIstanceAttraction, bool SpaceMovement, Vector3 strongestGravitionalPull)
     {
-        if (Vector3.Distance(transform.position, reference.transform.position) < 30 && !SpaceMovement)
+        if (Vector3.Distance(transform.position, reference.transform.position) < reference.distanceBeforeRotation && !SpaceMovement)
         {
-            rb.linearDamping = 0;
             //Rotate for align with gravity up
             Vector3 gravityUp = -strongestGravitionalPull.normalized;
-            rb.rotation = Quaternion.FromToRotation(transform.up, gravityUp) * rb.rotation;
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, gravityUp) * rb.rotation;
+            Quaternion smoothRotation = Quaternion.Slerp(
+                rb.rotation,
+                targetRotation,
+                10 * Time.fixedDeltaTime);
+            rb.MoveRotation(smoothRotation);
         }
-        else
-            rb.linearDamping = 0.5f;
+        
     }
 
 
