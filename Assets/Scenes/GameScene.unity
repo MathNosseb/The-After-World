@@ -731,7 +731,7 @@ MonoBehaviour:
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
   mass: 2500000
-  distanceBeforeRotation: 50
+  distanceBeforeRotation: 100
 --- !u!1 &389542466
 GameObject:
   m_ObjectHideFlags: 0
@@ -1609,7 +1609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb67012be94834947ae6e288d1944355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numSteps: 5000
+  numSteps: 15000
   timeStep: 0.5
   usePhysicsTimeStep: 0
   relativeToBody: 1
@@ -7337,7 +7337,7 @@ Transform:
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.40000153, y: 3.4652238, z: 655.3213}
+  m_LocalPosition: {x: -0.40000153, y: 3.4652238, z: 675.03424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
