@@ -56,40 +56,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Earth
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7577534a357434541962d4f6c6b7a6c9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7577534a357434541962d4f6c6b7a6c9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1999619636176566001}
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: 7577534a357434541962d4f6c6b7a6c9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8530072415269574977}
   m_SourcePrefab: {fileID: 100100000, guid: 7577534a357434541962d4f6c6b7a6c9, type: 3}
---- !u!1 &433069290935400631 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 7577534a357434541962d4f6c6b7a6c9, type: 3}
-  m_PrefabInstance: {fileID: 775740535315400166}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1999619636176566001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 433069290935400631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  surfaceGravity: 10
-  radius: 50
-  initialVelocity: {x: 0, y: 0, z: 0}
-  fix: 1
-  colorPath: {r: 0, g: 0, b: 0, a: 0}
-  mass: 2500000
 --- !u!1 &8903433779171213422 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8164078558771037576, guid: 7577534a357434541962d4f6c6b7a6c9, type: 3}

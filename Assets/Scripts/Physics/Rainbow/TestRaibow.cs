@@ -3,47 +3,48 @@ using UnityEngine;
 
 public class TestRaibow : MonoBehaviour
 {
-    public float i;
-    public float n;
-    public float r;
-    public float D;
-
-    public GameObject regard;
+    [Header("param")]
+    public float H;
 
     [Header("rayon d'incidence")]
-    public Vector3 originLight;
-    public Vector3 direction;
+    Vector3 LightDirection;
+    
+    Vector3 originLight;
     public float maxDistance;
+    Vector3 viewDirection;
+
+    [Header("joueur")]
+    public GameObject joueur;
+    public GameObject mylight;
+    
+
 
     Renderer mesh;
+    Color originalcolor;
 
     private void Start()
     {
         mesh = GetComponent<Renderer>();
-    }
+        originalcolor = mesh.material.color; 
 
+    
+    }
+    
     private void Update()
     {
-        Vector3 origin = transform.position - originLight;
-        Vector3 viewDir = (regard.transform.position - transform.position).normalized;
-        float viewAngle = Vector3.Angle(viewDir, -direction);  // en degrés
-        Ray ray = new Ray(origin, direction);
-        RaycastHit hit;
-        Debug.DrawRay(origin, direction * maxDistance);
-        if (Physics.Raycast(ray, out hit, maxDistance))
-        {
-            //si on touche
-            i = Mathf.Acos(Vector3.Dot(-direction, hit.normal));
-            Debug.DrawRay(hit.point, hit.normal, Color.green);
-        }
-         
-        direction = direction.normalized;
 
-        r = Mathf.Asin(Mathf.Sin(i) / n);
-        D = Mathf.Abs((Mathf.PI - (4*r - 2*i)) * Mathf.Rad2Deg);
+        LightDirection = mylight.transform.forward;
+        viewDirection = joueur.transform.forward;
+        originLight = mylight.transform.position;
 
-        float wavelength = Mathf.Lerp(400f, 650f, Mathf.InverseLerp(40.5f, 43.0f, D));
-        Color color = WavelengthToRGB_DanBruton(wavelength);
+        float h = Mathf.Clamp(Vector3.Dot(LightDirection, viewDirection), -1f, 1f);
+        H = Mathf.Acos(h) * Mathf.Rad2Deg;
+
+        Debug.DrawRay(originLight, LightDirection * maxDistance);
+        Debug.DrawRay(originLight, viewDirection * maxDistance, Color.red);
+        
+        float wavelength = Mathf.Lerp(400f, 650f, Mathf.InverseLerp(40.5f, 43.0f, H));
+        Color color = H < 43.5f && H > 40.0f ? WavelengthToRGB_DanBruton(wavelength) : originalcolor;
 
 
         mesh.material.color = color; 
@@ -92,7 +93,7 @@ public class TestRaibow : MonoBehaviour
             B = 0f;
         }
 
-        // FACTOR = correction de luminosité
+        // FACTOR = correction de luminositï¿½
         if (wavelength >= 380 && wavelength < 420)
         {
             factor = 0.3f + 0.7f * (wavelength - 380f) / (420f - 380f);
