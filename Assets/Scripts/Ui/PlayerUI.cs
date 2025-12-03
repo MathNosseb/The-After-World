@@ -1,5 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UIElements;
+using System.IO;
+using System.Text;
+
 
 public class PlayerUI : MonoBehaviour
 {
@@ -11,6 +17,9 @@ public class PlayerUI : MonoBehaviour
     public Text RelativeVelocity; //speed on the reference object
     public Text movementType;
     public Text FPS;
+
+    //notifications
+    List<Notifications> notifications = new List<Notifications>();
 
 
     //variables d instances
@@ -27,6 +36,9 @@ public class PlayerUI : MonoBehaviour
         firstPersonController = GetComponent<FirstPersonController>(); 
         rb = GetComponent<Rigidbody>();
         lastPosition = transform.position;
+
+
+        SendNotification(1f, 1f, 1f, "test");
     }
 
     float GetVelocity(Vector3 lastPosition, Vector3 actualPosition)
@@ -34,8 +46,8 @@ public class PlayerUI : MonoBehaviour
         float distance = Vector3.Distance(actualPosition, lastPosition);
 
         // Vitesse = distance / temps écoulé
-        float rawSpeed = distance / Time.deltaTime;
-
+        float rawSpeed = distance / Time.deltaTime; 
+ 
         // Lissage
         speed = Mathf.Lerp(speed, rawSpeed, 0.1f);
 
@@ -75,5 +87,11 @@ public class PlayerUI : MonoBehaviour
 
         lastPosition = transform.position;
 
+    }
+
+    public void SendNotification(float coordX, float coordY, float time, string text)
+    {
+        Notifications nouvelNotif = new Notifications(coordY, coordX, time, text);
+        nouvelNotif.CreateNotification();
     }
 }

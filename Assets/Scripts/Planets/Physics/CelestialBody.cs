@@ -12,7 +12,6 @@ public class CelestialBody : MonoBehaviour
     public Vector3 initialVelocity;
     public bool fix = false;
     public Color colorPath;
-    public float spaceDistance;
 
     [HideInInspector] public Vector3 currentVelocity;
     private Rigidbody rb;
@@ -38,10 +37,10 @@ public class CelestialBody : MonoBehaviour
     }
 
 
-    // Correction de l'attribut [MenuItem] : il doit être appliqué à une méthode statique.
-    // Ajout d'une méthode statique pour l'atmosphère.
+    // Correction de l'attribut [MenuItem] : il doit ï¿½tre appliquï¿½ ï¿½ une mï¿½thode statique.
+    // Ajout d'une mï¿½thode statique pour l'atmosphï¿½re.
 
-    [ContextMenu("Mettre à jour la position")]
+    [ContextMenu("Mettre ï¿½ jour la position")]
     public void AtmosphereUpdatePosition()
     {
         if (useAtmosphere) { planetAtmosphere.planetCentre = transform.position; }
@@ -81,7 +80,7 @@ public class CelestialBody : MonoBehaviour
             Vector3 direction = otherBody.rb.position - rb.position;
             float distanceSqr = direction.sqrMagnitude;
 
-            // Évite toute division par zéro
+            // ï¿½vite toute division par zï¿½ro
             if (distanceSqr < 1e-6f)
                 continue;
 

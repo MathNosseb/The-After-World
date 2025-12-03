@@ -98,7 +98,7 @@ public class FirstPersonController : MonoBehaviour
         }
 
         //detection de si on est en mouvement orbital ou planetaire
-        if (Vector3.Distance(transform.position, reference.transform.position) <= reference.spaceDistance)
+        if (Vector3.Distance(transform.position, reference.transform.position) <= reference.distanceBeforeRotation)
         {
             SpaceMovement = false;
         }else
