@@ -1,10 +1,11 @@
-using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UIElements;
 using System.IO;
+using System.Linq;
 using System.Text;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 
 public class PlayerUI : MonoBehaviour
@@ -18,8 +19,12 @@ public class PlayerUI : MonoBehaviour
     public Text movementType;
     public Text FPS;
 
+    [Header("Parametres")]
+    public Canvas canvas;
+
     //notifications
-    List<Notifications> notifications = new List<Notifications>();
+    [HideInInspector]
+    public List<Notifications> notifications = new List<Notifications>();
 
 
     //variables d instances
@@ -30,15 +35,47 @@ public class PlayerUI : MonoBehaviour
     float speed;
     float fps;
 
+    public Notifications SendNotification(float coordX, float coordY, float time, string text)
+    {
+        Notifications nouvelNotif = new Notifications(coordY, coordX, time, text);
+        nouvelNotif.CreateNotification();
+        GameObject notifObjet = nouvelNotif.GetGameObject();
+        notifObjet.transform.SetParent(canvas.transform);
+        notifications.Add(nouvelNotif);
+
+        if (time > 0)
+            StartCoroutine(DestroyNotification(nouvelNotif, time));
+
+        return nouvelNotif;
+
+    }
+
+    public bool isNotificationAlive(Notifications notif)
+    {
+        if (notifications.Contains(notif))
+            return true;
+        return false;
+    }
+
+    public void DestroyNotificationNow(Notifications notif)
+    {
+        notifications.Remove(notif);
+        Destroy(notif.GetGameObject());
+    }
+
+    IEnumerator DestroyNotification(Notifications notif, float time)
+    {
+        yield return new WaitForSeconds(time);//pause 
+        notifications.Remove(notif);
+        Destroy(notif.GetGameObject());
+    }
+
 
     private void Start()
     {
         firstPersonController = GetComponent<FirstPersonController>(); 
         rb = GetComponent<Rigidbody>();
         lastPosition = transform.position;
-
-
-        SendNotification(1f, 1f, 1f, "test");
     }
 
     float GetVelocity(Vector3 lastPosition, Vector3 actualPosition)
@@ -89,9 +126,5 @@ public class PlayerUI : MonoBehaviour
 
     }
 
-    public void SendNotification(float coordX, float coordY, float time, string text)
-    {
-        Notifications nouvelNotif = new Notifications(coordY, coordX, time, text);
-        nouvelNotif.CreateNotification();
-    }
+    
 }

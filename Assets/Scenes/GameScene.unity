@@ -288,7 +288,6 @@ MonoBehaviour:
   initialVelocity: {x: 6.24, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0.25151038, g: 1, b: 0.02352941, a: 1}
-  spaceDistance: 40
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 1
   planetAtmosphere: {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
@@ -449,7 +448,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 391, y: -451}
-  m_SizeDelta: {x: 631.2, y: 73.4}
+  m_SizeDelta: {x: 634.6, y: 73.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &218505105
 MonoBehaviour:
@@ -728,7 +727,6 @@ MonoBehaviour:
   initialVelocity: {x: 0, y: 0, z: 0}
   fix: 1
   colorPath: {r: 1, g: 0.0141509175, b: 0.0141509175, a: 0}
-  spaceDistance: 0
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
@@ -6952,7 +6950,6 @@ MonoBehaviour:
   initialVelocity: {x: 11.2, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0.5566038, g: 0.3749079, b: 0.15490389, a: 1}
-  spaceDistance: 15
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
@@ -7371,6 +7368,7 @@ MonoBehaviour:
   SpaceMovement: 0
   spaceShip: {fileID: 54242867}
   playerHolderSpaceShip: {fileID: 389542466}
+  distanceForEnter: 20
   inSpaceShip: 0
   initialVelocity: {x: 6, y: 0, z: 0}
   reference: {fileID: 0}
@@ -7420,6 +7418,7 @@ MonoBehaviour:
   RelativeVelocity: {fileID: 674880365}
   movementType: {fileID: 298478681}
   FPS: {fileID: 1119520381}
+  canvas: {fileID: 591657897}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

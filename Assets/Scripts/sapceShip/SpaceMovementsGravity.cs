@@ -130,7 +130,6 @@ public class SpaceMovementsGravity : MonoBehaviour
         float mouseY = Input.GetAxis("Mouse Y") * firstPersonController.mouseSensitivityY * Time.fixedDeltaTime;
         Quaternion rotationX = Quaternion.Euler(-mouseY, 0f, 0f);
         rb.MoveRotation(rb.rotation * rotationX);
-        Debug.Log("rotation");
 
     }
 

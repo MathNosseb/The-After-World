@@ -13,7 +13,7 @@ public class FirstPersonController : MonoBehaviour
     //variables d instances
     Rigidbody rb;
     constant constantValues;
-
+    PlayerUI playerUI;
 
 
     [Header("Camera")] //mouvements de la camera
@@ -37,7 +37,9 @@ public class FirstPersonController : MonoBehaviour
     [Header("vaisseau spatial")]// reference du vaisseau
     public GameObject spaceShip;
     public GameObject playerHolderSpaceShip; //l endroit ou le joueur va etre placé
-    public bool inSpaceShip = false;
+    public float distanceForEnter;
+    [HideInInspector] public bool inSpaceShip = false;
+    Notifications notifSpaceShip;
 
     [Header("Gravity")]
     public Vector3 initialVelocity;
@@ -54,6 +56,7 @@ public class FirstPersonController : MonoBehaviour
 
         //init des variables d instances
         rb = GetComponent<Rigidbody>();
+        playerUI = GetComponent<PlayerUI>();    
         Simulation = GameObject.Find("Universe").GetComponent<NbodySimulation>();
         constantValues = GameObject.Find("Universe").GetComponent<constant>();
 
@@ -106,7 +109,18 @@ public class FirstPersonController : MonoBehaviour
 
 
         //entré et sortie dans le vaisseau 
-        if (Input.GetKeyDown(KeyCode.F))
+
+        float distanceWithSpaceShip = Vector3.Distance(spaceShip.transform.position, gameObject.transform.position);
+        if (distanceWithSpaceShip < distanceForEnter && notifSpaceShip == null && !inSpaceShip)
+            notifSpaceShip = playerUI.SendNotification(500f, 100f, -1f, "press F for enter");
+        else if ((distanceWithSpaceShip > distanceForEnter && notifSpaceShip != null )|| (inSpaceShip && notifSpaceShip != null))
+        {
+            playerUI.DestroyNotificationNow(notifSpaceShip);
+            notifSpaceShip = null;
+        }
+            
+
+        if (Input.GetKeyDown(KeyCode.F) && distanceWithSpaceShip < distanceForEnter)
             inSpaceShip = !inSpaceShip;
         if (!inSpaceShip)
             canMove = true;

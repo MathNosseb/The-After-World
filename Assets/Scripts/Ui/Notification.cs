@@ -22,6 +22,11 @@ public class Notifications
         this.text = text;
     }
 
+    public GameObject GetGameObject()
+    {
+        return this.notif;
+    }
+
     public void CreateNotification()
     {
         notif = new GameObject("notification");
@@ -30,6 +35,8 @@ public class Notifications
         rt = notif.GetComponent<RectTransform>();
 
         txt.text = this.text;
+        txt.fontSize = 30;
+        rt.sizeDelta = new Vector2(500f, 50f);
         txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         rt.anchoredPosition = new Vector3(this.coorX, this.coordY);
     }
