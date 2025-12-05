@@ -131,8 +131,6 @@ public class SpaceMovementsGravity : MonoBehaviour
             if (!Grounded) //si on est pas posé on ne peut pas tourner sur cet axe
         mouseY = Mathf.Clamp(mouseY, -60f, 10f);
         Quaternion rotationX = Quaternion.Euler(-mouseY, 0f, 0f);
-        
-            
         rb.MoveRotation(rb.rotation * rotationX);
 
     }
