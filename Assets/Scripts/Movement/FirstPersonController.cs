@@ -9,6 +9,8 @@ public class FirstPersonController : MonoBehaviour
     public float walkSpeed = 8f;
     public float airWalkSpeed = 1f;
     public float jumpForce = 220;
+    public bool affectByGravity = true;
+    public bool cinematicMode = false;
 
     //variables d instances
     Rigidbody rb;
@@ -37,13 +39,13 @@ public class FirstPersonController : MonoBehaviour
     [Header("vaisseau spatial")]// reference du vaisseau
     public GameObject spaceShip;
     public GameObject playerHolderSpaceShip; //l endroit ou le joueur va etre placé
-    public float distanceForEnter;
-    [HideInInspector] public bool inSpaceShip = false;
+    public float distanceForEnter; 
+    [HideInInspector] public bool inSpaceShip = false; 
     Notifications notifSpaceShip;
 
     [Header("Gravity")]
     public Vector3 initialVelocity;
-    [HideInInspector] public CelestialBody reference;
+    public CelestialBody reference;
     NbodySimulation Simulation;
 
     
@@ -62,6 +64,8 @@ public class FirstPersonController : MonoBehaviour
 
         //set des variables par defaut
         canMove = true;
+        if (cinematicMode)
+            affectByGravity = false;
 
         //force initial
         rb.AddForce(initialVelocity, ForceMode.VelocityChange);
@@ -209,6 +213,8 @@ public class FirstPersonController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (cinematicMode) //si on est pas en mode cinematique on execute physique + mouvement + alignement
+            return;
         CelestialBody[] bodies = Simulation.bodies;
         Vector3 strongestGravitionalPull = Vector3.zero;
 
@@ -218,12 +224,12 @@ public class FirstPersonController : MonoBehaviour
         if (referenceGround)// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
             rb.linearVelocity = reference.GetComponent<CelestialBody>().currentVelocity;
 
-
         //Gravity
         foreach (CelestialBody body in bodies)
         {
             Vector3 acceleration = GetAcceleration(body).sqrMagnitude > .1f ? GetAcceleration(body) : Vector3.zero;
-            rb.AddForce(acceleration, ForceMode.Acceleration);
+            if (affectByGravity)
+                rb.AddForce(acceleration, ForceMode.Acceleration);
 
             reference = GetStrongestBodyAcceleration(body, strongestGravitionalPull);
             if (GetAcceleration(body).sqrMagnitude > strongestGravitionalPull.sqrMagnitude)
