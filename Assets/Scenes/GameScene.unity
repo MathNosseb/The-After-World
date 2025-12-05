@@ -178,7 +178,7 @@ Transform:
   m_GameObject: {fileID: 54242867}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -10.77, y: 5.9, z: 626.5}
+  m_LocalPosition: {x: -10.77, y: 5.9, z: 3321}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -202,6 +202,7 @@ MonoBehaviour:
   reference: {fileID: 0}
   moveAmount: {x: 0, y: 0, z: 0}
   gaz: {fileID: 0}
+  puissance: 1000
 --- !u!54 &54242870
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -284,14 +285,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   surfaceGravity: 5
-  radius: 23.2
-  initialVelocity: {x: 6.24, y: 0, z: 0}
+  radius: 100
+  initialVelocity: {x: 4.35, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0.25151038, g: 1, b: 0.02352941, a: 1}
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 1
   planetAtmosphere: {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
-  mass: 269120.03
+  mass: 5000000
   distanceBeforeRotation: 150
 --- !u!4 &215197951
 Transform:
@@ -302,7 +303,7 @@ Transform:
   m_GameObject: {fileID: 215197946}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1, y: 0, z: 704}
+  m_LocalPosition: {x: 0.1, y: 0, z: 4025}
   m_LocalScale: {x: 7373.518, y: 7373.518, z: 7373.518}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -6302,8 +6303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb67012be94834947ae6e288d1944355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numSteps: 15000
-  timeStep: 0.5
+  numSteps: 10000
+  timeStep: 1
   usePhysicsTimeStep: 0
   relativeToBody: 1
   centralBody: {fileID: 312761006}
@@ -11638,16 +11639,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  surfaceGravity: 1
-  radius: 31.2
-  initialVelocity: {x: 11.2, y: 0, z: 0}
+  surfaceGravity: 2
+  radius: 50
+  initialVelocity: {x: 24.9, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0.5566038, g: 0.3749079, b: 0.15490389, a: 1}
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
-  mass: 97344.01
-  distanceBeforeRotation: 0
+  mass: 500000
+  distanceBeforeRotation: 60
 --- !u!135 &1694503907
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -11731,8 +11732,8 @@ Transform:
   m_GameObject: {fileID: 1694503904}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 845}
-  m_LocalScale: {x: 9.83, y: 9.83, z: 9.83}
+  m_LocalPosition: {x: 0, y: 0, z: 4653}
+  m_LocalScale: {x: 52.644566, y: 52.644566, z: 52.644566}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -12030,7 +12031,7 @@ Transform:
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.40000153, y: 3.4652238, z: 628.1}
+  m_LocalPosition: {x: -0.40000153, y: 3.4652238, z: 3931.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

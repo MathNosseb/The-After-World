@@ -20,6 +20,8 @@ public class SpaceMovementsGravity : MonoBehaviour
     //VFX
     [HideInInspector] public ParticleSystem gaz;
 
+    public float puissance;
+
 
 
 
@@ -48,7 +50,7 @@ public class SpaceMovementsGravity : MonoBehaviour
         if (Input.GetButton("Jump") && firstPersonController.inSpaceShip){
             float distanceBetweenRef = Vector3.Distance(transform.position, reference ? reference.transform.position : Vector3.zero);
             
-            rb.AddForce(transform.forward * 500f);
+            rb.AddForce(transform.forward * puissance);
             gaz.Play();
         }
         else
@@ -109,9 +111,6 @@ public class SpaceMovementsGravity : MonoBehaviour
             
 
         }
-
-        
-        
         
 
         if (firstPersonController.inSpaceShip){
