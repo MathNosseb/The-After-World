@@ -83,12 +83,13 @@ public class PlayerUI : MonoBehaviour
         float distance = Vector3.Distance(actualPosition, lastPosition);
 
         // Vitesse = distance / temps écoulé
-        float rawSpeed = distance / Time.deltaTime; 
+        float rawSpeed = distance / Time.fixedDeltaTime; 
  
         // Lissage
-        speed = Mathf.Lerp(speed, rawSpeed, 0.1f);
+        speed = Mathf.Lerp(speed, rawSpeed, .5f);
 
         return speed;
+        //return GetComponent<Rigidbody>().linearVelocity.magnitude;
     }
 
 
@@ -98,6 +99,12 @@ public class PlayerUI : MonoBehaviour
         fps = Mathf.Lerp(fps, rawFps, .1f);
 
         return fps;
+    }
+
+    private void FixedUpdate()
+    {
+        Velocity.text = (int)GetVelocity(lastPosition, transform.position) + " m/s";
+
     }
 
 
@@ -113,9 +120,7 @@ public class PlayerUI : MonoBehaviour
         HeightText.text = (int)distanceBetweenRef + " m";
 
 
-        Velocity.text = (int)GetVelocity(lastPosition, transform.position) + " m/s";
-
-        RelativeVelocity.text = reference ? reference.name + " Speed " + (int)reference.GetComponent<CelestialBody>().currentVelocity.sqrMagnitude + " m/s" : "null";
+        RelativeVelocity.text = reference ? reference.name + " Speed " + (int)reference.GetComponent<CelestialBody>().currentVelocity.magnitude + " m/s" : "null";
 
         movementType.text = firstPersonController.SpaceMovement ? "mouvement spatial" : "mouvement planetaire";
 

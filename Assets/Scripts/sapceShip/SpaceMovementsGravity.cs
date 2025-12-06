@@ -1,39 +1,43 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SpaceMovementsGravity : MonoBehaviour
 {
+    [Header("parametres")]
+    public float puissance;
+    public GameObject player;//le joueur
+
+
+    //variables d instances
     NbodySimulation Simulation;
     Rigidbody rb;
     constant constantValues;
     FirstPersonController firstPersonController;
     [HideInInspector] public CelestialBody reference;
 
+
     //deplacements
     [HideInInspector] public Vector3 moveAmount;
-    Vector3 smoothMoveVelocity;
+    Vector3 smoothMoveVelocity; //utiliser pour avoir une acceleration smooth
 
-    GameObject player;
+    
+    //reference au sol
     GameObject referenceGround;
     bool Grounded;
 
-    //VFX
-    [HideInInspector] public ParticleSystem gaz;
-
-    public float puissance;
-
-
+    [Header("VFX")]
+    public ParticleSystem gaz;//propulsion
 
 
     private void Start()
     {
-        //init player
-        player = GameObject.FindGameObjectWithTag("Player");
-        Simulation = GameObject.Find("Universe").GetComponent<NbodySimulation>();
-        constantValues = GameObject.Find("Universe").GetComponent<constant>();
-        firstPersonController = player.GetComponent<FirstPersonController>();
-        gaz = GetComponentInChildren<ParticleSystem>();
-        rb = GetComponent<Rigidbody>();
+        //recuperation des variables d instances
+        Simulation = GameObject.Find("Universe").GetComponent<NbodySimulation>();//tous les corps
+        constantValues = GameObject.Find("Universe").GetComponent<constant>();//les constantes (gravitation)
+        firstPersonController = player.GetComponent<FirstPersonController>();//le controleur du joueur
+        rb = GetComponent<Rigidbody>();//Rigidbody 
+        
     }
 
     private void Update()
@@ -41,11 +45,6 @@ public class SpaceMovementsGravity : MonoBehaviour
         Vector3 moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
         Vector3 targetMoveAmount =  moveDirection * 10f;
         moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
-
-        float rotateInput = (Input.GetKey(KeyCode.E) ? 1f : 0f) - (Input.GetKey(KeyCode.Q) ? 1f : 0f); //qwerty 
-        transform.Rotate(Vector3.forward * rotateInput * 50f * Time.deltaTime);
-
-        
 
         if (Input.GetButton("Jump") && firstPersonController.inSpaceShip){
             float distanceBetweenRef = Vector3.Distance(transform.position, reference ? reference.transform.position : Vector3.zero);
@@ -72,6 +71,23 @@ public class SpaceMovementsGravity : MonoBehaviour
             referenceGround = null;
         }
         Debug.DrawRay(transform.position, -transform.up);
+
+        if (!firstPersonController.inSpaceShip) return;
+
+        // Rotation horizontale (autour de Y)
+        float mouseX = Input.GetAxis("Mouse X") * firstPersonController.mouseSensitivityX * Time.deltaTime;
+        Quaternion rotationY = Quaternion.Euler(0f, mouseX, 0f).normalized;
+
+        // Rotation verticale (autour de X)
+        float mouseY = Input.GetAxis("Mouse Y") * firstPersonController.mouseSensitivityY * Time.deltaTime;
+        Quaternion rotationX = Quaternion.Euler(-mouseY, 0f, 0f).normalized;
+
+        //rotation frontale (autour de Z)
+        float rotateZ = ((Input.GetKey(KeyCode.Q) ? 1f : 0f) - (Input.GetKey(KeyCode.E) ? 1f : 0f)) * 50f * Time.deltaTime; //qwerty (50f = sensi)
+        
+        Quaternion rotationZ = Quaternion.Euler(0f,0f,rotateZ).normalized;
+        Quaternion rotation = rotationX * rotationY * rotationZ;
+        rb.MoveRotation(rb.rotation * rotation);
 
 
         
@@ -118,33 +134,10 @@ public class SpaceMovementsGravity : MonoBehaviour
             rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
         }
 
-        if (!firstPersonController.inSpaceShip) return;
-
-        // Rotation horizontale (autour de Y)
-        float mouseX = Input.GetAxis("Mouse X") * firstPersonController.mouseSensitivityX * Time.fixedDeltaTime;
-        Quaternion rotationY = Quaternion.Euler(0f, mouseX, 0f);
-        rb.MoveRotation(rb.rotation * rotationY);
-
-        // Rotation verticale (autour de X)
-        float mouseY = Input.GetAxis("Mouse Y") * firstPersonController.mouseSensitivityY * Time.fixedDeltaTime;
-            if (!Grounded) //si on est pas posé on ne peut pas tourner sur cet axe
-        mouseY = Mathf.Clamp(mouseY, -60f, 10f);
-        Quaternion rotationX = Quaternion.Euler(-mouseY, 0f, 0f);
-        rb.MoveRotation(rb.rotation * rotationX);
-
-    }
-
-    void LateUpdate(){
-        if (firstPersonController.inSpaceShip && 1==0)
-        {
-            Quaternion XRotation = Quaternion.Euler(Vector3.forward * Input.GetAxis("Mouse X") * firstPersonController.mouseSensitivityX * Time.deltaTime);
-            rb.MoveRotation(XRotation * rb.rotation);
-
-            Quaternion YRotation = Quaternion.Euler(Vector3.left * Input.GetAxis("Mouse Y") * firstPersonController.mouseSensitivityY * Time.deltaTime);
-            rb.MoveRotation(YRotation * rb.rotation);
-
-        }
         
+
     }
+
+
 
 }

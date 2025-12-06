@@ -78,16 +78,7 @@ public class FirstPersonController : MonoBehaviour
         Vector3 targetMoveAmount =  Grounded ? moveDirection * walkSpeed : moveDirection * airWalkSpeed;
         moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
 
-        if (Input.GetButtonDown("Jump")) //saut 
-        {
-            if (Grounded)
-            {
-                transform.position += transform.up * 0.1f; //eviter le glitch d etre pris dans le sol
-                rb.AddForce(transform.up * jumpForce); //saut
-            }
-            
-        }
-
+        
         //variables de saut
         Grounded = false;
         Ray ray = new Ray(transform.position, -transform.up);
@@ -159,7 +150,7 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-
+ 
     private void LateUpdate()
     {
         
@@ -215,14 +206,31 @@ public class FirstPersonController : MonoBehaviour
     {
         if (cinematicMode) //si on est pas en mode cinematique on execute physique + mouvement + alignement
             return;
+
+        if (Input.GetButtonDown("Jump")) //saut 
+        {
+            if (Grounded)
+            {
+                rb.linearVelocity = reference.currentVelocity;
+                transform.position += transform.up * 0.1f; //eviter le glitch d etre pris dans le sol
+                rb.AddForce(transform.up * jumpForce); //saut
+
+                
+            }
+            
+        }
+
         CelestialBody[] bodies = Simulation.bodies;
         Vector3 strongestGravitionalPull = Vector3.zero;
 
         if (!inSpaceShip && canMove)// si on est pas dans l espace + si on peut bouger on effectur le mouvement
             rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
 
-        if (referenceGround)// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
-            rb.linearVelocity = reference.GetComponent<CelestialBody>().currentVelocity;
+        if (referenceGround){// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
+            Vector3 playerMove = transform.TransformDirection(moveAmount) * Time.fixedDeltaTime;
+            Vector3 planetMove = reference.currentVelocity * Time.fixedDeltaTime;
+            rb.MovePosition(rb.position + playerMove + planetMove);
+        }
 
         //Gravity
         foreach (CelestialBody body in bodies)
