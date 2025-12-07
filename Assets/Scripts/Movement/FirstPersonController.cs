@@ -31,8 +31,9 @@ public class FirstPersonController : MonoBehaviour
     bool Grounded;
     [HideInInspector]public GameObject referenceGround;
 
-    //mouvements
-    [HideInInspector] public bool SpaceMovement = false;
+
+    [Header("contraintes")]
+    public bool SpaceMovement = false; 
     bool canMove;
 
 
@@ -43,6 +44,7 @@ public class FirstPersonController : MonoBehaviour
     [HideInInspector] public bool inSpaceShip = false; 
     Notifications notifSpaceShip;
 
+    
     [Header("Gravity")]
     public Vector3 initialVelocity;
     public CelestialBody reference;
@@ -71,20 +73,23 @@ public class FirstPersonController : MonoBehaviour
         rb.AddForce(initialVelocity, ForceMode.VelocityChange);
     }
     
-    private void Update()
-    {
+    private void Update()//
+    { 
+         
+
+        #region calcul smooth mouvement
         //calcul de la direction + si on est dans les air ou sur terre
         Vector3 moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
         Vector3 targetMoveAmount =  Grounded ? moveDirection * walkSpeed : moveDirection * airWalkSpeed;
         moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
+        #endregion
 
-        
+        //raycast pour la detection du sol (taille 1.1f -> taille du joueur depuis le centre 1f + marge .1f)
+        #region detection du sol
         //variables de saut
         Grounded = false;
         Ray ray = new Ray(transform.position, -transform.up);
         RaycastHit hit;
-
-        //detection du sol
         if (Physics.Raycast(ray, out hit,1.1f))
         {
             Grounded = true;
@@ -94,16 +99,19 @@ public class FirstPersonController : MonoBehaviour
         {
             referenceGround = null;
         }
+        #endregion
 
         //detection de si on est en mouvement orbital ou planetaire
+        #region detection du type de mouvement
         if (Vector3.Distance(transform.position, reference.transform.position) <= reference.distanceBeforeRotation)
         {
             SpaceMovement = false;
         }else
-            SpaceMovement = true;  
+            SpaceMovement = true; 
+        #endregion  
 
-
-        //entré et sortie dans le vaisseau 
+        //detection entrées sorties du vaisseau
+        #region interaction vaisseau
 
         float distanceWithSpaceShip = Vector3.Distance(spaceShip.transform.position, gameObject.transform.position);
         if (distanceWithSpaceShip < distanceForEnter && notifSpaceShip == null && !inSpaceShip)
@@ -113,16 +121,21 @@ public class FirstPersonController : MonoBehaviour
             playerUI.DestroyNotificationNow(notifSpaceShip);
             notifSpaceShip = null;
         }
-            
 
         if (Input.GetKeyDown(KeyCode.F) && distanceWithSpaceShip < distanceForEnter)
             inSpaceShip = !inSpaceShip;
         if (!inSpaceShip)
             canMove = true;
+        
+        #endregion
 
     }
     
-    void EnterSpaceShip(){ //fonction qui s execute quand on est dans le vaisseau
+
+    /// <summary>
+    /// fonction qui s'éxecute lorsque l'on entre dans le vaisseai
+    /// </summary>   
+    void EnterSpaceShip(){ 
         canMove = false;
         transform.position = playerHolderSpaceShip.transform.position; //on se met à l arriere du vaisseau
         transform.rotation = playerHolderSpaceShip.transform.rotation;//meme orientation que le vaisseau
@@ -131,37 +144,45 @@ public class FirstPersonController : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Bouger la Camera en fonction de l'orientation de la souris pour un système spatial
+    /// </summary>
+    /// <param name="minLimit">orientation la plus basse possible de la caméra en mouvement planétaire</param>
+    /// <param name="maxLimit">orientation la plus haute possible de la caméra en mouvement planétaire</param>
     void CameraMovement(float minLimit, float maxLimit)
     {
-        //fonction pour bouger la camera sur son axe ou le joueur en fonction de si on est dans l espace ou posé sur une planete
-        //min limit et max limit sont les rotations maximal de la cam sur l axe Z
+        //A CHANGER VERS UN RB POUR BOUGER AVEC LA PHYSIQUE
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);//rotation axe X
 
         verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY;//direction en Z
         if (!SpaceMovement)
         {
             verticalLookRotation = Mathf.Clamp(verticalLookRotation, minLimit, maxLimit);//rotation cam (mouvemet planeteraire)
-            cameraT.localEulerAngles = Vector3.left * verticalLookRotation;
+            cameraT.localEulerAngles = Vector3.left * verticalLookRotation; // A CHANGER CAR ON ECRASE LA ROTATION
         }
         else
         {
             cameraT.localRotation = Quaternion.identity;//on fixe la cam sur un axe 0,0,0
-            transform.Rotate(Vector3.left * Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY);//on bouge le joueur sur l axe Z
+            transform.Rotate(Vector3.left * Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY);//on bouge le joueur sur l axe Z A CHANGER VERS UN RB
         }
     }
 
  
     private void LateUpdate()
     {
-        
+        #region gère les mouvements de caméra dans le late pour eviter tout jittering
         if (!inSpaceShip && canMove)// si on est pas dans le vaisseau et que l on peut bouger
             CameraMovement(-60f, 60f);
         if (inSpaceShip)//si on est dans le vaisseau
-            EnterSpaceShip();
-        
-        
+            EnterSpaceShip();// effectuer ici car influence la position de la caméra
+        #endregion
     }
 
+    /// <summary> 
+    /// retourne l'accélération du gameObject sur un corp
+    /// </summary>
+    /// <param name="body">Le CelestialBody qui influence le gameObject</param>
+    /// <returns>l'acceleration du corp</returns>
     Vector3 GetAcceleration(CelestialBody body)
     {
         float sqrtDst = (body.transform.position - rb.position).sqrMagnitude;
@@ -171,6 +192,13 @@ public class FirstPersonController : MonoBehaviour
         return acceleration;
     }
 
+    /// <summary>
+    /// <br> appelé pour chaque corp et trouve si le body tire plus fort que le precédent</br>
+    /// <br> il est important de l'appeler pour chaque corps dans une autre fonction il compare uniquement</br>
+    /// </summary>
+    /// <param name="body">Le CelestialBody que l'on souhaite comparer</param>
+    /// <param name="strongestGravitionalPull">L'attraction la plus forte</param>
+    /// <returns>retourne l'accélération la plus forte, soit le corp soit celui qui était déjà la plus forte</returns>
     CelestialBody GetStrongestBodyAcceleration(CelestialBody body, Vector3 strongestGravitionalPull)
     {
         //Find Body with strongest gravitanional pull
@@ -180,11 +208,19 @@ public class FirstPersonController : MonoBehaviour
             return body;
             
         }
-        return reference;
+        return reference;//le corp le plus fort actuellement
     }
 
 
-    //s aligner a la planete cible
+    /// <summary>
+    /// <br> aligne le joueur avec la planete cible</br>
+    /// <br> utilisé pour aligner un objet avec un autre quand sa distance est bonne </br>
+    /// </summary>
+    /// <param name="self">l'objet à aligner</param>
+    /// <param name="reference">l'objet sur lequel on s'aligne</param>
+    /// <param name="PLanetDIstanceAttraction">la distance entre les deux objets à laquel on s'aligne</param>
+    /// <param name="SpaceMovement">détecte si on est sur une planete ou en mouvement spatial</param>
+    /// <param name="strongestGravitionalPull">l'accélération la plus forte permettant un alignement</param>
     void AllignToPlanet(Transform self, CelestialBody reference, float PLanetDIstanceAttraction, bool SpaceMovement, Vector3 strongestGravitionalPull)
     {
         if (Vector3.Distance(transform.position, reference.transform.position) < reference.distanceBeforeRotation && !SpaceMovement)
@@ -201,54 +237,53 @@ public class FirstPersonController : MonoBehaviour
         
     }
 
-
+    
     private void FixedUpdate()
     {
         if (cinematicMode) //si on est pas en mode cinematique on execute physique + mouvement + alignement
             return;
 
-        if (Input.GetButtonDown("Jump")) //saut 
+        #region gère le saut
+        if (Input.GetButtonDown("Jump") && Grounded && !inSpaceShip) //saut 
         {
-            if (Grounded)
-            {
-                rb.linearVelocity = reference.currentVelocity;
-                transform.position += transform.up * 0.1f; //eviter le glitch d etre pris dans le sol
-                rb.AddForce(transform.up * jumpForce); //saut
-
-                
-            }
-            
+            rb.linearVelocity = reference.currentVelocity;
+            transform.position += transform.up * 0.1f; //eviter le glitch d etre pris dans le sol
+            rb.AddForce(transform.up * jumpForce); //saut 
         }
+        #endregion
 
-        CelestialBody[] bodies = Simulation.bodies;
-        Vector3 strongestGravitionalPull = Vector3.zero;
-
+        #region gère les déplacements
         if (!inSpaceShip && canMove)// si on est pas dans l espace + si on peut bouger on effectur le mouvement
             rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+        #endregion
 
+        #region attache au sol
         if (referenceGround){// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
             Vector3 playerMove = transform.TransformDirection(moveAmount) * Time.fixedDeltaTime;
             Vector3 planetMove = reference.currentVelocity * Time.fixedDeltaTime;
             rb.MovePosition(rb.position + playerMove + planetMove);
         }
+        #endregion
 
-        //Gravity
+        #region calcul de l'accélération de toutes les planètes + applique les forces
+        CelestialBody[] bodies = Simulation.bodies;
+        Vector3 strongestGravitionalPull = Vector3.zero;
         foreach (CelestialBody body in bodies)
         {
-            Vector3 acceleration = GetAcceleration(body).sqrMagnitude > .1f ? GetAcceleration(body) : Vector3.zero;
-            if (affectByGravity)
+            //acceleration valeur brut, le sqrMagnitude met au carré sert juste à comparer, donc ici on ignore les force faible sqrt(.1f) = 0.3
+            Vector3 acceleration = GetAcceleration(body).sqrMagnitude > .1f ? GetAcceleration(body) : Vector3.zero;//on ignore les forces fable (> 0.3)
+            if (affectByGravity)//applique la gravité si on subit la gravité
                 rb.AddForce(acceleration, ForceMode.Acceleration);
 
             reference = GetStrongestBodyAcceleration(body, strongestGravitionalPull);
-            if (GetAcceleration(body).sqrMagnitude > strongestGravitionalPull.sqrMagnitude)
-            {
-                strongestGravitionalPull = GetAcceleration(body);
-            }
+            strongestGravitionalPull = GetAcceleration(reference);
 
         }
 
-        //Allign
-        AllignToPlanet(transform, reference, 30f, SpaceMovement, strongestGravitionalPull);
+        #endregion
+
+        //allignement avec la planête
+        AllignToPlanet(transform, reference, reference.distanceBeforeRotation, SpaceMovement, strongestGravitionalPull);
 
         
     }   
