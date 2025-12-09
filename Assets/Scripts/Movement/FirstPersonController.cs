@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.U2D;
 using UnityEngine;
 
 public class FirstPersonController : MonoBehaviour
@@ -39,6 +40,7 @@ public class FirstPersonController : MonoBehaviour
 
     [Header("vaisseau spatial")]// reference du vaisseau
     public GameObject spaceShip;
+    SpaceMovementsGravity spaceMovementsGravity;
     public GameObject playerHolderSpaceShip; //l endroit ou le joueur va etre placé
     public float distanceForEnter; 
     [HideInInspector] public bool inSpaceShip = false; 
@@ -63,6 +65,7 @@ public class FirstPersonController : MonoBehaviour
         playerUI = GetComponent<PlayerUI>();    
         Simulation = GameObject.Find("Universe").GetComponent<NbodySimulation>();
         constantValues = GameObject.Find("Universe").GetComponent<constant>();
+        spaceMovementsGravity = spaceShip.GetComponent<SpaceMovementsGravity>();
 
         //set des variables par defaut
         canMove = true;
@@ -195,7 +198,7 @@ public class FirstPersonController : MonoBehaviour
         
     }   
 
-    bool influenceByBody()
+    public bool influenceByBody()
     {
         float distance = Vector3.Distance(transform.position, reference.transform.position);
         return distance <= reference.distanceBeforeRotation ? true : false;
@@ -207,11 +210,13 @@ public class FirstPersonController : MonoBehaviour
     /// </summary>   
     void EnterSpaceShip(){ 
         canMove = false;
-        transform.position = playerHolderSpaceShip.transform.position; //on se met à l arriere du vaisseau
+        bool condition = spaceMovementsGravity.firstPersonController.influenceByBody() && Input.GetButton("Jump") && inSpaceShip;
+        Vector3 jittering = condition ? Random.insideUnitSphere * reference.jitteringStrength * reference.jitteringStrength: Vector3.zero;
+        transform.position = playerHolderSpaceShip.transform.position + jittering; //on se met à l arriere du vaisseau
         transform.rotation = playerHolderSpaceShip.transform.rotation;//meme orientation que le vaisseau
         cameraT.rotation = playerHolderSpaceShip.transform.rotation; //bonne orientation de cam
 
-    }
+    } 
 
 
     /// <summary>
