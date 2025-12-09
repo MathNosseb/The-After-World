@@ -25,6 +25,7 @@ public class CelestialBody : MonoBehaviour
     public float mass;
 
     public float distanceBeforeRotation;
+    public float jitteringStrength;
 
     private void OnValidate()
     {
