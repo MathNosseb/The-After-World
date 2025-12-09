@@ -15,7 +15,7 @@ public class FirstPersonController : MonoBehaviour
 
     //variables d instances
     Rigidbody rb;
-    constant constantValues;
+    constant constantValues; 
     PlayerUI playerUI;
 
 
