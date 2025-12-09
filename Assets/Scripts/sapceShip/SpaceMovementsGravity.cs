@@ -13,7 +13,7 @@ public class SpaceMovementsGravity : MonoBehaviour
     NbodySimulation Simulation;
     Rigidbody rb;
     constant constantValues;
-    FirstPersonController firstPersonController;
+    [HideInInspector] public FirstPersonController firstPersonController;
     [HideInInspector] public CelestialBody reference;
 
 
@@ -126,10 +126,10 @@ public class SpaceMovementsGravity : MonoBehaviour
 
             
 
-        }
+        } 
         
 
-        if (firstPersonController.inSpaceShip){
+        if (firstPersonController.inSpaceShip){ 
             
             rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
         }
