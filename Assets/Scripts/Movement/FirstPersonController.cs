@@ -115,10 +115,8 @@ public class FirstPersonController : MonoBehaviour
 
         #region handle jump
         if (Input.GetButtonDown("Jump") && Grounded && !inSpaceShip) //saut 
-        {
             jumping = true;
-        }else
-            jumping = false;
+
         #endregion
 
         //detection entrées sorties du vaisseau
@@ -167,9 +165,9 @@ public class FirstPersonController : MonoBehaviour
         #region gère le saut
         if (jumping) //saut 
         {
-            Debug.LogWarning("jump");
             transform.position += transform.up * 0.1f; //eviter le glitch d etre pris dans le sol
             rb.AddForce(transform.up * jumpForce); //saut 
+            jumping = false;
         }
         #endregion
 
