@@ -178,13 +178,13 @@ Transform:
   m_GameObject: {fileID: 54242867}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -10.77, y: 6, z: 3944}
+  m_LocalPosition: {x: -10.77, y: 5.788522, z: 3939.1301}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 939780318}
-  - {fileID: 389542467}
   - {fileID: 1390879073}
+  - {fileID: 389542467}
+  - {fileID: 939780318}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &54242869
@@ -199,10 +199,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 253933c9b5980314f8a49e5676d8b68d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puissance: 1000
+  player: {fileID: 2078047407}
+  burning: 0
+  firstPersonController: {fileID: 0}
   reference: {fileID: 0}
   moveAmount: {x: 0, y: 0, z: 0}
-  gaz: {fileID: 0}
-  puissance: 2000
+  gaz: {fileID: 1390879072}
 --- !u!54 &54242870
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -270,7 +273,7 @@ GameObject:
   m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!114 &215197947
 MonoBehaviour:
@@ -294,6 +297,7 @@ MonoBehaviour:
   planetAtmosphere: {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
   mass: 5000000
   distanceBeforeRotation: 150
+  jitteringStrength: 1.2
 --- !u!4 &215197951
 Transform:
   m_ObjectHideFlags: 0
@@ -734,6 +738,7 @@ MonoBehaviour:
   planetAtmosphere: {fileID: 0}
   mass: 2500000
   distanceBeforeRotation: 100
+  jitteringStrength: 4
 --- !u!199 &312761007
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -5558,8 +5563,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389542466}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.00000020861623, y: 0.0000009376424, z: -0.0000005066393, w: 1}
-  m_LocalPosition: {x: -0.34075546, y: 1.4118156, z: -11}
+  m_LocalRotation: {x: 0.00000017881389, y: 0.0000009376425, z: -0.0000005066393, w: 1}
+  m_LocalPosition: {x: -0.34075546, y: 1.4118662, z: -11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5742,7 +5747,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &591657895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6305,6 +6310,7 @@ GameObject:
   - component: {fileID: 1036320188}
   - component: {fileID: 1036320189}
   - component: {fileID: 1036320190}
+  - component: {fileID: 1036320191}
   m_Layer: 0
   m_Name: Universe
   m_TagString: Untagged
@@ -6371,6 +6377,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GravityConstant: 0.01
+--- !u!114 &1036320191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036320185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c1b012331044642b5ce28cd9a0650b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 2078047407}
+  cam: {fileID: 1809474123}
+  firstPersonController: {fileID: 2078047414}
+  spaceShip: {fileID: 54242867}
+  spaceMovementsGravity: {fileID: 54242869}
 --- !u!1 &1119520379
 GameObject:
   m_ObjectHideFlags: 0
@@ -11493,8 +11516,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1390879070}
   serializedVersion: 2
-  m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
-  m_LocalPosition: {x: -0.0678606, y: 0.68077755, z: -4.7668986}
+  m_LocalRotation: {x: 1, y: -0, z: -0, w: 0}
+  m_LocalPosition: {x: -0.0678606, y: 0.68066454, z: -4.7669015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11639,9 +11662,9 @@ GameObject:
   - component: {fileID: 1694503910}
   - component: {fileID: 1694503909}
   - component: {fileID: 1694503908}
-  - component: {fileID: 1694503907}
   - component: {fileID: 1694503906}
   - component: {fileID: 1694503905}
+  - component: {fileID: 1694503911}
   m_Layer: 0
   m_Name: Moon
   m_TagString: Planet
@@ -11657,7 +11680,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694503904}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 10000000
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -11672,9 +11695,9 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &1694503906
 MonoBehaviour:
@@ -11688,37 +11711,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  surfaceGravity: 2
+  surfaceGravity: 4
   radius: 25
-  initialVelocity: {x: 11.9, y: 0, z: 0}
+  initialVelocity: {x: 10.7, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0.5566038, g: 0.3749079, b: 0.15490389, a: 1}
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
-  mass: 125000
+  mass: 250000
   distanceBeforeRotation: 60
---- !u!135 &1694503907
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1694503904}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  jitteringStrength: 0
 --- !u!23 &1694503908
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11771,7 +11774,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1694503904}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 2433754488877160938, guid: 9bb613cfa110c8e4b8897959fa34fbd8, type: 3}
 --- !u!4 &1694503910
 Transform:
   m_ObjectHideFlags: 0
@@ -11782,11 +11785,33 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 4773}
-  m_LocalScale: {x: 52.644566, y: 52.644566, z: 52.644566}
+  m_LocalScale: {x: 4964.94, y: 4964.94, z: 4964.94}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &1694503911
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1694503904}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2433754488877160938, guid: 9bb613cfa110c8e4b8897959fa34fbd8, type: 3}
 --- !u!1 &1809474123
 GameObject:
   m_ObjectHideFlags: 0
@@ -11846,7 +11871,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 10000
+  far clip plane: 100000
   field of view: 58.83666
   orthographic: 0
   orthographic size: 5
@@ -11988,7 +12013,6 @@ GameObject:
   - component: {fileID: 2078047416}
   - component: {fileID: 2078047414}
   - component: {fileID: 2078047417}
-  - component: {fileID: 2078047418}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -12080,15 +12104,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.75872654, z: -0, w: -0.65140927}
-  m_LocalPosition: {x: 180.7, y: 3.4652238, z: 3974.2}
+  m_LocalRotation: {x: -0.7003097, y: -0, z: -0, w: 0.71383923}
+  m_LocalPosition: {x: -0.40000153, y: -14, z: 3943}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1809474126}
   - {fileID: 1121771602}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 261.296, z: 0}
+  m_LocalEulerAnglesHint: {x: -88.904, y: 0, z: 0}
 --- !u!114 &2078047414
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12107,7 +12131,7 @@ MonoBehaviour:
   airWalkSpeed: 1
   jumpForce: 70
   affectByGravity: 1
-  cinematicMode: 1
+  cinematicMode: 0
   cameraT: {fileID: 1809474126}
   moveAmount: {x: 0, y: 0, z: 0}
   referenceGround: {fileID: 0}
@@ -12152,7 +12176,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2078047407}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36e08a3515a5a51479ac1b4686a6d21e, type: 3}
   m_Name: 
@@ -12165,28 +12189,7 @@ MonoBehaviour:
   movementType: {fileID: 298478681}
   FPS: {fileID: 1119520381}
   canvas: {fileID: 591657897}
---- !u!95 &2078047418
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2078047407}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 87e0e5f264d3ea784bed97ae2872958e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  data: {fileID: 1036320191}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
