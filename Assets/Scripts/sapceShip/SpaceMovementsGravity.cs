@@ -7,6 +7,7 @@ public class SpaceMovementsGravity : MonoBehaviour
     [Header("parametres")]
     public float puissance;
     public GameObject player;//le joueur
+    public bool burning;
 
 
     //variables d instances
@@ -48,12 +49,12 @@ public class SpaceMovementsGravity : MonoBehaviour
 
         if (Input.GetButton("Jump") && firstPersonController.inSpaceShip){
             float distanceBetweenRef = Vector3.Distance(transform.position, reference ? reference.transform.position : Vector3.zero);
-            
-            rb.AddForce(transform.forward * puissance);
+            burning = true;
             gaz.Play();
         }
         else
         {
+            burning = false;
             gaz.Stop();
         }
 
@@ -127,7 +128,10 @@ public class SpaceMovementsGravity : MonoBehaviour
             
 
         } 
-        
+
+        if (burning)//si on decolle
+            rb.AddForce(transform.forward * puissance);
+
 
         if (firstPersonController.inSpaceShip){ 
             

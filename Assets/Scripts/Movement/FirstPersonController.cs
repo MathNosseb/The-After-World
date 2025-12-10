@@ -31,6 +31,7 @@ public class FirstPersonController : MonoBehaviour
     //references de saut
     bool Grounded;
     [HideInInspector]public GameObject referenceGround;
+    bool jumping;
 
 
     [Header("contraintes")]
@@ -105,12 +106,20 @@ public class FirstPersonController : MonoBehaviour
 
         //detection de si on est en mouvement orbital ou planetaire
         #region detection du type de mouvement
-        if (Vector3.Distance(transform.position, reference.transform.position) <= reference.distanceBeforeRotation)
+        if (influenceByBody())
         {
             SpaceMovement = false;
         }else
-            SpaceMovement = true; 
-        #endregion  
+            SpaceMovement = true;
+        #endregion
+
+        #region handle jump
+        if (Input.GetButtonDown("Jump") && Grounded && !inSpaceShip) //saut 
+        {
+            jumping = true;
+        }else
+            jumping = false;
+        #endregion
 
         //detection entrées sorties du vaisseau
         #region interaction vaisseau
@@ -127,7 +136,10 @@ public class FirstPersonController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F) && distanceWithSpaceShip < distanceForEnter)
             inSpaceShip = !inSpaceShip;
         if (!inSpaceShip)
+        {
             canMove = true;
+            rb.isKinematic = false;
+        }
         
         #endregion
 
@@ -149,26 +161,22 @@ public class FirstPersonController : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if (cinematicMode) //si on est pas en mode cinematique on execute physique + mouvement + alignement
+        if (cinematicMode || inSpaceShip) //si on est pas en mode cinematique on execute physique + mouvement + alignement
             return;
 
         #region gère le saut
-        if (Input.GetButtonDown("Jump") && Grounded && !inSpaceShip) //saut 
+        if (jumping) //saut 
         {
+            Debug.LogWarning("jump");
             transform.position += transform.up * 0.1f; //eviter le glitch d etre pris dans le sol
             rb.AddForce(transform.up * jumpForce); //saut 
         }
         #endregion
 
-        #region gère les déplacements
-        //if (!inSpaceShip && canMove)// si on est pas dans l espace + si on peut bouger on effectur le mouvement
-            //rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
-        #endregion
-
         #region attache au sol et mouvement
         if (influenceByBody()){// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
             Vector3 playerMove = Vector3.zero;
-            if (!inSpaceShip && canMove)
+            if (canMove)
                 playerMove = transform.TransformDirection(moveAmount) * Time.fixedDeltaTime;
             Vector3 planetMove = reference.currentVelocity * Time.fixedDeltaTime;
             rb.MovePosition(rb.position + playerMove + planetMove);
@@ -210,7 +218,8 @@ public class FirstPersonController : MonoBehaviour
     /// </summary>   
     void EnterSpaceShip(){ 
         canMove = false;
-        bool condition = spaceMovementsGravity.firstPersonController.influenceByBody() && Input.GetButton("Jump") && inSpaceShip;
+        rb.isKinematic = true;
+        bool condition = spaceMovementsGravity.firstPersonController.influenceByBody() && spaceMovementsGravity.burning;
         Vector3 jittering = condition ? Random.insideUnitSphere * reference.jitteringStrength * reference.jitteringStrength: Vector3.zero;
         transform.position = playerHolderSpaceShip.transform.position + jittering; //on se met à l arriere du vaisseau
         transform.rotation = playerHolderSpaceShip.transform.rotation;//meme orientation que le vaisseau

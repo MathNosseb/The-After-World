@@ -199,8 +199,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 253933c9b5980314f8a49e5676d8b68d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puissance: 2000
+  puissance: 1000
   player: {fileID: 2078047407}
+  burning: 0
   firstPersonController: {fileID: 0}
   reference: {fileID: 0}
   moveAmount: {x: 0, y: 0, z: 0}
@@ -6309,6 +6310,7 @@ GameObject:
   - component: {fileID: 1036320188}
   - component: {fileID: 1036320189}
   - component: {fileID: 1036320190}
+  - component: {fileID: 1036320191}
   m_Layer: 0
   m_Name: Universe
   m_TagString: Untagged
@@ -6375,6 +6377,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GravityConstant: 0.01
+--- !u!114 &1036320191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036320185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15c1b012331044642b5ce28cd9a0650b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 2078047407}
+  cam: {fileID: 1809474123}
+  firstPersonController: {fileID: 2078047414}
+  spaceShip: {fileID: 54242867}
+  spaceMovementsGravity: {fileID: 54242869}
 --- !u!1 &1119520379
 GameObject:
   m_ObjectHideFlags: 0
@@ -11601,6 +11620,167 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1 &1519013319
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1519013323}
+  - component: {fileID: 1519013322}
+  - component: {fileID: 1519013321}
+  - component: {fileID: 1519013320}
+  - component: {fileID: 1519013325}
+  - component: {fileID: 1519013324}
+  m_Layer: 0
+  m_Name: inconnue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 1
+  m_IsActive: 1
+--- !u!114 &1519013320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519013319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  surfaceGravity: 5
+  radius: 100
+  initialVelocity: {x: 1.38, y: 0, z: 0}
+  fix: 0
+  colorPath: {r: 0, g: 0, b: 0, a: 0}
+  currentVelocity: {x: 0, y: 0, z: 0}
+  useAtmosphere: 0
+  planetAtmosphere: {fileID: 0}
+  mass: 5000000
+  distanceBeforeRotation: 200
+  jitteringStrength: 3
+--- !u!33 &1519013321
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519013319}
+  m_Mesh: {fileID: 2433754488877160938, guid: 9bb613cfa110c8e4b8897959fa34fbd8, type: 3}
+--- !u!23 &1519013322
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519013319}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 98be7cc7a8172d742b7c310fa055ff57, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!4 &1519013323
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519013319}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 30095}
+  m_LocalScale: {x: 9405.3, y: 9405.3, z: 9405.3}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &1519013324
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519013319}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2433754488877160938, guid: 9bb613cfa110c8e4b8897959fa34fbd8, type: 3}
+--- !u!54 &1519013325
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519013319}
+  serializedVersion: 4
+  m_Mass: 100000000
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &1637413513
 GameObject:
   m_ObjectHideFlags: 0
@@ -11852,7 +12032,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 10000
+  far clip plane: 100000
   field of view: 58.83666
   orthographic: 0
   orthographic size: 5
@@ -12170,6 +12350,7 @@ MonoBehaviour:
   movementType: {fileID: 298478681}
   FPS: {fileID: 1119520381}
   canvas: {fileID: 591657897}
+  data: {fileID: 1036320191}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -12182,6 +12363,7 @@ SceneRoots:
   - {fileID: 312761004}
   - {fileID: 215197951}
   - {fileID: 1694503910}
+  - {fileID: 1519013323}
   - {fileID: 3567917}
   - {fileID: 591657898}
   - {fileID: 1637413514}

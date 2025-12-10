@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,12 +29,7 @@ public class PlayerUI : MonoBehaviour
 
 
     //variables d instances
-    FirstPersonController firstPersonController;
-    Rigidbody rb;
-
-    Vector3 lastPosition;
-    float speed;
-    float fps;
+    public dataHolder data;
 
     public Notifications SendNotification(float coordX, float coordY, float time, string text)
     {
@@ -71,63 +67,40 @@ public class PlayerUI : MonoBehaviour
     }
 
 
-    private void Start()
-    {
-        firstPersonController = GetComponent<FirstPersonController>(); 
-        rb = GetComponent<Rigidbody>();
-        lastPosition = transform.position;
-    }
-
-    float GetVelocity(Vector3 lastPosition, Vector3 actualPosition)
-    {
-        float distance = Vector3.Distance(actualPosition, lastPosition);
-
-        // Vitesse = distance / temps écoulé
-        float rawSpeed = distance / Time.fixedDeltaTime; 
- 
-        // Lissage
-        speed = Mathf.Lerp(speed, rawSpeed, .5f);
-
-        return speed;
-        //return GetComponent<Rigidbody>().linearVelocity.magnitude;
-    }
-
-
-    float GetFps(float deltaTime)
-    {
-        float rawFps = 1 / deltaTime;
-        fps = Mathf.Lerp(fps, rawFps, .1f);
-
-        return fps;
-    }
-
-    private void FixedUpdate()
-    {
-        Velocity.text = (int)GetVelocity(lastPosition, transform.position) + " m/s";
-
-    }
-
-
     private void Update()
     {
-        CelestialBody reference = firstPersonController.reference;
+        CelestialBody reference;
+        float velocity;
+        bool inSpaceShip = data.inSpaceShip;
+        if (inSpaceShip)
+        {
+            velocity = data.spaceShipVelocity;
+            reference = data.spaceShipReference;
+        }
+        else
+        {
+            velocity = data.playerVelocity;
+            reference = data.playerReference;
+        }
+
         Reference.text = reference ? reference.name : "null";
 
-        GameObject groundreference = firstPersonController.referenceGround;
+        GameObject groundreference = data.referenceGround;
         GroundReference.text = groundreference ? "land on " + groundreference.name : "not landed";
 
         float distanceBetweenRef = Vector3.Distance(transform.position, reference ? reference.transform.position : Vector3.zero);
         HeightText.text = (int)distanceBetweenRef + " m";
 
+        
+        Velocity.text = (int)velocity + " m/s";
+
 
         RelativeVelocity.text = reference ? reference.name + " Speed " + (int)reference.GetComponent<CelestialBody>().currentVelocity.magnitude + " m/s" : "null";
 
-        movementType.text = firstPersonController.SpaceMovement ? "mouvement spatial" : "mouvement planetaire";
+        movementType.text = data.spaceMovement ? "mouvement spatial" : "mouvement planetaire";
 
         
-        FPS.text = (int)GetFps(Time.deltaTime) + " FPS";
-
-        lastPosition = transform.position;
+        FPS.text = (int)data.GetFps(Time.deltaTime) + " FPS";
 
     }
 
