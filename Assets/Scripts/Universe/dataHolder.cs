@@ -20,6 +20,9 @@ public class dataHolder : MonoBehaviour
     public float spaceShipVelocity { get; private set; }
     [HideInInspector] public CelestialBody spaceShipReference { get; private set; }
 
+    [Header("Gobal")]
+    public SoundsManager soundsManager;
+
     //params
     float fps;
 
@@ -32,6 +35,9 @@ public class dataHolder : MonoBehaviour
         //initialisation du vaisseau
         spaceMovementsGravity = spaceShip.GetComponent<SpaceMovementsGravity>();
         spaceShipRb = spaceShip.GetComponent<Rigidbody>();
+
+        //initialisation des sons
+        soundsManager = cam.GetComponent<SoundsManager>();
 
 
         UpdateParams();

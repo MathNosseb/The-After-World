@@ -11,6 +11,7 @@ public class SpaceMovementsGravity : MonoBehaviour
 
 
     //variables d instances
+    public dataHolder data;
     NbodySimulation Simulation;
     Rigidbody rb;
     constant constantValues;
@@ -30,6 +31,9 @@ public class SpaceMovementsGravity : MonoBehaviour
     [Header("VFX")]
     public ParticleSystem gaz;//propulsion
 
+    [Header("FX")]
+    SoundMaker burningSound;
+
 
     private void Start()
     {
@@ -38,6 +42,15 @@ public class SpaceMovementsGravity : MonoBehaviour
         constantValues = GameObject.Find("Universe").GetComponent<constant>();//les constantes (gravitation)
         firstPersonController = player.GetComponent<FirstPersonController>();//le controleur du joueur
         rb = GetComponent<Rigidbody>();//Rigidbody 
+
+        //recuperer les sons
+        foreach (SoundMaker sound in data.soundsManager.sounds)
+        {
+            if (sound.soundName == "rocket_burning")
+            {
+                burningSound = sound;
+            }
+        }
         
     }
 
@@ -49,11 +62,13 @@ public class SpaceMovementsGravity : MonoBehaviour
 
         if (Input.GetButton("Jump") && firstPersonController.inSpaceShip){
             float distanceBetweenRef = Vector3.Distance(transform.position, reference ? reference.transform.position : Vector3.zero);
+            burningSound.play = true;
             burning = true;
             gaz.Play();
         }
         else
         {
+            burningSound.play = false;
             burning = false;
             gaz.Stop();
         }

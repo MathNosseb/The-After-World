@@ -8,8 +8,9 @@ public class SoundMaker
 {    
     public SoundType soundType;
     public AudioClip clip;
+    public AudioSource source;
     public string soundName;
-    public int volume;
-    public bool play = false;
+    public float volume;
+     public bool play;
 }
  
