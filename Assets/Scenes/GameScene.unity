@@ -11879,12 +11879,12 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -11919,6 +11919,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effects:
   - {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
+  defaultShader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  defaultMat: {fileID: 2100000, guid: 4f581e4038d2b336a873681be2007acc, type: 2}
+  filePath: /home/matheo/.config/unity3d/DefaultCompany/The After World/debug_log.txt
 --- !u!1 &2070480442
 GameObject:
   m_ObjectHideFlags: 0

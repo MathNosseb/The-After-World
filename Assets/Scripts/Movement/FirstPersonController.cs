@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEditor.U2D;
 using UnityEngine;
 
 public class FirstPersonController : MonoBehaviour

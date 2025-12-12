@@ -5483,12 +5483,12 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
@@ -5523,6 +5523,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effects:
   - {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
+  filePath: /home/matheo/.config/unity3d/DefaultCompany/The After World/debug_log.txt
+  textureMat: {fileID: 2100000, guid: 4f581e4038d2b336a873681be2007acc, type: 2}
 --- !u!114 &438590839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5740,7 +5742,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe9463917b5003e4ba71c667c61a8d0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameScene: 
 --- !u!1 &778678283
 GameObject:
   m_ObjectHideFlags: 0
