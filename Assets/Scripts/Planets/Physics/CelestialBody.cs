@@ -24,7 +24,6 @@ public class CelestialBody : MonoBehaviour
 
     public float distanceBeforeRotation;
     public float jitteringStrength;
-    public string filePath;
 
     #if UNITY_EDITOR
 
@@ -52,7 +51,6 @@ public class CelestialBody : MonoBehaviour
 
     void Awake()
     {
-        filePath = Path.Combine(Application.persistentDataPath, "debug_log.txt");
         constantValue = GameObject.Find("Universe").GetComponent<constant>();
         sun = GameObject.Find("Sun");
         mass = surfaceGravity * radius * radius / constantValue.GravityConstant;
@@ -60,14 +58,14 @@ public class CelestialBody : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         startPosition = transform.position;
 
+        
+
     }
 
     private void FixedUpdate()
     {
         if (fix) { transform.position = startPosition; }
-        WriteToFile("Update atmosphere position");
         if (useAtmosphere) { planetAtmosphere.planetCentre = rb.position; }
-        WriteToFile("new POsitions " + planetAtmosphere.planetCentre + " " + rb.position);
        
     }
 
@@ -101,17 +99,5 @@ public class CelestialBody : MonoBehaviour
     {
         if (fix) { return; }
         rb.position += currentVelocity * timeStep;
-    }
-
-
-    public void WriteToFile(string message)
-    {
-        // Ajout du message avec date/heure
-        string logLine = System.DateTime.Now.ToString("HH:mm:ss") + " - " + message;
-
-        // Écriture dans le fichier
-        File.AppendAllText(filePath, logLine + "\n");
-
-        Debug.Log("Écrit dans " + filePath);
     }
 }

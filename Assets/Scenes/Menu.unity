@@ -5523,8 +5523,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effects:
   - {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
-  filePath: /home/matheo/.config/unity3d/DefaultCompany/The After World/debug_log.txt
-  textureMat: {fileID: 2100000, guid: 4f581e4038d2b336a873681be2007acc, type: 2}
+  defaultShader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  defaultMat: {fileID: 1549634272}
 --- !u!114 &438590839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5538,8 +5538,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   positions:
-  - {fileID: 941358368}
   - {fileID: 1529030975}
+  - {fileID: 941358368}
   - {fileID: 1165087063}
   - {fileID: 1603246110}
   - {fileID: 2001244295}
@@ -6429,6 +6429,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1694503910}
   m_LocalEulerAnglesHint: {x: 0, y: 165, z: 0}
+--- !u!21 &1549634272
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Unlit/Texture
+  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats: []
+    m_Colors: []
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1603246109
 GameObject:
   m_ObjectHideFlags: 0

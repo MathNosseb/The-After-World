@@ -14,43 +14,27 @@ public class CustomPostProcessing : MonoBehaviour
 
     public event System.Action<RenderTexture> onPostProcessingComplete;
     public event System.Action<RenderTexture> onPostProcessingBegin;
-    public string filePath;
 
     void Init()
     {
         try
         {
-            WriteToFile("Dans le Init");
-
-            WriteToFile("defaultMat avant assign: " + defaultMat);
-            WriteToFile("defaultShader avant assign: " + defaultShader);
-
             if (defaultMat == null)
             {
                 if (defaultShader == null)
                 {
                     defaultShader = Shader.Find("Unlit/Texture");
-                    WriteToFile("Shader fallback assigné: " + defaultShader);
                 }
 
                 // Création du material avec protection
                 if (defaultShader != null)
                 {
                     defaultMat = new Material(defaultShader);
-                    WriteToFile("Material créé: " + defaultMat);
-                }
-                else
-                {
-                    WriteToFile("Erreur : defaultShader est null, impossible de créer defaultMat !");
                 }
             }
-
-            WriteToFile("default material final: " + defaultMat);
-            WriteToFile("default Shader final: " + defaultShader);
         }
         catch (System.Exception e)
         {
-            WriteToFile("Exception capturée : " + e.Message);
             Debug.LogError("Exception Init: " + e);
         }
     }
@@ -58,29 +42,11 @@ public class CustomPostProcessing : MonoBehaviour
     void Start()
     {
         Init();
-        WriteToFile("Init Terminé");
-    }
-    void OnEnable()
-    {
-        filePath = Path.Combine(Application.persistentDataPath, "debug_log.txt");    
-        //Init();       
-    }
-
-    public void WriteToFile(string message)
-    {
-        // Ajout du message avec date/heure
-        string logLine = System.DateTime.Now.ToString("HH:mm:ss") + " - " + message;
-
-        // Écriture dans le fichier
-        File.AppendAllText(filePath, logLine + "\n");
-
-        Debug.Log("Écrit dans " + filePath);
     }
 
     [ImageEffectOpaque]
     void OnRenderImage(RenderTexture intialSource, RenderTexture finalDestination)
     {
-        WriteToFile("OnRenderImage");
         if (onPostProcessingBegin != null)
         {
             onPostProcessingBegin(finalDestination);
@@ -91,7 +57,7 @@ public class CustomPostProcessing : MonoBehaviour
 
         RenderTexture currentSource = intialSource;
         RenderTexture currentDestination = null;
-        WriteToFile("effect " + (effects != null));
+
         if (effects != null)
         {
             for (int i = 0; i < effects.Length; i++)
@@ -110,7 +76,6 @@ public class CustomPostProcessing : MonoBehaviour
                         currentDestination = TemporaryRenderTexture(finalDestination);
                         temporaryTextures.Add(currentDestination); //
                     }
-                    WriteToFile("render");
                     effect.Render(currentSource, currentDestination); // render the effect
                     currentSource = currentDestination; // output texture of this effect becomes input for next effect
                 }
