@@ -11,7 +11,7 @@ public class AtmosphereGenerator : PostProcessingEffect
     public float atmosphereRadius; 
     public float planetRadius;
     public float densityFalloff; 
-    public float numOpticalDepthPoints;
+    public float numOpticalDepthPoints; 
     public float numInScatteringPoints;
     public Vector3 waveLengths = new Vector3(700, 530, 440);
     public float scatteringStrength = 1;

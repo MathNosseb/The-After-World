@@ -21,7 +21,7 @@ public class SpaceMovementsGravity : MonoBehaviour
 
     //deplacements
     [HideInInspector] public Vector3 moveAmount;
-    Vector3 smoothMoveVelocity; //utiliser pour avoir une acceleration smooth
+    Vector3 smoothMoveVelocity; //utiliser pour avoir une acceleration smooth 
 
     
     //reference au sol
