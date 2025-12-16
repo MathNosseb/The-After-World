@@ -1,5 +1,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 using UnityEngine.UIElements;
 
 public class SpaceMovementsGravity : MonoBehaviour
@@ -19,9 +21,10 @@ public class SpaceMovementsGravity : MonoBehaviour
     [HideInInspector] public CelestialBody reference;
 
 
-    //deplacements
+    [Header("déplacements")]
     [HideInInspector] public Vector3 moveAmount;
     Vector3 smoothMoveVelocity; //utiliser pour avoir une acceleration smooth 
+    public float speedMovement;
 
     
     //reference au sol
@@ -57,7 +60,7 @@ public class SpaceMovementsGravity : MonoBehaviour
     private void Update()
     {
         Vector3 moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-        Vector3 targetMoveAmount =  moveDirection * 10f;
+        Vector3 targetMoveAmount =  moveDirection * speedMovement;
         moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
 
         if (Input.GetButton("Jump") && firstPersonController.inSpaceShip){
@@ -118,9 +121,13 @@ public class SpaceMovementsGravity : MonoBehaviour
         CelestialBody[] bodies = Simulation.bodies;
         Vector3 strongestGravitionalPull = Vector3.zero;
 
-        if (Grounded)
+        if (data.firstPersonController.influenceByBody(transform))
         {
-            rb.linearVelocity = reference.GetComponent<CelestialBody>().currentVelocity;
+            Vector3 spaceShipMove = Vector3.zero;
+            if (data.inSpaceShip)
+                spaceShipMove = transform.TransformDirection(moveAmount) * Time.fixedDeltaTime;
+            Vector3 planetMove = reference.currentVelocity * Time.fixedDeltaTime;
+            rb.MovePosition(rb.position + spaceShipMove + planetMove);
         }
 
         //Gravity
@@ -148,10 +155,7 @@ public class SpaceMovementsGravity : MonoBehaviour
             rb.AddForce(transform.forward * puissance);
 
 
-        if (firstPersonController.inSpaceShip){ 
-            
-            rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
-        }
+        
 
         
 

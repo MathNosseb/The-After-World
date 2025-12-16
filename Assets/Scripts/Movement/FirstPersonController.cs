@@ -105,7 +105,7 @@ public class FirstPersonController : MonoBehaviour
 
         //detection de si on est en mouvement orbital ou planetaire
         #region detection du type de mouvement
-        if (influenceByBody())
+        if (influenceByBody(transform))
         {
             SpaceMovement = false;
         }else
@@ -131,7 +131,26 @@ public class FirstPersonController : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.F) && distanceWithSpaceShip < distanceForEnter)
+        {
+            
+            if (inSpaceShip)
+            {
+                //on sort du vaisseau
+                //on s'aligne avec la planete
+                AllignToPlanet(transform, reference, reference.distanceBeforeRotation, SpaceMovement, GetAcceleration(reference), 1000f);
+
+                //on se met a une position sur le vaisseau
+                Vector3 positionOutSpaceShip = spaceShip.transform.position + new Vector3(0f, 5);
+                //ajout d une detection pour trouver un meilleur endroit où spawn
+                //mais flemme pour le moment
+                rb.position = positionOutSpaceShip;
+
+            }
+
             inSpaceShip = !inSpaceShip;
+        }
+        
+            
         if (!inSpaceShip)
         {
             canMove = true;
@@ -164,14 +183,14 @@ public class FirstPersonController : MonoBehaviour
         #region gère le saut
         if (jumping) //saut 
         {
-            transform.position += transform.up * 0.1f; //eviter le glitch d etre pris dans le sol
+            rb.MovePosition(rb.position + transform.up * 0.1f);//eviter le glitch d etre pris dans le sol
             rb.AddForce(transform.up * jumpForce); //saut 
             jumping = false;
         }
         #endregion
 
         #region attache au sol et mouvement
-        if (influenceByBody()){// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
+        if (influenceByBody(transform)){// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
             Vector3 playerMove = Vector3.zero;
             if (canMove)
                 playerMove = transform.TransformDirection(moveAmount) * Time.fixedDeltaTime;
@@ -203,9 +222,9 @@ public class FirstPersonController : MonoBehaviour
         
     }   
 
-    public bool influenceByBody()
+    public bool influenceByBody(Transform self)
     {
-        float distance = Vector3.Distance(transform.position, reference.transform.position);
+        float distance = Vector3.Distance(self.position, reference.transform.position);
         return distance <= reference.distanceBeforeRotation ? true : false;
     }
 
@@ -216,8 +235,8 @@ public class FirstPersonController : MonoBehaviour
     void EnterSpaceShip(){ 
         canMove = false;
         rb.isKinematic = true;
-        bool condition = spaceMovementsGravity.firstPersonController.influenceByBody() && spaceMovementsGravity.burning;
-        Vector3 jittering = condition ? Random.insideUnitSphere * reference.jitteringStrength * reference.jitteringStrength: Vector3.zero;
+        bool condition = spaceMovementsGravity.firstPersonController.influenceByBody(transform) && spaceMovementsGravity.burning;
+        Vector3 jittering = condition ? Random.insideUnitSphere * reference.jitteringStrength: Vector3.zero;
         transform.position = playerHolderSpaceShip.transform.position + jittering; //on se met à l arriere du vaisseau
         transform.rotation = playerHolderSpaceShip.transform.rotation;//meme orientation que le vaisseau
         cameraT.rotation = playerHolderSpaceShip.transform.rotation; //bonne orientation de cam
@@ -290,7 +309,7 @@ public class FirstPersonController : MonoBehaviour
     /// <param name="PLanetDIstanceAttraction">la distance entre les deux objets à laquel on s'aligne</param>
     /// <param name="SpaceMovement">détecte si on est sur une planete ou en mouvement spatial</param>
     /// <param name="strongestGravitionalPull">l'accélération la plus forte permettant un alignement</param>
-    void AllignToPlanet(Transform self, CelestialBody reference, float PLanetDIstanceAttraction, bool SpaceMovement, Vector3 strongestGravitionalPull)
+    void AllignToPlanet(Transform self, CelestialBody reference, float PLanetDIstanceAttraction, bool SpaceMovement, Vector3 strongestGravitionalPull, float rotationSpeed = 10f)
     {
         if (Vector3.Distance(transform.position, reference.transform.position) < reference.distanceBeforeRotation && !SpaceMovement)
         {
@@ -300,7 +319,7 @@ public class FirstPersonController : MonoBehaviour
             Quaternion smoothRotation = Quaternion.Slerp(
                 rb.rotation,
                 targetRotation,
-                10 * Time.fixedDeltaTime);
+                rotationSpeed * Time.fixedDeltaTime);
             rb.MoveRotation(smoothRotation);
         }
         
