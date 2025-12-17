@@ -2,26 +2,33 @@ using UnityEngine;
 
 public class dataHolder : MonoBehaviour
 {
+    #region player
     [Header("player")]
     public GameObject player;
     public GameObject cam;
+    public Rigidbody playerRb;
     public FirstPersonController firstPersonController;
-    public Rigidbody playerRb { get; private set; }
+    
     public float playerVelocity {  get; private set; }
     public bool inSpaceShip { get; private set; }
     [HideInInspector] public CelestialBody playerReference { get; private set; }
     [HideInInspector] public bool spaceMovement { get; private set; }
     [HideInInspector] public GameObject referenceGround { get; private set; }
+    #endregion
 
+    #region spaceShip
     [Header("spaceShip")]
     public GameObject spaceShip;
     public SpaceMovementsGravity spaceMovementsGravity;
     public Rigidbody spaceShipRb { get; private set; }
     public float spaceShipVelocity { get; private set; }
     [HideInInspector] public CelestialBody spaceShipReference { get; private set; }
+    #endregion
 
     [Header("Gobal")]
     public SoundsManager soundsManager;
+    public GameObject Sun;
+    public float distanceBeforeFloatingPointRepare;
 
     //params
     float fps;
@@ -52,8 +59,10 @@ public class dataHolder : MonoBehaviour
 
     }
 
+
+    #region getFPS
     /// <summary>
-    /// récupère les FPS de la scène
+    /// rï¿½cupï¿½re les FPS de la scï¿½ne
     /// </summary>
     /// <param name="deltaTime">Time.deltaTime</param>
     /// <returns>fps</returns>
@@ -64,6 +73,7 @@ public class dataHolder : MonoBehaviour
 
         return fps;
     }
+    #endregion
 
     private void UpdateParams()
     {

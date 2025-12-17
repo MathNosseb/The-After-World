@@ -39,9 +39,6 @@ public class CelestialBody : MonoBehaviour
     #endif
 
 
-    // Correction de l'attribut [MenuItem] : il doit �tre appliqu� � une m�thode statique.
-    // Ajout d'une m�thode statique pour l'atmosph�re.
-
     [ContextMenu("Mettre � jour la position")]
     public void AtmosphereUpdatePosition()
     {

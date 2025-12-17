@@ -5520,7 +5520,7 @@ GameObject:
   - component: {fileID: 406452348}
   - component: {fileID: 406452347}
   m_Layer: 0
-  m_Name: meshHolder
+  m_Name: Solwyn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5628,7 +5628,7 @@ GameObject:
   - component: {fileID: 528642534}
   - component: {fileID: 528642533}
   m_Layer: 0
-  m_Name: Solwyn
+  m_Name: solwyn
   m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5980,7 +5980,7 @@ GameObject:
   - component: {fileID: 617442475}
   - component: {fileID: 617442474}
   m_Layer: 0
-  m_Name: meshHolder
+  m_Name: Varkos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6550,6 +6550,7 @@ GameObject:
   - component: {fileID: 1036320189}
   - component: {fileID: 1036320190}
   - component: {fileID: 1036320191}
+  - component: {fileID: 1036320192}
   m_Layer: 0
   m_Name: Universe
   m_TagString: Untagged
@@ -6630,10 +6631,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2078047407}
   cam: {fileID: 1809474123}
+  playerRb: {fileID: 2078047416}
   firstPersonController: {fileID: 2078047414}
   spaceShip: {fileID: 54242867}
   spaceMovementsGravity: {fileID: 54242869}
   soundsManager: {fileID: 1809474128}
+  Sun: {fileID: 312761000}
+  distanceBeforeFloatingPointRepare: 1000
+--- !u!114 &1036320192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036320185}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efa3924796d5653ffbbe88d60725dbd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 1036320191}
+  Transforms:
+  - {fileID: 312761004}
+  - {fileID: 1773451483}
+  - {fileID: 528642535}
+  - {fileID: 1994838026}
+  - {fileID: 1741740458}
 --- !u!1 &1119520379
 GameObject:
   m_ObjectHideFlags: 0
@@ -11787,7 +11810,7 @@ GameObject:
   - component: {fileID: 1520019330}
   - component: {fileID: 1520019332}
   m_Layer: 0
-  m_Name: meshHolder
+  m_Name: Oranyx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11926,7 +11949,7 @@ GameObject:
   - component: {fileID: 1741740457}
   - component: {fileID: 1741740456}
   m_Layer: 0
-  m_Name: Minimus
+  m_Name: minimus
   m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12010,7 +12033,7 @@ GameObject:
   - component: {fileID: 1773451482}
   - component: {fileID: 1773451481}
   m_Layer: 0
-  m_Name: Oranyx
+  m_Name: oranyx
   m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12224,7 +12247,7 @@ GameObject:
   - component: {fileID: 1994838025}
   - component: {fileID: 1994838024}
   m_Layer: 0
-  m_Name: Varkos
+  m_Name: varkos
   m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12482,7 +12505,7 @@ Transform:
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7003097, y: -0, z: -0, w: 0.71383923}
-  m_LocalPosition: {x: -0.40000153, y: 1.2, z: 14471.01}
+  m_LocalPosition: {x: -0.40000153, y: -18, z: 997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12580,7 +12603,7 @@ GameObject:
   - component: {fileID: 2104409947}
   - component: {fileID: 2104409946}
   m_Layer: 0
-  m_Name: meshHolder
+  m_Name: Minimus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
