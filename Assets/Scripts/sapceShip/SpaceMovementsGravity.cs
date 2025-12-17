@@ -121,7 +121,7 @@ public class SpaceMovementsGravity : MonoBehaviour
         CelestialBody[] bodies = Simulation.bodies;
         Vector3 strongestGravitionalPull = Vector3.zero;
 
-        if (data.firstPersonController.influenceByBody(transform))
+        if (data.firstPersonController.influenceByBody(transform, reference))
         {
             Vector3 spaceShipMove = Vector3.zero;
             if (data.inSpaceShip)
@@ -136,12 +136,13 @@ public class SpaceMovementsGravity : MonoBehaviour
             float sqrtDst = (body.transform.position - rb.position).sqrMagnitude;
             Vector3 forceDir = (body.transform.position - rb.position).normalized;
             Vector3 acceleration = forceDir * constantValues.GravityConstant * body.mass / sqrtDst;
-            if (!Grounded)
-                rb.AddForce(acceleration * 10f, ForceMode.Acceleration);
+
+            
+            rb.AddForce(acceleration * 10f, ForceMode.Acceleration);
 
             //Find Body with strongest gravitanional pull
             if (acceleration.sqrMagnitude > strongestGravitionalPull.sqrMagnitude)
-            {
+            { 
                 strongestGravitionalPull = acceleration;
                 reference = body;
 

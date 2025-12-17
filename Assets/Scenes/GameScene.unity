@@ -178,7 +178,7 @@ Transform:
   m_GameObject: {fileID: 54242867}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.22999954, y: 5.7897606, z: 14472.62}
+  m_LocalPosition: {x: 0, y: 0.00007677078, z: 4925.7197}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -199,12 +199,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 253933c9b5980314f8a49e5676d8b68d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puissance: 1000
+  puissance: 1500
   player: {fileID: 2078047407}
   burning: 0
   data: {fileID: 1036320191}
   firstPersonController: {fileID: 0}
-  reference: {fileID: 0}
+  reference: {fileID: 312761006}
   moveAmount: {x: 0, y: 0, z: 0}
   speedMovement: 10
   gaz: {fileID: 1390879072}
@@ -232,9 +232,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!65 &54242871
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5633,7 +5633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &528642533
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5675,7 +5675,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   surfaceGravity: 5
   radius: 120
-  initialVelocity: {x: 10.1, y: 0, z: 0}
+  initialVelocity: {x: 47.9, y: 0, z: 0}
   fix: 0
   colorPath: {r: 1, g: 0.32400048, b: 0, a: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
@@ -5693,7 +5693,7 @@ Transform:
   m_GameObject: {fileID: 528642531}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 5683.088}
+  m_LocalPosition: {x: 0, y: 0, z: 2000}
   m_LocalScale: {x: 120, y: 120, z: 120}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -6598,7 +6598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb67012be94834947ae6e288d1944355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numSteps: 26074
+  numSteps: 1000
   timeStep: 1
   usePhysicsTimeStep: 0
   relativeToBody: 1
@@ -11954,7 +11954,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &1741740456
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -11994,16 +11994,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  surfaceGravity: 1
-  radius: 20
-  initialVelocity: {x: 17.75, y: 0, z: 0}
+  surfaceGravity: 2
+  radius: 40
+  initialVelocity: {x: 44.5, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0.21082269, g: 0.24528301, b: 0.20941615, a: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
-  mass: 40000
-  distanceBeforeRotation: 30
+  mass: 320000
+  distanceBeforeRotation: 50
   jitteringStrength: 0
 --- !u!4 &1741740458
 Transform:
@@ -12014,8 +12014,8 @@ Transform:
   m_GameObject: {fileID: 1741740455}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 14897.088}
-  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_LocalPosition: {x: 0, y: 0, z: 5400}
+  m_LocalScale: {x: 40, y: 40, z: 40}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2104409945}
@@ -12080,7 +12080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   surfaceGravity: 15
   radius: 40
-  initialVelocity: {x: 84.1, y: 0, z: 0}
+  initialVelocity: {x: 67.5, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0, g: 0.055066347, b: 1, a: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
@@ -12252,7 +12252,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &1994838024
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -12293,14 +12293,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   surfaceGravity: 5
-  radius: 80
-  initialVelocity: {x: 8.63, y: 0, z: 0}
+  radius: 120
+  initialVelocity: {x: 31.3, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0.04096198, g: 1, b: 0, a: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 1
   planetAtmosphere: {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
-  mass: 3200000
+  mass: 7200000
   distanceBeforeRotation: 150
   jitteringStrength: 1
 --- !u!4 &1994838026
@@ -12312,7 +12312,7 @@ Transform:
   m_GameObject: {fileID: 1994838023}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 14533.088}
+  m_LocalPosition: {x: 0, y: 0, z: 5000}
   m_LocalScale: {x: 120, y: 120, z: 120}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -12505,7 +12505,7 @@ Transform:
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7003097, y: -0, z: -0, w: 0.71383923}
-  m_LocalPosition: {x: -0.40000153, y: -24, z: 327}
+  m_LocalPosition: {x: -10.400002, y: -21.499561, z: 4923.6074}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12540,7 +12540,7 @@ MonoBehaviour:
   playerHolderSpaceShip: {fileID: 389542466}
   distanceForEnter: 20
   inSpaceShip: 0
-  initialVelocity: {x: 122, y: 0, z: 0}
+  initialVelocity: {x: 0, y: 0, z: 0}
   reference: {fileID: 528642534}
 --- !u!54 &2078047416
 Rigidbody:
@@ -12566,9 +12566,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 3
+  m_CollisionDetection: 1
 --- !u!114 &2078047417
 MonoBehaviour:
   m_ObjectHideFlags: 0

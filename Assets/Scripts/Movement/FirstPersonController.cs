@@ -92,8 +92,9 @@ public class FirstPersonController : MonoBehaviour
         Grounded = false;
         Ray ray = new Ray(transform.position, -transform.up);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit,1.1f))
+        if (Physics.Raycast(ray, out hit,1.1f) && hit.collider.gameObject != gameObject && hit.collider.gameObject != playerHolderSpaceShip)//detection sol en evitant le joueur ou la plateforme
         {
+
             Grounded = true;
             referenceGround = hit.collider.gameObject;
         }
@@ -105,7 +106,7 @@ public class FirstPersonController : MonoBehaviour
 
         //detection de si on est en mouvement orbital ou planetaire
         #region detection du type de mouvement
-        if (influenceByBody(transform))
+        if (influenceByBody(transform, reference))
         {
             SpaceMovement = false;
         }else
@@ -190,7 +191,7 @@ public class FirstPersonController : MonoBehaviour
         #endregion
 
         #region attache au sol et mouvement
-        if (influenceByBody(transform)){// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
+        if (influenceByBody(transform, reference)){// on se place a la meme vitesse que la planete pour tenir sur elle sans glisser
             Vector3 playerMove = Vector3.zero;
             if (canMove)
                 playerMove = transform.TransformDirection(moveAmount) * Time.fixedDeltaTime;
@@ -222,10 +223,10 @@ public class FirstPersonController : MonoBehaviour
         
     }   
 
-    public bool influenceByBody(Transform self)
+    public bool influenceByBody(Transform self, CelestialBody referenceBody)
     {
-        float distance = Vector3.Distance(self.position, reference.transform.position);
-        return distance <= reference.distanceBeforeRotation ? true : false;
+        float distance = Vector3.Distance(self.position, referenceBody.transform.position);
+        return distance <= referenceBody.distanceBeforeRotation ? true : false;
     }
 
 
@@ -235,7 +236,7 @@ public class FirstPersonController : MonoBehaviour
     void EnterSpaceShip(){ 
         canMove = false;
         rb.isKinematic = true;
-        bool condition = spaceMovementsGravity.firstPersonController.influenceByBody(transform) && spaceMovementsGravity.burning;
+        bool condition = spaceMovementsGravity.firstPersonController.influenceByBody(transform, reference) && spaceMovementsGravity.burning;
         Vector3 jittering = condition ? Random.insideUnitSphere * reference.jitteringStrength: Vector3.zero;
         transform.position = playerHolderSpaceShip.transform.position + jittering; //on se met à l arriere du vaisseau
         transform.rotation = playerHolderSpaceShip.transform.rotation;//meme orientation que le vaisseau
@@ -252,18 +253,21 @@ public class FirstPersonController : MonoBehaviour
     void CameraMovement(float minLimit, float maxLimit)
     {
         //A CHANGER VERS UN RB POUR BOUGER AVEC LA PHYSIQUE
-        transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);//rotation axe X
+        //transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);//rotation axe X
+        Quaternion axeYRotation = Quaternion.Euler(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
+        rb.MoveRotation(rb.rotation * axeYRotation);
 
         verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY;//direction en Z
+        Quaternion axeZRotation = Quaternion.Euler(Vector3.left * Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY);
         if (!SpaceMovement)
         {
             verticalLookRotation = Mathf.Clamp(verticalLookRotation, minLimit, maxLimit);//rotation cam (mouvemet planeteraire)
-            cameraT.localEulerAngles = Vector3.left * verticalLookRotation; // A CHANGER CAR ON ECRASE LA ROTATION
+            cameraT.localEulerAngles = Vector3.left * verticalLookRotation;
         }
         else
         {
             cameraT.localRotation = Quaternion.identity;//on fixe la cam sur un axe 0,0,0
-            transform.Rotate(Vector3.left * Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY);//on bouge le joueur sur l axe Z A CHANGER VERS UN RB
+            rb.MoveRotation(rb.rotation * axeZRotation);
         }
     }
     /// <summary> 
