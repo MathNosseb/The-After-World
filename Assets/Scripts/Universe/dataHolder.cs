@@ -86,4 +86,18 @@ public class dataHolder : MonoBehaviour
         spaceShipVelocity = spaceShipRb.linearVelocity.magnitude;
         spaceShipReference = spaceMovementsGravity.reference;
     }
+
+    /// <summary>
+    /// Retourne le sujet de la scene, le joueur ou le vaisseau.
+    /// </summary>
+    /// <returns>le sujet</returns>
+    public GameObject GetSubjectGameObject()
+    {
+        return inSpaceShip ? spaceShip : player;
+    }
+
+    public Rigidbody GetSubjectRigidbody()
+    {
+        return inSpaceShip ? spaceShipRb : playerRb;
+    }
 }

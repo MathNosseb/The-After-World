@@ -43,7 +43,7 @@ public class FirstPersonController : MonoBehaviour
     SpaceMovementsGravity spaceMovementsGravity;
     public GameObject playerHolderSpaceShip; //l endroit ou le joueur va etre placé
     public float distanceForEnter; 
-    [HideInInspector] public bool inSpaceShip = false; 
+    public bool inSpaceShip = false; 
     Notifications notifSpaceShip;
 
     

@@ -550,10 +550,10 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 126
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &312761006
 MonoBehaviour:
@@ -570,7 +570,7 @@ MonoBehaviour:
   surfaceGravity: 50
   radius: 300
   initialVelocity: {x: 0, y: 0, z: 0}
-  fix: 1
+  fix: 0
   colorPath: {r: 1, g: 0.0141509175, b: 0.0141509175, a: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 0
@@ -6637,7 +6637,7 @@ MonoBehaviour:
   spaceMovementsGravity: {fileID: 54242869}
   soundsManager: {fileID: 1809474128}
   Sun: {fileID: 312761000}
-  distanceBeforeFloatingPointRepare: 1000
+  distanceBeforeFloatingPointRepare: 10000
 --- !u!114 &1036320192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6657,6 +6657,7 @@ MonoBehaviour:
   - {fileID: 528642535}
   - {fileID: 1994838026}
   - {fileID: 1741740458}
+  sun: {fileID: 312761000}
 --- !u!1 &1119520379
 GameObject:
   m_ObjectHideFlags: 0
@@ -12505,7 +12506,7 @@ Transform:
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7003097, y: -0, z: -0, w: 0.71383923}
-  m_LocalPosition: {x: -10.400002, y: -21.499561, z: 4923.6074}
+  m_LocalPosition: {x: -1.99, y: -10.95, z: 4919.56}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

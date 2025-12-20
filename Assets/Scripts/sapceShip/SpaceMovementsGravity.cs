@@ -25,6 +25,7 @@ public class SpaceMovementsGravity : MonoBehaviour
     [HideInInspector] public Vector3 moveAmount;
     Vector3 smoothMoveVelocity; //utiliser pour avoir une acceleration smooth 
     public float speedMovement;
+    Vector3 velocity;
 
     
     //reference au sol
@@ -106,7 +107,7 @@ public class SpaceMovementsGravity : MonoBehaviour
         
         Quaternion rotationZ = Quaternion.Euler(0f,0f,rotateZ).normalized;
         Quaternion rotation = rotationX * rotationY * rotationZ;
-        rb.MoveRotation(rb.rotation * rotation);
+        //rb.MoveRotation(rb.rotation * rotation);
 
 
         
@@ -152,12 +153,10 @@ public class SpaceMovementsGravity : MonoBehaviour
 
         } 
 
-        if (burning)//si on decolle
+        if (burning){//si on decolle
             rb.AddForce(transform.forward * puissance);
 
-
-        
-
+        }
         
 
     }

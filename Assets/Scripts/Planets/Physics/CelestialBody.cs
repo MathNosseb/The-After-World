@@ -97,4 +97,10 @@ public class CelestialBody : MonoBehaviour
         if (fix) { return; }
         rb.position += currentVelocity * timeStep;
     }
+
+    public void ChangePosition(Vector3 newPosition)
+    {
+        startPosition = newPosition;
+        rb.position = newPosition;
+    }
 }
