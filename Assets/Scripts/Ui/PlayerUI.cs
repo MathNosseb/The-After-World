@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 
+[RequireComponent(typeof(PlayerContainer))]
 public class PlayerUI : MonoBehaviour
 {
     [Header("infos")]//tous les parametres debug lié à la simulation
@@ -20,16 +21,17 @@ public class PlayerUI : MonoBehaviour
     public Text movementType;
     public Text FPS;
 
-    [Header("Parametres")]
+    [Header("Canvas")]
     public Canvas canvas;
 
-    //notifications
-    [HideInInspector]
-    public List<Notifications> notifications = new List<Notifications>();
+    [Header("References")]
+    PlayerContainer playerContainer;
 
 
-    //variables d instances
-    public dataHolder data;
+    private void Awake()
+    {
+        playerContainer = GetComponent<PlayerContainer>();
+    }
 
     public Notifications SendNotification(float coordX, float coordY, float time, string text)
     {
@@ -37,7 +39,7 @@ public class PlayerUI : MonoBehaviour
         nouvelNotif.CreateNotification();
         GameObject notifObjet = nouvelNotif.GetGameObject();
         notifObjet.transform.SetParent(canvas.transform);
-        notifications.Add(nouvelNotif);
+        playerContainer.notifications.Add(nouvelNotif);
 
         if (time > 0)
             StartCoroutine(DestroyNotification(nouvelNotif, time));
@@ -48,44 +50,33 @@ public class PlayerUI : MonoBehaviour
 
     public bool isNotificationAlive(Notifications notif)
     {
-        if (notifications.Contains(notif))
+        if (playerContainer.notifications.Contains(notif))
             return true;
         return false;
     }
 
     public void DestroyNotificationNow(Notifications notif)
     {
-        notifications.Remove(notif);
+        playerContainer.notifications.Remove(notif);
         Destroy(notif.GetGameObject());
     }
 
     IEnumerator DestroyNotification(Notifications notif, float time)
     {
         yield return new WaitForSeconds(time);//pause 
-        notifications.Remove(notif);
+        playerContainer.notifications.Remove(notif);
         Destroy(notif.GetGameObject());
     }
 
 
     private void Update()
     {
-        CelestialBody reference;
-        float velocity;
-        bool inSpaceShip = data.inSpaceShip;
-        if (inSpaceShip)
-        {
-            velocity = data.spaceShipVelocity;
-            reference = data.spaceShipReference;
-        }
-        else
-        {
-            velocity = data.playerVelocity;
-            reference = data.playerReference;
-        }
+        CelestialBody reference = playerContainer.reference;
+        float velocity = playerContainer.PlayerRB.linearVelocity.magnitude;
 
         Reference.text = reference ? reference.name : "null";
 
-        GameObject groundreference = data.referenceGround;
+        GameObject groundreference = playerContainer.groundRefGameObject;
         GroundReference.text = groundreference ? "land on " + groundreference.name : "not landed";
 
         float distanceBetweenRef = Vector3.Distance(transform.position, reference ? reference.transform.position : Vector3.zero);
@@ -97,10 +88,10 @@ public class PlayerUI : MonoBehaviour
 
         RelativeVelocity.text = reference ? reference.name + " Speed " + (int)reference.GetComponent<CelestialBody>().currentVelocity.magnitude + " m/s" : "null";
 
-        movementType.text = data.spaceMovement ? "mouvement spatial" : "mouvement planetaire";
+        movementType.text = playerContainer.influenceByBody ? "mouvement spatial" : "mouvement planetaire";
 
         
-        FPS.text = (int)data.GetFps(Time.deltaTime) + " FPS";
+        FPS.text = (int)playerContainer.GetFps(Time.deltaTime) + " FPS";
 
     }
 

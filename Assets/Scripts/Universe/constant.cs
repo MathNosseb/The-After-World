@@ -2,5 +2,8 @@ using UnityEngine;
 
 public class constant : MonoBehaviour
 {
-    public float GravityConstant = 0.01f;
+    [Header("Physics")]
+    public float GravityConstant { get; private set; } = 0.01f;
+
+    
 }

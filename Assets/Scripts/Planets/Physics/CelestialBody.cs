@@ -103,4 +103,9 @@ public class CelestialBody : MonoBehaviour
         startPosition = newPosition;
         rb.position = newPosition;
     }
+
+    public Vector3 GetPosition()
+    {
+        return rb.position;
+    }
 }
