@@ -14,6 +14,9 @@ public class dataHolder : MonoBehaviour
     [HideInInspector] public CelestialBody playerReference { get; private set; }
     [HideInInspector] public bool spaceMovement { get; private set; }
     [HideInInspector] public GameObject referenceGround { get; private set; }
+
+    public float mouseSensitivityX = 250f;
+    public float mouseSensitivityY = 250f;
     #endregion
 
     #region spaceShip

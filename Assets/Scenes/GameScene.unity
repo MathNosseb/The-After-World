@@ -178,7 +178,7 @@ Transform:
   m_GameObject: {fileID: 54242867}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.00007677078, z: 4925.7197}
+  m_LocalPosition: {x: 0, y: 0.00007498264, z: 4910.7197}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -199,14 +199,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 253933c9b5980314f8a49e5676d8b68d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puissance: 1500
+  puissance: 800
   player: {fileID: 2078047407}
   burning: 0
   data: {fileID: 1036320191}
   firstPersonController: {fileID: 0}
-  reference: {fileID: 312761006}
+  reference: {fileID: 1994838025}
   moveAmount: {x: 0, y: 0, z: 0}
   speedMovement: 10
+  rotationSpeed: 1
   gaz: {fileID: 1390879072}
 --- !u!54 &54242870
 Rigidbody:
@@ -6633,6 +6634,8 @@ MonoBehaviour:
   cam: {fileID: 1809474123}
   playerRb: {fileID: 2078047416}
   firstPersonController: {fileID: 2078047414}
+  mouseSensitivityX: 250
+  mouseSensitivityY: 250
   spaceShip: {fileID: 54242867}
   spaceMovementsGravity: {fileID: 54242869}
   soundsManager: {fileID: 1809474128}
@@ -12170,7 +12173,7 @@ Camera:
   field of view: 58.83666
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: 0.49
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -12526,8 +12529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a3e756c7be45f14ba5edc64c1b97417, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivityX: 250
-  mouseSensitivityY: 250
+  rotationSpeed: 1
   walkSpeed: 8
   airWalkSpeed: 1
   jumpForce: 70
@@ -12542,7 +12544,7 @@ MonoBehaviour:
   distanceForEnter: 20
   inSpaceShip: 0
   initialVelocity: {x: 0, y: 0, z: 0}
-  reference: {fileID: 528642534}
+  reference: {fileID: 1994838025}
 --- !u!54 &2078047416
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -4,8 +4,7 @@ using UnityEngine;
 public class FirstPersonController : MonoBehaviour
 {
     [Header("Parametres")] //parametres du joueur (mouvements, sensi..)
-    public float mouseSensitivityX = 250f;
-    public float mouseSensitivityY = 250f;
+    public float rotationSpeed = 1.0f;
     public float walkSpeed = 8f;
     public float airWalkSpeed = 1f;
     public float jumpForce = 220;
@@ -16,6 +15,7 @@ public class FirstPersonController : MonoBehaviour
     Rigidbody rb;
     constant constantValues; 
     PlayerUI playerUI;
+    dataHolder data;
 
 
     [Header("Camera")] //mouvements de la camera
@@ -52,6 +52,9 @@ public class FirstPersonController : MonoBehaviour
     public CelestialBody reference;
     NbodySimulation Simulation;
 
+
+    bool burning = false;
+
     
 
     private void Start()
@@ -66,6 +69,7 @@ public class FirstPersonController : MonoBehaviour
         Simulation = GameObject.Find("Universe").GetComponent<NbodySimulation>();
         constantValues = GameObject.Find("Universe").GetComponent<constant>();
         spaceMovementsGravity = spaceShip.GetComponent<SpaceMovementsGravity>();
+        data = GameObject.Find("Universe").GetComponent<dataHolder>();
 
         //set des variables par defaut
         canMove = true;
@@ -77,8 +81,71 @@ public class FirstPersonController : MonoBehaviour
     }
     
     private void Update()
-    { 
-        
+    {
+
+        burning = Input.GetButton("Jump");
+
+        //detection entrées sorties du vaisseau
+        #region interaction vaisseau
+
+        float distanceWithSpaceShip = Vector3.Distance(spaceShip.transform.position, gameObject.transform.position);
+        if (distanceWithSpaceShip < distanceForEnter && notifSpaceShip == null && !inSpaceShip)
+            notifSpaceShip = playerUI.SendNotification(500f, 100f, -1f, "press F for enter");
+        else if ((distanceWithSpaceShip > distanceForEnter && notifSpaceShip != null) || (inSpaceShip && notifSpaceShip != null))
+        {
+            playerUI.DestroyNotificationNow(notifSpaceShip);
+            notifSpaceShip = null;
+        }
+
+        if (Input.GetKeyDown(KeyCode.F) && distanceWithSpaceShip < distanceForEnter)
+        {
+
+            if (inSpaceShip)
+            {
+                //on sort du vaisseau
+                //on s'aligne avec la planete
+                AllignToPlanet(transform, reference, reference.distanceBeforeRotation, SpaceMovement, GetAcceleration(reference), 1000f);
+
+                //on se met a une position sur le vaisseau
+                Vector3 positionOutSpaceShip = spaceShip.transform.position + new Vector3(0f, 5);
+                //ajout d une detection pour trouver un meilleur endroit où spawn
+                //mais flemme pour le moment
+                rb.position = positionOutSpaceShip;
+
+                transform.SetParent(null);
+
+                rb.isKinematic = false;
+                rb.detectCollisions = true;
+
+
+            }
+
+            inSpaceShip = !inSpaceShip;
+        }
+
+
+        if (!inSpaceShip)
+        {
+            canMove = true;
+            rb.isKinematic = false;
+        }
+
+        #endregion
+
+        //detection de si on est en mouvement orbital ou planetaire
+        #region detection du type de mouvement
+        if (influenceByBody(transform, reference))
+        {
+            SpaceMovement = false;
+        }
+        else
+            SpaceMovement = true;
+        #endregion
+
+        if (inSpaceShip)
+            return;
+
+
         #region calcul smooth mouvement
         //calcul de la direction + si on est dans les air ou sur terre
         Vector3 moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
@@ -104,61 +171,15 @@ public class FirstPersonController : MonoBehaviour
         }
         #endregion
 
-        //detection de si on est en mouvement orbital ou planetaire
-        #region detection du type de mouvement
-        if (influenceByBody(transform, reference))
-        {
-            SpaceMovement = false;
-        }else
-            SpaceMovement = true;
-        #endregion
+
 
         #region handle jump
-        if (Input.GetButtonDown("Jump") && Grounded && !inSpaceShip) //saut 
+        if (Input.GetButtonDown("Jump") && Grounded) //saut 
             jumping = true;
 
         #endregion
 
-        //detection entrées sorties du vaisseau
-        #region interaction vaisseau
 
-        float distanceWithSpaceShip = Vector3.Distance(spaceShip.transform.position, gameObject.transform.position);
-        if (distanceWithSpaceShip < distanceForEnter && notifSpaceShip == null && !inSpaceShip)
-            notifSpaceShip = playerUI.SendNotification(500f, 100f, -1f, "press F for enter");
-        else if ((distanceWithSpaceShip > distanceForEnter && notifSpaceShip != null )|| (inSpaceShip && notifSpaceShip != null))
-        {
-            playerUI.DestroyNotificationNow(notifSpaceShip);
-            notifSpaceShip = null;
-        }
-
-        if (Input.GetKeyDown(KeyCode.F) && distanceWithSpaceShip < distanceForEnter)
-        {
-            
-            if (inSpaceShip)
-            {
-                //on sort du vaisseau
-                //on s'aligne avec la planete
-                AllignToPlanet(transform, reference, reference.distanceBeforeRotation, SpaceMovement, GetAcceleration(reference), 1000f);
-
-                //on se met a une position sur le vaisseau
-                Vector3 positionOutSpaceShip = spaceShip.transform.position + new Vector3(0f, 5);
-                //ajout d une detection pour trouver un meilleur endroit où spawn
-                //mais flemme pour le moment
-                rb.position = positionOutSpaceShip;
-
-            }
-
-            inSpaceShip = !inSpaceShip;
-        }
-        
-            
-        if (!inSpaceShip)
-        {
-            canMove = true;
-            rb.isKinematic = false;
-        }
-        
-        #endregion
 
     }
     
@@ -178,7 +199,8 @@ public class FirstPersonController : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if (cinematicMode || inSpaceShip) //si on est pas en mode cinematique on execute physique + mouvement + alignement
+
+        if (cinematicMode || inSpaceShip) //si on est pas en mode cinematique ni dans le vaisseau on execute physique + mouvement + alignement
             return;
 
         #region gère le saut
@@ -208,7 +230,7 @@ public class FirstPersonController : MonoBehaviour
             //acceleration valeur brut, le sqrMagnitude met au carré sert juste à comparer, donc ici on ignore les force faible sqrt(.1f) = 0.3
             Vector3 acceleration = GetAcceleration(body).sqrMagnitude > .1f ? GetAcceleration(body) : Vector3.zero;//on ignore les forces fable (> 0.3)
             if (affectByGravity)//applique la gravité si on subit la gravité
-                rb.AddForce(acceleration, ForceMode.Acceleration);
+                rb.AddForce(acceleration, ForceMode.Acceleration);//acceleration car independant de la masse
 
             reference = GetStrongestBodyAcceleration(body, strongestGravitionalPull);
             strongestGravitionalPull = GetAcceleration(reference);
@@ -236,10 +258,16 @@ public class FirstPersonController : MonoBehaviour
     void EnterSpaceShip(){ 
         canMove = false;
         rb.isKinematic = true;
+        rb.detectCollisions = false;
+
         bool condition = spaceMovementsGravity.firstPersonController.influenceByBody(transform, reference) && spaceMovementsGravity.burning;
         Vector3 jittering = condition ? Random.insideUnitSphere * reference.jitteringStrength: Vector3.zero;
-        transform.position = playerHolderSpaceShip.transform.position + jittering; //on se met à l arriere du vaisseau
-        transform.rotation = playerHolderSpaceShip.transform.rotation;//meme orientation que le vaisseau
+        transform.SetParent(playerHolderSpaceShip.transform);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+        //transform.position = playerHolderSpaceShip.transform.position; //on se met à l arriere du vaisseau
+        //transform.rotation = playerHolderSpaceShip.transform.rotation;//meme orientation que le vaisseau
+        //cameraT.position = playerHolderSpaceShip.transform.position;
         cameraT.rotation = playerHolderSpaceShip.transform.rotation; //bonne orientation de cam
 
     } 
@@ -254,11 +282,11 @@ public class FirstPersonController : MonoBehaviour
     {
         //A CHANGER VERS UN RB POUR BOUGER AVEC LA PHYSIQUE
         //transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);//rotation axe X
-        Quaternion axeYRotation = Quaternion.Euler(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * mouseSensitivityX);
+        Quaternion axeYRotation = Quaternion.Euler(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * data.mouseSensitivityX * rotationSpeed);
         rb.MoveRotation(rb.rotation * axeYRotation);
 
-        verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY;//direction en Z
-        Quaternion axeZRotation = Quaternion.Euler(Vector3.left * Input.GetAxis("Mouse Y") * Time.deltaTime * mouseSensitivityY);
+        verticalLookRotation += Input.GetAxis("Mouse Y") * Time.deltaTime * data.mouseSensitivityY * rotationSpeed;//direction en Z
+        Quaternion axeZRotation = Quaternion.Euler(Vector3.left * Input.GetAxis("Mouse Y") * Time.deltaTime * data.mouseSensitivityY * rotationSpeed);
         if (!SpaceMovement)
         {
             verticalLookRotation = Mathf.Clamp(verticalLookRotation, minLimit, maxLimit);//rotation cam (mouvemet planeteraire)

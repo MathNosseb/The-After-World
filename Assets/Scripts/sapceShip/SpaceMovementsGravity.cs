@@ -1,4 +1,5 @@
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
@@ -10,7 +11,7 @@ public class SpaceMovementsGravity : MonoBehaviour
     public float puissance;
     public GameObject player;//le joueur
     public bool burning;
-
+ 
 
     //variables d instances
     public dataHolder data;
@@ -18,16 +19,21 @@ public class SpaceMovementsGravity : MonoBehaviour
     Rigidbody rb;
     constant constantValues;
     [HideInInspector] public FirstPersonController firstPersonController;
-    [HideInInspector] public CelestialBody reference;
+    public CelestialBody reference;
 
 
     [Header("déplacements")]
+    //mouvement
     [HideInInspector] public Vector3 moveAmount;
     Vector3 smoothMoveVelocity; //utiliser pour avoir une acceleration smooth 
     public float speedMovement;
     Vector3 velocity;
+    //rotation
+    public float rotationSpeed = 1f;
+    Quaternion targetRotation = Quaternion.identity;
+    Quaternion smoothRot =  Quaternion.identity;
 
-    
+
     //reference au sol
     GameObject referenceGround;
     bool Grounded;
@@ -64,7 +70,7 @@ public class SpaceMovementsGravity : MonoBehaviour
         Vector3 targetMoveAmount =  moveDirection * speedMovement;
         moveAmount = Vector3.SmoothDamp(moveAmount, targetMoveAmount, ref smoothMoveVelocity, .15f);
 
-        if (Input.GetButton("Jump") && firstPersonController.inSpaceShip){
+        if (Input.GetButton("Jump") && data.inSpaceShip){
             float distanceBetweenRef = Vector3.Distance(transform.position, reference ? reference.transform.position : Vector3.zero);
             burningSound.play = true;
             burning = true;
@@ -92,8 +98,11 @@ public class SpaceMovementsGravity : MonoBehaviour
         }
         Debug.DrawRay(transform.position, -transform.up);
 
-        if (!firstPersonController.inSpaceShip) return;
-
+        if (data.inSpaceShip)
+        {
+            HandleRotation();
+        }
+        /*
         // Rotation horizontale (autour de Y)
         float mouseX = Input.GetAxis("Mouse X") * firstPersonController.mouseSensitivityX * Time.deltaTime;
         Quaternion rotationY = Quaternion.Euler(0f, mouseX, 0f).normalized;
@@ -106,19 +115,32 @@ public class SpaceMovementsGravity : MonoBehaviour
         float rotateZ = ((Input.GetKey(KeyCode.Q) ? 1f : 0f) - (Input.GetKey(KeyCode.E) ? 1f : 0f)) * 50f * Time.deltaTime; //qwerty (50f = sensi)
         
         Quaternion rotationZ = Quaternion.Euler(0f,0f,rotateZ).normalized;
-        Quaternion rotation = rotationX * rotationY * rotationZ;
+        Quaternion targetRotation = rotationX * rotationY * rotationZ;
+        Quaternion deltaRotation = targetRotation * Quaternion.Inverse(rb.rotation);
+        deltaRotation.ToAngleAxis(out float angle, out Vector3 axis);
+        // normalisation de l'angle pour être en radians
+        float torqueStrength = 10f; // à ajuster selon ton besoin
+        Vector3 torque = axis * angle * Mathf.Deg2Rad * torqueStrength;
+
+        // appliquer le torque
+        rb.AddTorque(torque, ForceMode.Impulse);
         //rb.MoveRotation(rb.rotation * rotation);
+        */
 
 
-        
     }
 
-    
 
-    
+
+    private void LateUpdate()
+    {
+        CameraMovement();
+    }
 
     private void FixedUpdate()
     {
+        if (burning)
+            rb.AddForce(transform.forward * puissance);
         CelestialBody[] bodies = Simulation.bodies;
         Vector3 strongestGravitionalPull = Vector3.zero;
 
@@ -131,15 +153,16 @@ public class SpaceMovementsGravity : MonoBehaviour
             rb.MovePosition(rb.position + spaceShipMove + planetMove);
         }
 
+
         //Gravity
         foreach (CelestialBody body in bodies)
         {
             float sqrtDst = (body.transform.position - rb.position).sqrMagnitude;
             Vector3 forceDir = (body.transform.position - rb.position).normalized;
-            Vector3 acceleration = forceDir * constantValues.GravityConstant * body.mass / sqrtDst;
+            Vector3 acceleration = (forceDir * constantValues.GravityConstant * body.mass / sqrtDst);
 
             
-            rb.AddForce(acceleration * 10f, ForceMode.Acceleration);
+            rb.AddForce(acceleration, ForceMode.Acceleration);
 
             //Find Body with strongest gravitanional pull
             if (acceleration.sqrMagnitude > strongestGravitionalPull.sqrMagnitude)
@@ -151,13 +174,46 @@ public class SpaceMovementsGravity : MonoBehaviour
 
             
 
-        } 
-
-        if (burning){//si on decolle
-            rb.AddForce(transform.forward * puissance);
-
         }
+
         
+
+        //rb.MoveRotation(smoothRot);
+
+        
+        
+
+    }
+
+    void CameraMovement()
+    {
+        if (!data.inSpaceShip)
+            return;
+        Quaternion axeYRotation = Quaternion.Euler(Vector3.up * Input.GetAxis("Mouse X") * Time.deltaTime * data.mouseSensitivityX * rotationSpeed);
+        rb.MoveRotation(rb.rotation * axeYRotation);
+
+        
+        Quaternion axeZRotation = Quaternion.Euler(Vector3.left * Input.GetAxis("Mouse Y") * Time.deltaTime * data.mouseSensitivityY * rotationSpeed);
+
+        rb.MoveRotation(rb.rotation * axeZRotation);
+
+    }
+
+    void HandleRotation()
+    {
+        float yawInput = Input.GetAxisRaw("Mouse X") * data.mouseSensitivityX * rotationSpeed / 100;
+        float pitchInput = Input.GetAxisRaw("Mouse Y") * data.mouseSensitivityY * rotationSpeed / 100;
+        float rollInput = ((Input.GetKey(KeyCode.Q) ? 1f : 0f) - (Input.GetKey(KeyCode.E) ? 1f : 0f)) * 50f * Time.deltaTime; //qwerty (50f = sensi)
+
+        //Calculate rotation
+        var yaw = Quaternion.AngleAxis(yawInput, transform.up);
+        var pitch = Quaternion.AngleAxis(-pitchInput, transform.right);
+        var roll = Quaternion.AngleAxis(-rollInput, transform.forward);
+
+        targetRotation = yaw * pitch * roll * targetRotation;
+
+        smoothRot = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 100f);//10f smooth rotation Speed
+
 
     }
 
