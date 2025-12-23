@@ -6,6 +6,7 @@ public class PlayerGravity : MonoBehaviour
     PlayerContainer playerContainer;
 
     public CelestialBody reference { get; private set; }
+    bool usePhysic;
     private void Awake()
     {
         playerContainer = GetComponent<PlayerContainer>();
@@ -13,16 +14,23 @@ public class PlayerGravity : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (playerContainer.inSpaceShip)
+        {
+            usePhysic = false;
+        }else
+            usePhysic= true;
         //Calcul de la gravité
         CelestialBody strongestBody;
         Vector3 acceleration = playerContainer.GetGravityAcceleration(playerContainer.PlayerRB.position, out strongestBody);
         reference = strongestBody;
 
         //application de la gravité
-        playerContainer.PlayerRB.AddForce(acceleration, ForceMode.Acceleration);
+        if (usePhysic)
+            playerContainer.PlayerRB.AddForce(acceleration, ForceMode.Acceleration);
 
         //alignement avec la planete
-        AllignToPlanet(playerContainer.PlayerGO.transform, playerContainer.reference, playerContainer.strongestGravitationalPull);
+        if (usePhysic)
+            AllignToPlanet(playerContainer.PlayerGO.transform, playerContainer.reference, playerContainer.strongestGravitationalPull);
 
     }
 

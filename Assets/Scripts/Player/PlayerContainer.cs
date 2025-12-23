@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(FPScontroller))]
 [RequireComponent(typeof(PlayerGravity))]
+[RequireComponent(typeof(PlayerInteractionSystem))]
 [RequireComponent(typeof(PlayerUI))]
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerContainer : MonoBehaviour
@@ -14,6 +15,7 @@ public class PlayerContainer : MonoBehaviour
     [Header("Player References")]
     FPScontroller FPScontroller;
     PlayerGravity PlayerGravity;
+    PlayerInteractionSystem playerInteractionSystem;
     PlayerUI PlayerUI;
     public List<Notifications> notifications = new List<Notifications>();
 
@@ -22,10 +24,12 @@ public class PlayerContainer : MonoBehaviour
     public GameObject PlayerGO { get; private set; }
     public Rigidbody PlayerRB { get; private set; }
     public bool influenceByBody { get; private set; }
-    public bool inSpaceShip { get; private set; }
+    public bool inSpaceShip;
     [HideInInspector] public CelestialBody reference;
     public Vector3 strongestGravitationalPull { get; private set; }
     public GameObject groundRefGameObject { get; private set; }
+    Notifications interactionNotif;
+    public GameObject playerFixedPoint;
 
 
 
@@ -40,11 +44,15 @@ public class PlayerContainer : MonoBehaviour
     public float WalkSpeed => walkSpeed;
     public float JumpForce => jumpForce;
 
+    [Header("instance")]
+    private bool suscribedInputs = false;
+
 
     public void Awake()
     {
         FPScontroller = GetComponent<FPScontroller>();
         PlayerGravity = GetComponent<PlayerGravity>();
+        playerInteractionSystem = GetComponent<PlayerInteractionSystem>();
         PlayerUI = GetComponent<PlayerUI>();
 
         PlayerGO = gameObject;
@@ -53,18 +61,33 @@ public class PlayerContainer : MonoBehaviour
 
     private void Update()
     {
+        reference = PlayerGravity.reference;
         influenceByBody = InfluenceByBody(PlayerGO.transform, reference);
         strongestGravitationalPull = GetBodyAcceleration(reference, PlayerRB.position);
-        reference = PlayerGravity.reference;
         groundRefGameObject = FPScontroller.groundRefGameObject;
-    }
 
+        //on verifie a chaque frame si le input manager est pret
+        if (!suscribedInputs && GlobalContainer != null && GlobalContainer.inputManager != null)
+        {
+            GlobalContainer.inputManager.OnMouseMove += FPScontroller.HandleMouse;
+            GlobalContainer.inputManager.OnMove += FPScontroller.HandleMove;
+            GlobalContainer.inputManager.OnJump += FPScontroller.HandleJump;
+            GlobalContainer.inputManager.OnInteract += playerInteractionSystem.OnInteract;
+            suscribedInputs = true;
+        }
 
-    private void OnEnable()
-    {
-        GlobalContainer.inputManager.OnMouseMove += FPScontroller.HandleMouse;
-        GlobalContainer.inputManager.OnMove += FPScontroller.HandleMove;
-        GlobalContainer.inputManager.OnJump += FPScontroller.HandleJump;
+        //verification si interaction avec objet possible, si on a pas deja la notif et si on est pas dans le vaisseau
+        if (playerInteractionSystem.canInteract && interactionNotif == null && !inSpaceShip)
+        {
+            //on envoie la notif
+            interactionNotif = PlayerUI.SendNotification(500f, 200f, -1f, "press F for interact");
+        }else if ((!playerInteractionSystem.canInteract && interactionNotif != null) || (inSpaceShip && interactionNotif != null))
+        {
+            //si on eput pas interagir mais que on a la norif ou que on est dans le vaisseau
+            //on detruit la notif d interaction
+            PlayerUI.DestroyNotificationNow(interactionNotif);
+            interactionNotif = null;
+        }
     }
 
     private void OnDisable()
@@ -72,6 +95,7 @@ public class PlayerContainer : MonoBehaviour
         GlobalContainer.inputManager.OnMouseMove -= FPScontroller.HandleMouse;
         GlobalContainer.inputManager.OnMove -= FPScontroller.HandleMove;
         GlobalContainer.inputManager.OnJump -= FPScontroller.HandleJump;
+        GlobalContainer.inputManager.OnInteract -= playerInteractionSystem.OnInteract;
     }
 
     public Vector3 GetGravityAcceleration(Vector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)

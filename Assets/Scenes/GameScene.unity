@@ -159,16 +159,18 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 54242868}
-  - component: {fileID: 54242869}
   - component: {fileID: 54242870}
   - component: {fileID: 54242871}
+  - component: {fileID: 54242874}
+  - component: {fileID: 54242873}
+  - component: {fileID: 54242872}
   m_Layer: 0
   m_Name: SpaceShip(ForOrientation)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &54242868
 Transform:
   m_ObjectHideFlags: 0
@@ -178,7 +180,7 @@ Transform:
   m_GameObject: {fileID: 54242867}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.00007498264, z: 4910.7197}
+  m_LocalPosition: {x: 0, y: 0.00007593632, z: 4918.7197}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -187,28 +189,6 @@ Transform:
   - {fileID: 939780318}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!114 &54242869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 54242867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 253933c9b5980314f8a49e5676d8b68d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  puissance: 800
-  player: {fileID: 2078047407}
-  burning: 0
-  data: {fileID: 1036320191}
-  firstPersonController: {fileID: 0}
-  reference: {fileID: 1994838025}
-  moveAmount: {x: 0, y: 0, z: 0}
-  speedMovement: 10
-  rotationSpeed: 1
-  gaz: {fileID: 1390879072}
 --- !u!54 &54242870
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -257,6 +237,49 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 7, y: 2.0000167, z: 10.999995}
   m_Center: {x: 0, y: 0.50000834, z: 0.99999994}
+--- !u!114 &54242872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54242867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fcd59c5f7a4b7e4e9dabe2bdc21df21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalContainer: {fileID: 1036320193}
+  gaz: {fileID: 1390879072}
+  playerHolder: {fileID: 389542466}
+  reference: {fileID: 0}
+  burnStrength: 800
+  sensibility: 250
+--- !u!114 &54242873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54242867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b00887314390bd4cbe5ca16edfb9199, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &54242874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54242867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e66031494bc5f544d95980f488cacf62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationMultipler: 1
 --- !u!1 &218505103
 GameObject:
   m_ObjectHideFlags: 0
@@ -6638,8 +6661,8 @@ MonoBehaviour:
   mouseSensitivityX: 250
   mouseSensitivityY: 250
   spaceShip: {fileID: 54242867}
-  spaceMovementsGravity: {fileID: 54242869}
-  soundsManager: {fileID: 1809474128}
+  spaceMovementsGravity: {fileID: 0}
+  soundsManager: {fileID: 0}
   Sun: {fileID: 312761000}
   distanceBeforeFloatingPointRepare: 10000
 --- !u!114 &1036320192
@@ -12146,7 +12169,6 @@ GameObject:
   - component: {fileID: 1809474125}
   - component: {fileID: 1809474124}
   - component: {fileID: 1809474127}
-  - component: {fileID: 1809474128}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -12245,25 +12267,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7ae0eabf83a9d6b4b8470d277c2b7cb6, type: 2}
   defaultShader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
   defaultMat: {fileID: 2100000, guid: 4f581e4038d2b336a873681be2007acc, type: 2}
---- !u!114 &1809474128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1809474123}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 983fbcfcf5ade2026ab4500ea0722ae1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds:
-  - soundType: 1
-    clip: {fileID: 8300000, guid: b6c4d0350f8213b4bb6bac45080ab4ae, type: 3}
-    source: {fileID: 1390879074}
-    soundName: rocket_burning
-    volume: 1
-    play: 0
 --- !u!1 &1994838023
 GameObject:
   m_ObjectHideFlags: 0
@@ -12444,6 +12447,7 @@ GameObject:
   - component: {fileID: 2078047418}
   - component: {fileID: 2078047420}
   - component: {fileID: 2078047419}
+  - component: {fileID: 2078047421}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -12605,6 +12609,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GlobalContainer: {fileID: 1036320193}
   cameraT: {fileID: 1809474126}
+  inSpaceShip: 0
   reference: {fileID: 312761006}
   sensibility: 250
   airWalkSpeed: 5
@@ -12636,6 +12641,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeedMultipler: 1
   rotateSpeedMultiplier: 1
+--- !u!114 &2078047421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078047407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b825556470c0c34386df0450cc6016d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2104409944
 GameObject:
   m_ObjectHideFlags: 0

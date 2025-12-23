@@ -14,9 +14,10 @@ public class Container : MonoBehaviour
 
     private void Awake()
     {
+        inputManager = GetComponent<InputManager>();
         Constant = GetComponent<constant>();
         simulation = GetComponent<NbodySimulation>();
-        inputManager = GetComponent<InputManager>();
+        
 
     }
 
