@@ -3,6 +3,8 @@ using UnityEngine;
 
 [RequireComponent (typeof(SpaceShipController))]
 [RequireComponent(typeof(SpaceShipGravity))]
+[RequireComponent(typeof(SpaceShipSoundSystem))]
+[RequireComponent(typeof(SoundsManager))]
 [RequireComponent(typeof(Rigidbody))]
 public class SpaceShipContainer : MonoBehaviour
 {
@@ -12,6 +14,8 @@ public class SpaceShipContainer : MonoBehaviour
     [Header("SpaceShip References")]
     SpaceShipController spaceShipController;
     SpaceShipGravity spaceShipGravity;
+    SpaceShipSoundSystem spaceShipSoundSystem;
+    public SoundsManager soundsManager;
 
     [Header("SpaceShip Objects")]
     public ParticleSystem gaz;
@@ -37,6 +41,9 @@ public class SpaceShipContainer : MonoBehaviour
     {
         spaceShipController = GetComponent<SpaceShipController>();
         spaceShipGravity = GetComponent<SpaceShipGravity>();
+        spaceShipSoundSystem = GetComponent<SpaceShipSoundSystem>();
+        soundsManager = GetComponent<SoundsManager>();
+
 
         SpaceShipGO = gameObject;
         SpaceShipRB = GetComponent<Rigidbody>();
@@ -55,7 +62,9 @@ public class SpaceShipContainer : MonoBehaviour
         if (!suscribedInputs && GlobalContainer != null && GlobalContainer.inputManager != null)
         {
             GlobalContainer.inputManager.OnJump += spaceShipController.HandleBurning;
+            GlobalContainer.inputManager.OnJump += spaceShipSoundSystem.HandleBurnSound;
             GlobalContainer.inputManager.OnMouseMove += spaceShipController.HandleRotation;
+            
             suscribedInputs = true;
         }
 
@@ -66,6 +75,7 @@ public class SpaceShipContainer : MonoBehaviour
     private void OnDisable()
     {
         GlobalContainer.inputManager.OnJump -= spaceShipController.HandleBurning;
+        GlobalContainer.inputManager.OnJump -= spaceShipSoundSystem.HandleBurnSound;
         GlobalContainer.inputManager.OnMouseMove -= spaceShipController.HandleRotation;
         
     }
