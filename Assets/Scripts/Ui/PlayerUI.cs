@@ -72,14 +72,14 @@ public class PlayerUI : MonoBehaviour
     private void Update()
     {
         CelestialBody reference = playerContainer.reference;
-        float velocity = playerContainer.PlayerRB.linearVelocity.magnitude;
+        float velocity = playerContainer.GetReferenceRigidbody().linearVelocity.magnitude;
 
         Reference.text = reference ? reference.name : "null";
 
         GameObject groundreference = playerContainer.groundRefGameObject;
         GroundReference.text = groundreference ? "land on " + groundreference.name : "not landed";
 
-        float distanceBetweenRef = Vector3.Distance(transform.position, reference ? reference.transform.position : Vector3.zero);
+        float distanceBetweenRef = Vector3.Distance(playerContainer.GetReferenceRigidbody().position, reference ? reference.transform.position : Vector3.zero);
         HeightText.text = (int)distanceBetweenRef + " m";
 
         

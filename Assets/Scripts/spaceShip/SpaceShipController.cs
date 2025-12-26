@@ -93,8 +93,15 @@ public class SpaceShipController : MonoBehaviour, IInteractable
         playerContainer.inSpaceShip = !playerContainer.inSpaceShip;
         playerInSpaceShip = playerContainer.inSpaceShip;
         if (playerInSpaceShip)
+        {
             playerContainer.playerFixedPoint = spaceShipContainer.playerHolder;
+            playerContainer.spaceShipRB = spaceShipContainer.SpaceShipRB;
+        }
         else
+        {
             playerContainer.playerFixedPoint = null;
+            playerContainer.spaceShipRB = null;
+        }
+            
     }
 }

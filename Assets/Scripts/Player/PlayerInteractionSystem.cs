@@ -17,16 +17,18 @@ public class PlayerInteractionSystem : MonoBehaviour
     private void Update()
     {
         canInteract = false;
-        //tirer un raycast depuis la cam pour savoir si on peut interagir avec l objet
+        interactibleObject = null;
+
         Ray ray = new Ray(playerContainer.cameraT.position, playerContainer.cameraT.forward);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 10f))
-        {
-            canInteract = true;
-            interactibleObject = hit.collider.gameObject;
-        }
-        else
-            interactibleObject = null;
+
+        if (!Physics.Raycast(ray, out RaycastHit hit, 10f))
+            return;
+
+        if (!hit.collider.TryGetComponent<IInteractable>(out _))
+            return;
+
+        interactibleObject = hit.collider.gameObject;
+        canInteract = true;
     }
 
     public void OnInteract()

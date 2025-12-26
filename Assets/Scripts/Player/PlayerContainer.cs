@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,8 +6,11 @@ using UnityEngine;
 [RequireComponent(typeof(FPScontroller))]
 [RequireComponent(typeof(PlayerGravity))]
 [RequireComponent(typeof(PlayerInteractionSystem))]
+[RequireComponent (typeof(PlayerSpaceShipManager))]
 [RequireComponent(typeof(PlayerUI))]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(MeshRenderer))]
 public class PlayerContainer : MonoBehaviour
 {
     [Header("Global References")]
@@ -17,7 +21,10 @@ public class PlayerContainer : MonoBehaviour
     PlayerGravity PlayerGravity;
     PlayerInteractionSystem playerInteractionSystem;
     PlayerUI PlayerUI;
+    PlayerSpaceShipManager PlayerSpaceShipManager;
     public List<Notifications> notifications = new List<Notifications>();
+    MeshRenderer playerMeshRenderer;
+    Collider playerCollider;
 
     [Header("Player Objects")]
     public Transform cameraT;
@@ -25,11 +32,13 @@ public class PlayerContainer : MonoBehaviour
     public Rigidbody PlayerRB { get; private set; }
     public bool influenceByBody { get; private set; }
     public bool inSpaceShip;
+    private bool lastInSpaceShip;//permet de detecter un changement dans l etat
     [HideInInspector] public CelestialBody reference;
     public Vector3 strongestGravitationalPull { get; private set; }
     public GameObject groundRefGameObject { get; private set; }
     Notifications interactionNotif;
-    public GameObject playerFixedPoint;
+    [HideInInspector] public GameObject playerFixedPoint;
+    [HideInInspector] public Rigidbody spaceShipRB;
 
 
 
@@ -47,6 +56,9 @@ public class PlayerContainer : MonoBehaviour
     [Header("instance")]
     private bool suscribedInputs = false;
 
+    //events
+    public event Action<bool> OnChangementSpaceShip;
+    
 
     public void Awake()
     {
@@ -54,9 +66,27 @@ public class PlayerContainer : MonoBehaviour
         PlayerGravity = GetComponent<PlayerGravity>();
         playerInteractionSystem = GetComponent<PlayerInteractionSystem>();
         PlayerUI = GetComponent<PlayerUI>();
+        PlayerSpaceShipManager = GetComponent<PlayerSpaceShipManager>();
+        playerCollider = GetComponent<Collider>();
+        playerMeshRenderer = GetComponent<MeshRenderer>();
 
         PlayerGO = gameObject;
         PlayerRB = GetComponent<Rigidbody>();
+
+        //vérifications des composants
+        if (FPScontroller == null) Debug.LogError("player FPScontroller = null");
+        if (PlayerGravity == null) Debug.LogError("player PlayerGravity = null");
+        if (playerInteractionSystem == null) Debug.LogError("player playerInteractionSystem = null");
+        if (PlayerUI == null) Debug.LogError("player PlayerUI = null");
+        if (playerCollider == null) Debug.LogError("player playerCollider = null");
+        if (playerMeshRenderer == null) Debug.LogError("player playerMeshRenderer = null");
+        if (PlayerRB == null) Debug.LogError("player PlayerRB = null");
+
+    }
+
+    private void Start()
+    {
+        lastInSpaceShip = inSpaceShip;
     }
 
     private void Update()
@@ -73,6 +103,7 @@ public class PlayerContainer : MonoBehaviour
             GlobalContainer.inputManager.OnMove += FPScontroller.HandleMove;
             GlobalContainer.inputManager.OnJump += FPScontroller.HandleJump;
             GlobalContainer.inputManager.OnInteract += playerInteractionSystem.OnInteract;
+            OnChangementSpaceShip += PlayerSpaceShipManager.HandleChangementSpaceShip;
             suscribedInputs = true;
         }
 
@@ -88,6 +119,21 @@ public class PlayerContainer : MonoBehaviour
             PlayerUI.DestroyNotificationNow(interactionNotif);
             interactionNotif = null;
         }
+
+
+        //gère la transmition de l'information en envoyant un signal lors du changement d'état
+        if (inSpaceShip != lastInSpaceShip)
+        {
+            //changement d etat
+            //changement sortie -> entrée
+            //changement entrée -> sortie
+            OnChangementSpaceShip?.Invoke(inSpaceShip);
+            
+        }
+        lastInSpaceShip = inSpaceShip;
+
+        
+        
     }
 
     private void OnDisable()
@@ -96,6 +142,7 @@ public class PlayerContainer : MonoBehaviour
         GlobalContainer.inputManager.OnMove -= FPScontroller.HandleMove;
         GlobalContainer.inputManager.OnJump -= FPScontroller.HandleJump;
         GlobalContainer.inputManager.OnInteract -= playerInteractionSystem.OnInteract;
+        OnChangementSpaceShip -= PlayerSpaceShipManager.HandleChangementSpaceShip;
     }
 
     public Vector3 GetGravityAcceleration(Vector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)
@@ -117,6 +164,13 @@ public class PlayerContainer : MonoBehaviour
     public float GetFps(float deltaTime)
     {
         return GlobalContainer.GetFps(deltaTime);
+    }
+
+    public Rigidbody GetReferenceRigidbody()
+    {
+        if (spaceShipRB != null)
+            return spaceShipRB;
+        return PlayerRB;
     }
 
 }

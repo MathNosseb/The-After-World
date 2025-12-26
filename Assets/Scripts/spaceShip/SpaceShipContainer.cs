@@ -50,6 +50,7 @@ public class SpaceShipContainer : MonoBehaviour
         groundRefGameObject = spaceShipController.groundRefGameObject;
         playerInSpaceShip = spaceShipController.playerInSpaceShip;
 
+
         //on verifie a chaque frame si le input manager est pret
         if (!suscribedInputs && GlobalContainer != null && GlobalContainer.inputManager != null)
         {

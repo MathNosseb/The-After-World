@@ -12244,7 +12244,7 @@ Transform:
   m_GameObject: {fileID: 1809474123}
   serializedVersion: 2
   m_LocalRotation: {x: 0.009602976, y: 0.043617386, z: -0.00041927528, w: 0.9990021}
-  m_LocalPosition: {x: 0.02610001, y: 0.6380005, z: -0.034229755}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12448,6 +12448,7 @@ GameObject:
   - component: {fileID: 2078047420}
   - component: {fileID: 2078047419}
   - component: {fileID: 2078047421}
+  - component: {fileID: 2078047422}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -12540,7 +12541,7 @@ Transform:
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7003097, y: -0, z: -0, w: 0.71383923}
-  m_LocalPosition: {x: -1.99, y: -11.351786, z: 4940.5566}
+  m_LocalPosition: {x: -1.99, y: -11.294388, z: 4930}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12611,6 +12612,8 @@ MonoBehaviour:
   cameraT: {fileID: 1809474126}
   inSpaceShip: 0
   reference: {fileID: 312761006}
+  playerFixedPoint: {fileID: 0}
+  spaceShipRB: {fileID: 0}
   sensibility: 250
   airWalkSpeed: 5
   walkSpeed: 10
@@ -12651,6 +12654,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b825556470c0c34386df0450cc6016d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2078047422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078047407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1775404b5be0c844b9d9a75b35c2d4cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2104409944

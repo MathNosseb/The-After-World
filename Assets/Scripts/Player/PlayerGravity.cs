@@ -40,7 +40,7 @@ public class PlayerGravity : MonoBehaviour
         {
             //Rotate for align with gravity up
             Vector3 gravityUp = -strongestGravitionalPull.normalized;
-            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, gravityUp) * playerContainer.PlayerRB.rotation;
+            Quaternion targetRotation = Quaternion.FromToRotation(self.transform.up, gravityUp) * playerContainer.PlayerRB.rotation;
             Quaternion smoothRotation = Quaternion.Slerp(
                 playerContainer.PlayerRB.rotation,
                 targetRotation,

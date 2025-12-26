@@ -28,15 +28,17 @@ public class SpaceShipGravity : MonoBehaviour
             spaceShipContainer.strongestGravitationalPull);
 
 
+
     }
 
     void AllignToPlanet(Transform self, Vector3 strongestGravitionalPull, float rotationSpeed = 10f)
     {
         if (spaceShipContainer.influenceByBody)
         {
+            Debug.Log("alignement sur la planete");
             //Rotate for align with gravity up
             Vector3 gravityUp = -strongestGravitionalPull.normalized;
-            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, gravityUp) * spaceShipContainer.SpaceShipRB.rotation;
+            Quaternion targetRotation = Quaternion.FromToRotation(self.transform.forward, gravityUp) * spaceShipContainer.SpaceShipRB.rotation;
             Quaternion smoothRotation = Quaternion.Slerp(
                 spaceShipContainer.SpaceShipRB.rotation,
                 targetRotation,
