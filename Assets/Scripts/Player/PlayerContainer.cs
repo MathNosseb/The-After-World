@@ -23,8 +23,8 @@ public class PlayerContainer : MonoBehaviour
     PlayerUI PlayerUI;
     PlayerSpaceShipManager PlayerSpaceShipManager;
     public List<Notifications> notifications = new List<Notifications>();
-    MeshRenderer playerMeshRenderer;
-    Collider playerCollider;
+    public MeshRenderer playerMeshRenderer { get; private set; }
+    public Collider playerCollider { get; private set; }
 
     [Header("Player Objects")]
     public Transform cameraT;

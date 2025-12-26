@@ -18,10 +18,8 @@ public class PlayerSpaceShipManager : MonoBehaviour
         if (playerContainer.inSpaceShip)
         {
             //si on est dans le vaisseau
-            playerContainer.PlayerRB.position = playerContainer.playerFixedPoint.transform.position;
-            playerContainer.PlayerRB.rotation = playerContainer.playerFixedPoint.transform.rotation;
-            
-
+            playerContainer.PlayerRB.position = playerContainer.spaceShipRB.position;
+            playerContainer.PlayerRB.rotation = playerContainer.spaceShipRB.rotation;
         }
     }
 
@@ -42,12 +40,15 @@ public class PlayerSpaceShipManager : MonoBehaviour
         {
             Debug.Log("entrée dans le vaisseau");
             playerContainer.PlayerRB.isKinematic = false;
+            playerContainer.playerMeshRenderer.enabled = false;
+            playerContainer.playerCollider.enabled = false;
         }
         else
         {
             Debug.Log("sortie du vaisseau");
             playerContainer.PlayerRB.isKinematic = true;
-            playerContainer.PlayerRB.position = playerContainer.cameraT.position;
+            playerContainer.playerMeshRenderer.enabled = true;
+            playerContainer.playerCollider.enabled = true;
 
             //replacement de la camera sur le joueur et reset de la camera
             playerContainer.cameraT.localPosition = new Vector3(0f,0.5f,0f);
