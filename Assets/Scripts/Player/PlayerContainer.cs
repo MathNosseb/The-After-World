@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(FPScontroller))]
 [RequireComponent(typeof(PlayerGravity))]
 [RequireComponent(typeof(PlayerInteractionSystem))]
-[RequireComponent (typeof(PlayerSpaceShipManager))]
+[RequireComponent(typeof(PlayerSpaceShipManager))]
 [RequireComponent(typeof(PlayerUI))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
@@ -73,7 +73,7 @@ public class PlayerContainer : MonoBehaviour
         PlayerGO = gameObject;
         PlayerRB = GetComponent<Rigidbody>();
 
-        //vérifications des composants
+        //vÃ©rifications des composants
         if (FPScontroller == null) Debug.LogError("player FPScontroller = null");
         if (PlayerGravity == null) Debug.LogError("player PlayerGravity = null");
         if (playerInteractionSystem == null) Debug.LogError("player playerInteractionSystem = null");
@@ -121,12 +121,12 @@ public class PlayerContainer : MonoBehaviour
         }
 
 
-        //gère la transmition de l'information en envoyant un signal lors du changement d'état
+        //gÃ¨re la transmition de l'information en envoyant un signal lors du changement d'Ã©tat
         if (inSpaceShip != lastInSpaceShip)
         {
             //changement d etat
-            //changement sortie -> entrée
-            //changement entrée -> sortie
+            //changement sortie -> entrÃ©e
+            //changement entrÃ©e -> sortie
             OnChangementSpaceShip?.Invoke(inSpaceShip);
             
         }
