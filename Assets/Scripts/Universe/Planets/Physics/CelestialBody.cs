@@ -2,9 +2,11 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 
+[RequireComponent(typeof(Rigidbody))]
 public class CelestialBody : MonoBehaviour
 {
     GameObject sun;
+    public CelestialBody ignoreBody;
     public float surfaceGravity;
     public float radius;
     public Vector3 initialVelocity;
@@ -77,7 +79,7 @@ public class CelestialBody : MonoBehaviour
         if (fix) { return; }
         foreach (var otherBody in allBodies)
         {
-            if (otherBody == this) continue;
+            if (otherBody == this || otherBody == ignoreBody) continue;
 
             Vector3 direction = otherBody.rb.position - rb.position;
             float distanceSqr = direction.sqrMagnitude;

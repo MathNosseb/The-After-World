@@ -626,6 +626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreBody: {fileID: 0}
   surfaceGravity: 50
   radius: 300
   initialVelocity: {x: 0, y: 0, z: 0}
@@ -5634,6 +5635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreBody: {fileID: 0}
   surfaceGravity: 5
   radius: 120
   initialVelocity: {x: 47.9, y: 0, z: 0}
@@ -6510,9 +6512,9 @@ GameObject:
   - component: {fileID: 1036320188}
   - component: {fileID: 1036320189}
   - component: {fileID: 1036320190}
-  - component: {fileID: 1036320192}
   - component: {fileID: 1036320193}
   - component: {fileID: 1036320194}
+  - component: {fileID: 1036320192}
   m_Layer: 0
   m_Name: Universe
   m_TagString: Untagged
@@ -6560,7 +6562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb67012be94834947ae6e288d1944355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numSteps: 1000
+  numSteps: 10000
   timeStep: 1
   usePhysicsTimeStep: 0
   relativeToBody: 1
@@ -6585,7 +6587,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1036320185}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: efa3924796d5653ffbbe88d60725dbd4, type: 3}
   m_Name: 
@@ -11963,15 +11965,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  surfaceGravity: 2
+  ignoreBody: {fileID: 0}
+  surfaceGravity: 4
   radius: 40
-  initialVelocity: {x: 44.5, y: 0, z: 0}
+  initialVelocity: {x: 18.95, y: 0, z: 0}
   fix: 0
   colorPath: {r: 0.21082269, g: 0.24528301, b: 0.20941615, a: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
-  mass: 320000
+  mass: 640000
   distanceBeforeRotation: 50
   jitteringStrength: 0
 --- !u!4 &1741740458
@@ -12047,6 +12050,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreBody: {fileID: 0}
   surfaceGravity: 15
   radius: 40
   initialVelocity: {x: 67.5, y: 0, z: 0}
@@ -12241,6 +12245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ignoreBody: {fileID: 0}
   surfaceGravity: 5
   radius: 120
   initialVelocity: {x: 31.3, y: 0, z: 0}
@@ -12458,7 +12463,7 @@ Transform:
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7003097, y: -0, z: -0, w: 0.71383923}
-  m_LocalPosition: {x: -1.99, y: -3.2560666, z: 5378}
+  m_LocalPosition: {x: -1.99, y: -32.22293, z: 6891.7227}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
