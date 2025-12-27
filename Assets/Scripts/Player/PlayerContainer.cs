@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[RequireComponent(typeof(FPScontroller))]
+[RequireComponent(typeof(PlayerController))]
 [RequireComponent(typeof(PlayerGravity))]
 [RequireComponent(typeof(PlayerInteractionSystem))]
 [RequireComponent(typeof(PlayerSpaceShipManager))]
@@ -17,7 +17,7 @@ public class PlayerContainer : MonoBehaviour
     [SerializeField] private Container GlobalContainer;
 
     [Header("Player References")]
-    FPScontroller FPScontroller;
+    PlayerController PlayerController;
     PlayerGravity PlayerGravity;
     PlayerInteractionSystem playerInteractionSystem;
     PlayerUI PlayerUI;
@@ -62,7 +62,7 @@ public class PlayerContainer : MonoBehaviour
 
     public void Awake()
     {
-        FPScontroller = GetComponent<FPScontroller>();
+        PlayerController = GetComponent<PlayerController>();
         PlayerGravity = GetComponent<PlayerGravity>();
         playerInteractionSystem = GetComponent<PlayerInteractionSystem>();
         PlayerUI = GetComponent<PlayerUI>();
@@ -74,7 +74,7 @@ public class PlayerContainer : MonoBehaviour
         PlayerRB = GetComponent<Rigidbody>();
 
         //vérifications des composants
-        if (FPScontroller == null) Debug.LogError("player FPScontroller = null");
+        if (PlayerController == null) Debug.LogError("player FPScontroller = null");
         if (PlayerGravity == null) Debug.LogError("player PlayerGravity = null");
         if (playerInteractionSystem == null) Debug.LogError("player playerInteractionSystem = null");
         if (PlayerUI == null) Debug.LogError("player PlayerUI = null");
@@ -94,14 +94,14 @@ public class PlayerContainer : MonoBehaviour
         reference = PlayerGravity.reference;
         influenceByBody = InfluenceByBody(PlayerGO.transform, reference);
         strongestGravitationalPull = GetBodyAcceleration(reference, PlayerRB.position);
-        groundRefGameObject = FPScontroller.groundRefGameObject;
+        groundRefGameObject = PlayerController.groundRefGameObject;
 
         //on verifie a chaque frame si le input manager est pret
         if (!suscribedInputs && GlobalContainer != null && GlobalContainer.inputManager != null)
         {
-            GlobalContainer.inputManager.OnMouseMove += FPScontroller.HandleMouse;
-            GlobalContainer.inputManager.OnMove += FPScontroller.HandleMove;
-            GlobalContainer.inputManager.OnJump += FPScontroller.HandleJump;
+            GlobalContainer.inputManager.OnMouseMove += PlayerController.HandleMouse;
+            GlobalContainer.inputManager.OnMove += PlayerController.HandleMove;
+            GlobalContainer.inputManager.OnJump += PlayerController.HandleJump;
             GlobalContainer.inputManager.OnInteract += playerInteractionSystem.OnInteract;
             OnChangementSpaceShip += PlayerSpaceShipManager.HandleChangementSpaceShip;
             suscribedInputs = true;
@@ -138,9 +138,9 @@ public class PlayerContainer : MonoBehaviour
 
     private void OnDisable()
     {
-        GlobalContainer.inputManager.OnMouseMove -= FPScontroller.HandleMouse;
-        GlobalContainer.inputManager.OnMove -= FPScontroller.HandleMove;
-        GlobalContainer.inputManager.OnJump -= FPScontroller.HandleJump;
+        GlobalContainer.inputManager.OnMouseMove -= PlayerController.HandleMouse;
+        GlobalContainer.inputManager.OnMove -= PlayerController.HandleMove;
+        GlobalContainer.inputManager.OnJump -= PlayerController.HandleJump;
         GlobalContainer.inputManager.OnInteract -= playerInteractionSystem.OnInteract;
         OnChangementSpaceShip -= PlayerSpaceShipManager.HandleChangementSpaceShip;
     }
