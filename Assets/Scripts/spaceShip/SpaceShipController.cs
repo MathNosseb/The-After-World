@@ -13,6 +13,8 @@ public class SpaceShipController : MonoBehaviour, IInteractable
 
     [Header("Rotation")]
     public float rotationMultipler = 1f;
+    [Range(1f, 100f)]
+    public int rotationSmoothEffect;
     Quaternion targetRotation = Quaternion.identity;
     Quaternion smoothRot = Quaternion.identity;
 
@@ -73,7 +75,7 @@ public class SpaceShipController : MonoBehaviour, IInteractable
 
             targetRotation = yaw * pitch * roll * targetRotation;
 
-            smoothRot = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 100f);//10f smooth rotation Speed
+            smoothRot = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSmoothEffect);//10f smooth rotation Speed
         }
         
     }

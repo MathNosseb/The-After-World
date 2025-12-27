@@ -18,7 +18,7 @@ public class PlayerGravity : MonoBehaviour
         {
             usePhysic = false;
         }else
-            usePhysic= true;
+            usePhysic = true;
         //Calcul de la gravité
         CelestialBody strongestBody;
         Vector3 acceleration = playerContainer.GetGravityAcceleration(playerContainer.PlayerRB.position, out strongestBody);

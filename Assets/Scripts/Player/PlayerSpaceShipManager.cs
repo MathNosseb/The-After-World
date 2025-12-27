@@ -39,14 +39,12 @@ public class PlayerSpaceShipManager : MonoBehaviour
         if (newSpaceShipEtat)
         {
             Debug.Log("entrée dans le vaisseau");
-            playerContainer.PlayerRB.isKinematic = false;
             playerContainer.playerMeshRenderer.enabled = false;
             playerContainer.playerCollider.enabled = false;
         }
         else
         {
             Debug.Log("sortie du vaisseau");
-            playerContainer.PlayerRB.isKinematic = true;
             playerContainer.playerMeshRenderer.enabled = true;
             playerContainer.playerCollider.enabled = true;
 

@@ -35,7 +35,6 @@ public class SpaceShipGravity : MonoBehaviour
     {
         if (spaceShipContainer.influenceByBody)
         {
-            Debug.Log("alignement sur la planete");
             //Rotate for align with gravity up
             Vector3 gravityUp = -strongestGravitionalPull.normalized;
             Quaternion targetRotation = Quaternion.FromToRotation(self.transform.forward, gravityUp) * spaceShipContainer.SpaceShipRB.rotation;

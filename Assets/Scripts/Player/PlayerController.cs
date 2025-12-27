@@ -2,7 +2,7 @@ using UnityEditor.Rendering;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerContainer))]
-public class FPScontroller : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("References")]
     PlayerContainer playerContainer;

@@ -28,6 +28,7 @@ public class SpaceShipSoundSystem : MonoBehaviour
 
     public void HandleBurnSound(bool burning)
     {
+        if (!spaceShipContainer.playerInSpaceShip) return;
         //appelé par l event
         if (burningSound == null)
         {
