@@ -42,7 +42,7 @@ public class SpaceShipGravity : MonoBehaviour
                 spaceShipContainer.SpaceShipRB.rotation,
                 targetRotation,
                 rotationSpeed * Time.fixedDeltaTime);
-            spaceShipContainer.SpaceShipRB.MoveRotation(smoothRotation);
+            //spaceShipContainer.SpaceShipRB.MoveRotation(smoothRotation);
         }
 
     }
