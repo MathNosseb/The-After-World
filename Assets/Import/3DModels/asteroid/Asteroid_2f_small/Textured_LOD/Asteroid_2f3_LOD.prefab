@@ -250,9 +250,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6a3e7bea8f90b5648b7197676bb0346f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7923478595074290180}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6a3e7bea8f90b5648b7197676bb0346f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4450568490349435575}
   m_SourcePrefab: {fileID: 100100000, guid: 6a3e7bea8f90b5648b7197676bb0346f, type: 3}
 --- !u!1 &7518572934376143428 stripped
 GameObject:
@@ -308,27 +305,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4450568490349435575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7518572934376143428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5028ae2f69d496049b580021c6a50e95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ignoreBody: {fileID: 0}
-  surfaceGravity: 0
-  radius: 0
-  initialVelocity: {x: 0, y: 0, z: 0}
-  fix: 0
-  colorPath: {r: 0, g: 0, b: 0, a: 0}
-  currentVelocity: {x: 0, y: 0, z: 0}
-  useAtmosphere: 0
-  planetAtmosphere: {fileID: 0}
-  mass: 0
-  distanceBeforeRotation: 0
-  jitteringStrength: 0

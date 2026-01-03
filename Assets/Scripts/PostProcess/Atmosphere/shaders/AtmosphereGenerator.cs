@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 
-[CreateAssetMenu(menuName = "Custom Post Effects/Atmosphere")]     
+[CreateAssetMenu(menuName = "PostProcessing/Atmosphere")]     
 public class AtmosphereGenerator : PostProcessingEffect
 {
     public Shader shader;
