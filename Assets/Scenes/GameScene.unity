@@ -182,7 +182,7 @@ Transform:
   m_GameObject: {fileID: 54242867}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000014901161, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.98, y: 26.463037, z: 5395.4434}
+  m_LocalPosition: {x: 5.98, y: 41, z: 5395.4434}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -578,7 +578,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 300, y: 300, z: 300}
+  m_LocalScale: {x: 1600, y: 1600, z: 1600}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1405913336}
@@ -628,7 +628,7 @@ MonoBehaviour:
   surfaceGravity: 50
   radius: 300
   initialVelocity: {x: 0, y: 0, z: 0}
-  fix: 0
+  fix: 1
   colorPath: {r: 1, g: 0.0141509175, b: 0.0141509175, a: 0}
   currentVelocity: {x: 0, y: 0, z: 0}
   useAtmosphere: 0
@@ -843,7 +843,7 @@ MonoBehaviour:
   useAtmosphere: 1
   planetAtmosphere: {fileID: 11400000, guid: 7ae0eabf83a9d6b4b8470d277c2b7cb6, type: 2}
   mass: 7200000
-  distanceBeforeRotation: 150
+  distanceBeforeRotation: 300
   jitteringStrength: 1
 --- !u!4 &528642535
 Transform:
@@ -855,7 +855,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 2000}
-  m_LocalScale: {x: 120, y: 120, z: 120}
+  m_LocalScale: {x: 240, y: 240, z: 240}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 406452346}
@@ -1717,6 +1717,7 @@ GameObject:
   - component: {fileID: 1036320193}
   - component: {fileID: 1036320194}
   - component: {fileID: 1036320192}
+  - component: {fileID: 1036320195}
   m_Layer: 0
   m_Name: Universe
   m_TagString: Untagged
@@ -1764,11 +1765,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb67012be94834947ae6e288d1944355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numSteps: 5
+  numSteps: 1000
   timeStep: 1
   usePhysicsTimeStep: 0
   relativeToBody: 1
-  centralBody: {fileID: 528642534}
+  centralBody: {fileID: 312761006}
   width: 102.9
 --- !u!114 &1036320190
 MonoBehaviour:
@@ -1830,6 +1831,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbebc4286aecb0b45a70ea33ce6a77d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1036320195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036320185}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 711b5f60a800a9f419bc7452d9750342, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  count: 2000
+  radius: 10000
+  size: 100
 --- !u!1 &1119520379
 GameObject:
   m_ObjectHideFlags: 0
@@ -7177,7 +7193,7 @@ MonoBehaviour:
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
   mass: 640000
-  distanceBeforeRotation: 50
+  distanceBeforeRotation: 100
   jitteringStrength: 0
 --- !u!4 &1741740458
 Transform:
@@ -7189,7 +7205,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 5400}
-  m_LocalScale: {x: 40, y: 40, z: 40}
+  m_LocalScale: {x: 80, y: 80, z: 80}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2104409945}
@@ -7262,7 +7278,7 @@ MonoBehaviour:
   useAtmosphere: 0
   planetAtmosphere: {fileID: 0}
   mass: 2400000
-  distanceBeforeRotation: 50
+  distanceBeforeRotation: 100
   jitteringStrength: 2
 --- !u!4 &1773451483
 Transform:
@@ -7274,7 +7290,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1000}
-  m_LocalScale: {x: 40, y: 40, z: 40}
+  m_LocalScale: {x: 80, y: 80, z: 80}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1520019329}
@@ -7459,7 +7475,7 @@ MonoBehaviour:
   useAtmosphere: 1
   planetAtmosphere: {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
   mass: 7200000
-  distanceBeforeRotation: 150
+  distanceBeforeRotation: 300
   jitteringStrength: 1
 --- !u!4 &1994838026
 Transform:
@@ -7699,7 +7715,7 @@ Transform:
   m_GameObject: {fileID: 2078047407}
   serializedVersion: 2
   m_LocalRotation: {x: -0.047894, y: 0.99805486, z: -0.037926454, w: -0.012422527}
-  m_LocalPosition: {x: -1.9898953, y: 23.400064, z: 5398.4}
+  m_LocalPosition: {x: -1.9898953, y: 41, z: 5398.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
