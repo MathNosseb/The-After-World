@@ -18,4 +18,4 @@ MonoBehaviour:
   _intensity: 1
   _highQuality: 1
   _antiFlicker: 1
-  _shader: {fileID: 0}
+  _shader: {fileID: 4800000, guid: d56bcc65fc2ecdb49aa01410844b2908, type: 3}

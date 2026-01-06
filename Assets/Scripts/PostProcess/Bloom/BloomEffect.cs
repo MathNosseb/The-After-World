@@ -83,8 +83,8 @@ public class BloomEffect : PostProcessingEffect {
 		set { _antiFlicker = value; }
 	}
 
-	[SerializeField, HideInInspector]
-	Shader _shader;
+	[SerializeField]
+	public Shader _shader;
 
 	Material _material;
 
@@ -100,10 +100,10 @@ public class BloomEffect : PostProcessingEffect {
 		return Mathf.GammaToLinearSpace (x);
 	}
 
-	void OnEnable () {//
-		_shader = null;
-		var shader = _shader ? _shader : Shader.Find ("Hidden/Kino/Bloom");
+	void OnEnable () {
+		var shader = _shader ? _shader : Shader.Find ("Custom/Bloom");
 		_material = new Material (shader);
+
 		_material.hideFlags = HideFlags.DontSave;
 	}
 
@@ -113,7 +113,6 @@ public class BloomEffect : PostProcessingEffect {
 
 	public override void Render (RenderTexture source, RenderTexture destination) {
 		var useRGBM = Application.isMobilePlatform;
-
 		// source texture size
 		var tw = source.width;
 		var th = source.height;

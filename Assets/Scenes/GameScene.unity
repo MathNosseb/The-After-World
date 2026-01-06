@@ -7388,8 +7388,8 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: ac490190d60711a4d9fe900b7898c473, type: 2}
   - {fileID: 11400000, guid: 7ae0eabf83a9d6b4b8470d277c2b7cb6, type: 2}
-  - {fileID: 11400000, guid: 9f3da5ff179bed947866168d241472d3, type: 2}
   - {fileID: 11400000, guid: 0ff8360d7d146de4bb95d2b867dbfcbf, type: 2}
+  - {fileID: 11400000, guid: 9f3da5ff179bed947866168d241472d3, type: 2}
   defaultShader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
   defaultMat: {fileID: 2015600959}
 --- !u!1 &1994838023
