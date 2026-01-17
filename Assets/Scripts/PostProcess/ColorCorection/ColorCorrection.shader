@@ -21,7 +21,7 @@ Shader "Hidden/Delighter/ColorCorrection"
 	{
 		return nm * 2.0 - 1.0;
 	}
-
+	 
 	float2 LLCoordFromVector(float3 v)
 	{
 		float Y = acos(v.z) / UNITY_PI;

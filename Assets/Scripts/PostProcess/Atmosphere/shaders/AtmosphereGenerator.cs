@@ -29,7 +29,7 @@ public class AtmosphereGenerator : PostProcessingEffect
     void OnEnable() 
     { 
         Camera cam = Camera.current;
-        if (cam != null) 
+        if (cam != null)  
             cam.depthTextureMode |= DepthTextureMode.Depth;
          
         if (shader == null)
