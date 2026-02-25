@@ -27,6 +27,9 @@ public class CelestialBody : MonoBehaviour
     public float distanceBeforeRotation;
     public float jitteringStrength;
 
+    [Header("A Activer pour que il soit ignoré par les autres corps")]
+    public bool OnlyAttracted;
+
     #if UNITY_EDITOR
 
     private void OnValidate()
@@ -79,7 +82,7 @@ public class CelestialBody : MonoBehaviour
         if (fix) { return; }
         foreach (var otherBody in allBodies)
         {
-            if (otherBody == this || otherBody == ignoreBody) continue;
+            if (otherBody == this || otherBody == ignoreBody || otherBody.OnlyAttracted) continue;
 
             Vector3 direction = otherBody.rb.position - rb.position;
             float distanceSqr = direction.sqrMagnitude;

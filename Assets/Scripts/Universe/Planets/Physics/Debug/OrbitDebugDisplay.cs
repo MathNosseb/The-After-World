@@ -40,7 +40,6 @@ public class OrbitDebugDisplay : MonoBehaviour
         // Initialize virtual bodies (don't want to move the actual bodies)
         for (int i = 0; i < virtualBodies.Length; i++)
         {
-            
             virtualBodies[i] = new VirtualBody(bodies[i]);
             drawPoints[i] = new Vector3[numSteps];
 
@@ -110,6 +109,11 @@ public class OrbitDebugDisplay : MonoBehaviour
                 continue;
             }
 
+            if (!virtualBodies[j].attracts)
+            {
+                continue;
+            }
+
             Vector3 forceDir = (virtualBodies[j].position - virtualBodies[i].position).normalized;
             float sqrDst = (virtualBodies[j].position - virtualBodies[i].position).sqrMagnitude;
             acceleration += forceDir * 0.01f * virtualBodies[j].mass / sqrDst; //1 = gravity constant
@@ -133,12 +137,14 @@ public class OrbitDebugDisplay : MonoBehaviour
         public Vector3 position;
         public Vector3 velocity;
         public float mass;
+        public bool attracts;
 
         public VirtualBody(CelestialBody body)
         {
             position = body.transform.position;
             velocity = body.initialVelocity;
             mass = body.mass;
+            attracts = body.OnlyAttracted;
         }
     }
 }
