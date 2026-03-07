@@ -1,34 +1,43 @@
-using UnityEditor;
+using System;
 using UnityEngine;
-using System.IO;
+
 
 [RequireComponent(typeof(Rigidbody))]
 public class CelestialBody : MonoBehaviour
 {
+
+    [Header("Références")]
     GameObject sun;
-    public CelestialBody ignoreBody;
+    CelestialBody sunCelestial;
+    
+    private Rigidbody rb;
+    constant constantValue;
+
+    [Header("Paramètres liés à la physique")]
     public float surfaceGravity;
     public float radius;
-    public Vector3 initialVelocity;
     public bool fix = false;
-    public Color colorPath;
+    public float distanceBeforeRotation;
+    public float jitteringStrength;
+    [HideInInspector] public float mass;
+    
 
-    [HideInInspector] public Vector3 currentVelocity;
-    private Rigidbody rb;
-
+    [Header("Paramètres liés au mouvement")]
+    public DoubleVector3 currentVelocity;
+    public DoubleVector3 currentPosition;
+    [HideInInspector] public DoubleVector3 startPosition;
+    public DoubleVector3 initialVelocity;
+    
+    
+    [Header("Atmosphère")]
     public bool useAtmosphere = false;
     public AtmosphereGenerator planetAtmosphere;
 
-    constant constantValue;
-    Vector3 startPosition;
-    [HideInInspector]
-    public float mass;
+    
+    [Header("Debug")]
+    public Color colorPath;
 
-    public float distanceBeforeRotation;
-    public float jitteringStrength;
-
-    [Header("A Activer pour que il soit ignoré par les autres corps")]
-    public bool OnlyAttracted;
+    
 
     #if UNITY_EDITOR
 
@@ -36,10 +45,9 @@ public class CelestialBody : MonoBehaviour
     {
         constantValue = GameObject.Find("Universe").GetComponent<constant>();
         sun = GameObject.Find("Sun");
-        
+
+        //la masse de la planete est calculé au lancement du jeu
         mass = surfaceGravity * radius * radius / constantValue.GravityConstant;
-        
-        
     }
     #endif
 
@@ -53,28 +61,57 @@ public class CelestialBody : MonoBehaviour
 
     void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         constantValue = GameObject.Find("Universe").GetComponent<constant>();
         sun = GameObject.Find("Sun");
-        mass = surfaceGravity * radius * radius / constantValue.GravityConstant;
-        currentVelocity = initialVelocity;
-        rb = GetComponent<Rigidbody>();
-        startPosition = transform.position;
-
         
+        sunCelestial = sun.GetComponent<CelestialBody>();
+        if (sun == null) {Debug.LogError("Le soleil est introuvable, assurez vous d avoir un gameObject sun");}
+        if (sunCelestial == null) {Debug.LogError("Le Celestial soleil est introuvable, assurez vous d avoir un CelestialBody");}
 
+        //la masse de la planete est calculé au lancement du jeu
+        mass = surfaceGravity * radius * radius / constantValue.GravityConstant;
+
+        //on initialise la vitesse de départ pour "lancer" la planete
+        currentVelocity = initialVelocity;
+        //on initialise la position de départ
+        startPosition = new DoubleVector3(
+            (double)transform.position.x,
+            (double)transform.position.y,
+            (double)transform.position.z
+        );
+        
+        currentPosition = startPosition;
     }
 
     private void FixedUpdate()
     {
-        if (fix) { transform.position = startPosition; }
+
+
+        //si la position de la planete doit etre fixe (on ignore la physique)
+        if (fix) { 
+            transform.position = new Vector3(
+                (float)startPosition.x,
+                (float)startPosition.y,
+                (float)startPosition.z
+            );
+        }
+        else
+        {
+            //sinon on modifie la position de la planete suivant la veritable position
+            rb.position = GetVector3Position();
+        }
+
         if (useAtmosphere) { planetAtmosphere.planetCentre = rb.position; }
+
+        
        
     }
 
     private void Update()
     { 
         //modifie la light
-        if (useAtmosphere) { planetAtmosphere.lightDir = (sun.transform.position - transform.position).normalized; }
+        if (useAtmosphere) { planetAtmosphere.lightDir = (sunCelestial.GetDoubleVector3Position() - currentPosition).normalized.convert; }
     }
 
     public void UpdateVelocity(CelestialBody[] allBodies, float timeStep)
@@ -82,17 +119,16 @@ public class CelestialBody : MonoBehaviour
         if (fix) { return; }
         foreach (var otherBody in allBodies)
         {
-            if (otherBody == this || otherBody == ignoreBody || otherBody.OnlyAttracted) continue;
+            //si le corp est lui même ou si c'est un corp que l on souhaite ignorer on applique pas sa gravité
+            if (otherBody == this) continue;
 
-            Vector3 direction = otherBody.rb.position - rb.position;
-            float distanceSqr = direction.sqrMagnitude;
+            DoubleVector3 direction = otherBody.GetDoubleVector3Position() - currentPosition;
+            double distanceSqr = direction.sqrMagnitude;
+            //on evite la division par 0
+            if (distanceSqr < 1e-6f) continue;
 
-            // �vite toute division par z�ro
-            if (distanceSqr < 1e-6f)
-                continue;
-
-            Vector3 forceDir = direction.normalized;
-            Vector3 acceleration = forceDir * (constantValue.GravityConstant * otherBody.mass / distanceSqr);
+            DoubleVector3 forceDir = direction.normalized;
+            DoubleVector3 acceleration = forceDir * (constantValue.GravityConstant * otherBody.mass / distanceSqr);
             currentVelocity += acceleration * timeStep;
         }
     }
@@ -100,17 +136,89 @@ public class CelestialBody : MonoBehaviour
     public void UpdatePosition(float timeStep)
     {
         if (fix) { return; }
-        rb.position += currentVelocity * timeStep;
+        currentPosition += currentVelocity * timeStep;
+        
     }
 
-    public void ChangePosition(Vector3 newPosition)
+    public void ChangePosition(DoubleVector3 newPosition)
     {
         startPosition = newPosition;
-        rb.position = newPosition;
+        currentPosition = newPosition;
     }
 
-    public Vector3 GetPosition()
+    public Vector3 GetVector3Position()
     {
-        return rb.position;
+        return currentPosition.convert;
     }
+
+    public DoubleVector3 GetDoubleVector3Position()
+    {
+        return currentPosition;
+    }
+
+    [System.Serializable]
+    public struct DoubleVector3
+    {
+        public double x;
+        public double y;
+        public double z;
+
+        public DoubleVector3(double x, double y, double z)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        public static DoubleVector3 operator +(DoubleVector3 a, DoubleVector3 b)
+        {
+            return new DoubleVector3(a.x + b.x, a.y + b.y, a.z + b.z);
+        }
+
+        public static DoubleVector3 operator -(DoubleVector3 a, DoubleVector3 b)
+        {
+            return new DoubleVector3(a.x - b.x, a.y - b.y, a.z - b.z);
+        }
+
+        public double sqrMagnitude => x * x + y * y + z * z;
+        
+        public double magnitude => Math.Sqrt(x * x + y * y + z * z);
+
+        public DoubleVector3 negative => new DoubleVector3(-x, -y, -z);
+
+        public static DoubleVector3 zero => new DoubleVector3(0, 0, 0);
+
+        public DoubleVector3 normalized
+        {
+            get
+            {
+                double mag = magnitude;       // utilise ta propriété magnitude
+                if (mag > 1e-9)               // éviter la division par zéro
+                    return new DoubleVector3(x / mag, y / mag, z / mag);
+                else
+                    return new DoubleVector3(0, 0, 0); // vecteur nul
+            }
+        }
+
+        public Vector3 convert
+        {
+            get
+            {
+                return new Vector3((float)x, (float)y, (float)z);
+            }
+        }
+
+        public static DoubleVector3 operator *(DoubleVector3 v, double scalar)
+        {
+            return new DoubleVector3(v.x * scalar, v.y * scalar, v.z * scalar);
+        }
+
+        public static DoubleVector3 operator /(DoubleVector3 v, double scalar)
+        {
+            return new DoubleVector3(v.x / scalar, v.y / scalar, v.z / scalar);
+        }
+
+    }
+
+    
 }

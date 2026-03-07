@@ -19,7 +19,7 @@ public class SpaceShipController : MonoBehaviour, IInteractable
     Quaternion smoothRot = Quaternion.identity;
 
     [Header("parametres")]
-    public bool playerInSpaceShip { get; private set; }//sert uniquement à etre recuperer par le spaceShipContainer
+    public bool playerInSpaceShip { get; private set; }//sert uniquement Ã  etre recuperer par le spaceShipContainer
     bool burning = false;
 
 
@@ -49,7 +49,7 @@ public class SpaceShipController : MonoBehaviour, IInteractable
         //calcul du mouvement
         if (spaceShipContainer.influenceByBody)
         {
-            Vector3 planetMove = spaceShipContainer.reference.currentVelocity * Time.fixedDeltaTime;
+            Vector3 planetMove = spaceShipContainer.reference.currentVelocity.convert * Time.fixedDeltaTime;
             spaceShipContainer.SpaceShipRB.MovePosition(spaceShipContainer.SpaceShipRB.position + planetMove);
         }
 
@@ -91,7 +91,7 @@ public class SpaceShipController : MonoBehaviour, IInteractable
 
     public void Interact(PlayerContainer playerContainer)
     {
-        //A changer vers qqchose de plus sécuriser
+        //A changer vers qqchose de plus sÃ©curiser
         playerContainer.inSpaceShip = !playerContainer.inSpaceShip;
         playerInSpaceShip = playerContainer.inSpaceShip;
         if (playerInSpaceShip)

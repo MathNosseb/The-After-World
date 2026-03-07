@@ -14,13 +14,13 @@ public class SpaceShipGravity : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //calcul de la gravité
+        //calcul de la gravitÃ©
         CelestialBody strongestbody;
         Vector3 acceleration = spaceShipContainer.GetGravityAcceleration(spaceShipContainer.SpaceShipRB.position, 
             out strongestbody);
         reference = strongestbody;
 
-        //application de la gravité
+        //application de la gravitÃ©
         spaceShipContainer.SpaceShipRB.AddForce(acceleration, ForceMode.Acceleration);
 
         //alignement avec la planete

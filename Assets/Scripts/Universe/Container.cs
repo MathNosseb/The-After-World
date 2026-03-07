@@ -21,13 +21,13 @@ public class Container : MonoBehaviour
 
     }
 
-    public Vector3 GetGravityAcceleration(Vector3 point, out CelestialBody strongestGravitationaBody, CelestialBody ignoreBody= null)
+    public CelestialBody.DoubleVector3 GetGravityAcceleration(CelestialBody.DoubleVector3 point, out CelestialBody strongestGravitationaBody, CelestialBody ignoreBody= null)
     {
-        Vector3 acceleration = simulation.CalculateAcceleration(point, Constant.GravityConstant, out strongestGravitationaBody, ignoreBody);
+        CelestialBody.DoubleVector3 acceleration = simulation.CalculateAcceleration(point, Constant.GravityConstant, out strongestGravitationaBody, ignoreBody);
         return acceleration;
     }
 
-    public Vector3 GetBodyAcceleration(CelestialBody body, Vector3 point)
+    public CelestialBody.DoubleVector3 GetBodyAcceleration(CelestialBody body, CelestialBody.DoubleVector3 point)
     {
         return simulation.GetBodyAcceleration(body, point, Constant.GravityConstant);
     }

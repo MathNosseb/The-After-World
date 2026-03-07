@@ -63,13 +63,13 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         //calcul du mouvement 
-        //s execute uniquement si on est influencé par une planete et que on est pas dans le vaisseau
+        //s execute uniquement si on est influencÃ© par une planete et que on est pas dans le vaisseau
         if (playerContainer.influenceByBody && !playerContainer.inSpaceShip)
         {
             Vector3 playerMove = Vector3.zero;
             if (canMove)
                 playerMove = transform.TransformDirection(moveAmount) * Time.fixedDeltaTime;
-            Vector3 planetMove = playerContainer.reference.currentVelocity * Time.fixedDeltaTime;
+            Vector3 planetMove = playerContainer.reference.currentVelocity.convert * Time.fixedDeltaTime;
             playerContainer.PlayerRB.MovePosition(playerContainer.PlayerRB.position + playerMove + planetMove);
         }
     }
@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
     public void HandleMouse(Vector3 mouse)
     {
         //s execute uniquement si on est pas dans le vaisseau
-        //gère la rotation du joueur dans l espace et sur une planete
+        //gÃ¨re la rotation du joueur dans l espace et sur une planete
         if (playerContainer.inSpaceShip) return;
         Quaternion axeYRotation = Quaternion.Euler(Vector3.up * mouse.x * Time.deltaTime * playerContainer.Sensibility * rotateSpeedMultiplier);
         playerContainer.PlayerRB.MoveRotation(playerContainer.PlayerRB.rotation * axeYRotation);
@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
     public void HandleJump(bool jumping)
     {
         //s execute uniquement si on est pas dans le vaisseau
-        //gère le jump (est executé par un Update)
+        //gÃ¨re le jump (est executÃ© par un Update)
         if (!grounded || playerContainer.inSpaceShip || !jumping) return;
         playerContainer.PlayerRB.MovePosition(playerContainer.PlayerRB.position + transform.up * 0.1f);//eviter le glitch d etre pris dans le sol
         playerContainer.PlayerRB.AddForce(transform.up * playerContainer.JumpForce); //saut 

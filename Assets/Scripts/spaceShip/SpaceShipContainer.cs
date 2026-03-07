@@ -82,13 +82,23 @@ public class SpaceShipContainer : MonoBehaviour
 
     public Vector3 GetGravityAcceleration(Vector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)
     {
+        CelestialBody.DoubleVector3 newPoint = new CelestialBody.DoubleVector3(
+            point.x,
+            point.y,
+            point.z
+        );
         //A Changer vers un Action ou un FUNC pour eviter d appeler l appel d une fonction
-        return GlobalContainer.GetGravityAcceleration(point, out strongestGravitationalBody, ignoreBody);
+        return GlobalContainer.GetGravityAcceleration(newPoint, out strongestGravitationalBody, ignoreBody).convert;
     }
 
     public Vector3 GetBodyAcceleration(CelestialBody body, Vector3 point)
-    {
-        return GlobalContainer.GetBodyAcceleration(body, point);
+    {   
+        CelestialBody.DoubleVector3 newPoint = new CelestialBody.DoubleVector3(
+            point.x,
+            point.y,
+            point.z
+        );
+        return GlobalContainer.GetBodyAcceleration(body, newPoint).convert;
     }
 
     public bool InfluenceByBody(Transform self, CelestialBody referenceBody)
