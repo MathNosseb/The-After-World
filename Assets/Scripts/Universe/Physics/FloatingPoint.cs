@@ -1,55 +1,77 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class FloatingPoint : MonoBehaviour
 {
-    public CelestialBody.DoubleVector3 originOffset = CelestialBody.DoubleVector3.zero; // Cumulative shift in doubles
-    public float shiftThreshold = 1e6f; // Shift when player > this distance from local origin
-    public PlayerContainer player; // Reference to player
+    CelestialBody[] bodies;
+    CelestialBody.DoubleVector3[] positions;
+    CelestialBody.DoubleVector3[] velocities;
+
+    public GameObject player;
+    Vector3 playerPosition;
+    Vector3 playerVelocity;
+    public float distanceBeforeCentring;
+    public float distance;
+
+    Rigidbody playerRB;
+
+    private void Awake()
+    {
+        bodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.None);
+        positions = new CelestialBody.DoubleVector3[bodies.Length];
+        velocities = new CelestialBody.DoubleVector3[bodies.Length];
+        playerRB = player.GetComponent<Rigidbody>();
+    }
 
     private void FixedUpdate()
     {
-        // Use player's double position as reference (or strongest body/player average for multi-body)
-        CelestialBody.DoubleVector3 playerDoublePos = new CelestialBody.DoubleVector3(
-            player.PlayerRB.position.x,
-            player.PlayerRB.position.y,
-            player.PlayerRB.position.z
-            ) - originOffset;
-        Vector3 playerLocalPos = playerDoublePos.convert;
+        //quand on arrive a une distance trop loingtaine
+        distance = player.transform.position.magnitude;
 
-        if (playerLocalPos.magnitude > shiftThreshold)
+        //si on depasse la limite
+        if (distance < distanceBeforeCentring) { return; }
+
+        Debug.Log("Recentrage de l univers");
+
+        //sauvegarde des paramètres
+
+        for (int bodiIndex = 0; bodiIndex < bodies.Length; bodiIndex++)
         {
-            // Shift origin by player's current local position (rounded to floats for stability)
-            CelestialBody.DoubleVector3 shift = new CelestialBody.DoubleVector3(playerLocalPos.x, playerLocalPos.y, playerLocalPos.z);
-            originOffset += shift;
-
-            // Update all celestial bodies' double positions relative to new origin
-            foreach (var body in FindObjectsByType<CelestialBody>(FindObjectsSortMode.None))
-            {
-                body.currentPosition -= shift;
-                body.startPosition -= shift; // If needed for resets
-            }
-
-            // Update player's double position
-            player.PlayerRB.position -= shift.convert;
-
-            // Immediately update Unity transforms to new relative floats
-            UpdateAllTransforms();
+            //assignation vitesses et positions des corps
+            positions[bodiIndex] = bodies[bodiIndex].GetDoubleVector3Position();
+            velocities[bodiIndex] = bodies[bodiIndex].GetDoubleVector3Velocity();
         }
-    }
 
-    public void UpdateAllTransforms()
-    {
-        // Sync all bodies to their relative float positions
-        foreach (var body in FindObjectsByType<CelestialBody>(FindObjectsSortMode.None))
-        {
-            body.transform.position = (body.currentPosition).convert; // Relative to origin
-        }
-        // Sync player
+        playerPosition = playerRB.position;
+        playerVelocity = playerRB.linearVelocity;
+
+        bool isKinematic = playerRB.isKinematic;
+
+        if (!isKinematic) { playerRB.isKinematic = true; }
         
+
+        CelestialBody.DoubleVector3 playerCoordinate = new CelestialBody.DoubleVector3(
+            playerPosition.x,
+            playerPosition.y,
+            playerPosition.z
+        );
+
+        //on deplace chaque objets
+        for (int bodiIndex = 0; bodiIndex < bodies.Length; bodiIndex++)
+        {
+            bodies[bodiIndex].ChangePosition(positions[bodiIndex] - playerCoordinate);
+            bodies[bodiIndex].currentVelocity = velocities[bodiIndex];
+        }
+
+        //on replace le joueur au centre
+        playerRB.position = Vector3.zero;
+
+        //on retabli les paramètres
+        
+        playerRB.isKinematic = isKinematic;
+        playerRB.linearVelocity = playerVelocity; 
+
+        Debug.Log("fin du décalage");
     }
 
-    public CelestialBody.DoubleVector3 GetAbsolutePosition(CelestialBody.DoubleVector3 relativePos)
-    {
-        return relativePos + originOffset; // For any absolute calc if needed
-    }
 }
