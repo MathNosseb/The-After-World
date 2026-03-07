@@ -156,6 +156,11 @@ public class CelestialBody : MonoBehaviour
         return currentPosition;
     }
 
+    public DoubleVector3 GetDoubleVector3Velocity()
+    {
+        return currentVelocity;
+    }
+
     [System.Serializable]
     public struct DoubleVector3
     {
