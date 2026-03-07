@@ -1,4 +1,3 @@
-using UnityEditor.Rendering;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerContainer))]
@@ -15,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public float moveSpeedMultipler = 1f;
     private Vector3 moveAmount;
     private Vector3 smoothMoveVelocity;
-    
+    private bool canMove;
 
     [Header("Rotation")]
     public float rotateSpeedMultiplier = 1f;
@@ -25,16 +24,12 @@ public class PlayerController : MonoBehaviour
     //variable permettant de detecter un changement d etat
     //ex inspaceShip = true -> inspaceShip = false
     bool lastInSpaceShip;
-
-    [Header("Contraintes")]
-    public bool handleMovements;
-    public bool handleRotations;
-    public bool handleJump;
     
 
     private void Awake()
     {
         playerContainer = GetComponent<PlayerContainer>();
+        canMove = true;
     }
 
     private void Start()
@@ -68,14 +63,14 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         //calcul du mouvement 
-        //s execute uniquement si on est influenc� par une planete et que on est pas dans le vaisseau
+        //s execute uniquement si on est influencé par une planete et que on est pas dans le vaisseau
         if (playerContainer.influenceByBody && !playerContainer.inSpaceShip)
         {
             Vector3 playerMove = Vector3.zero;
-            if (handleMovements)
+            if (canMove)
                 playerMove = transform.TransformDirection(moveAmount) * Time.fixedDeltaTime;
-            CelestialBody.DoubleVector3 planetMove = playerContainer.reference.currentVelocity * Time.fixedDeltaTime;
-            //playerContainer.PlayerRB.MovePosition(playerContainer.PlayerRB.position + playerMove + planetMove.convert);
+            Vector3 planetMove = playerContainer.reference.currentVelocity.convert * Time.fixedDeltaTime;
+            playerContainer.PlayerRB.MovePosition(playerContainer.PlayerRB.position + playerMove + planetMove);
         }
     }
 
@@ -89,15 +84,15 @@ public class PlayerController : MonoBehaviour
 
     public void HandleMouse(Vector3 mouse)
     {
-        //s execute uniquement si on est pas dans le vaisseau et si on autorise les rotations
-        //g�re la rotation du joueur dans l espace et sur une planete
-        if (playerContainer.inSpaceShip || !handleRotations) return;
+        //s execute uniquement si on est pas dans le vaisseau
+        //gère la rotation du joueur dans l espace et sur une planete
+        if (playerContainer.inSpaceShip) return;
         Quaternion axeYRotation = Quaternion.Euler(Vector3.up * mouse.x * Time.deltaTime * playerContainer.Sensibility * rotateSpeedMultiplier);
         playerContainer.PlayerRB.MoveRotation(playerContainer.PlayerRB.rotation * axeYRotation);
 
         verticalLookRotation += mouse.y * Time.deltaTime * playerContainer.Sensibility * rotateSpeedMultiplier;//direction en Z
         Quaternion axeZRotation = Quaternion.Euler(Vector3.left * mouse.y * Time.deltaTime * playerContainer.Sensibility * rotateSpeedMultiplier);
-        
+
         if (playerContainer.influenceByBody)
         {
             verticalLookRotation = Mathf.Clamp(verticalLookRotation, -60f, 60f);//rotation cam (mouvemet planeteraire) -60,60 limite du mouvement
@@ -112,9 +107,9 @@ public class PlayerController : MonoBehaviour
 
     public void HandleJump(bool jumping)
     {
-        //s execute uniquement si on est pas dans le vaisseau et si on autorise le saut
-        //g�re le jump (est execut� par un Update)
-        if (!grounded || playerContainer.inSpaceShip || !jumping || !handleJump) return;
+        //s execute uniquement si on est pas dans le vaisseau
+        //gère le jump (est executé par un Update)
+        if (!grounded || playerContainer.inSpaceShip || !jumping) return;
         playerContainer.PlayerRB.MovePosition(playerContainer.PlayerRB.position + transform.up * 0.1f);//eviter le glitch d etre pris dans le sol
         playerContainer.PlayerRB.AddForce(transform.up * playerContainer.JumpForce); //saut 
     }

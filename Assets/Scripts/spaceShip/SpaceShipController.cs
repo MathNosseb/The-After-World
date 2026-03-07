@@ -19,7 +19,7 @@ public class SpaceShipController : MonoBehaviour, IInteractable
     Quaternion smoothRot = Quaternion.identity;
 
     [Header("parametres")]
-    public bool playerInSpaceShip { get; private set; }//sert uniquement � etre recuperer par le spaceShipContainer
+    public bool playerInSpaceShip { get; private set; }//sert uniquement à etre recuperer par le spaceShipContainer
     bool burning = false;
 
 
@@ -33,7 +33,7 @@ public class SpaceShipController : MonoBehaviour, IInteractable
     {
         //detection du sol
         grounded = false;
-        Ray ray = new Ray(spaceShipContainer.currentPosition.convert, -transform.up);
+        Ray ray = new Ray(transform.position, -transform.up);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 1.1f) && hit.collider.gameObject != spaceShipContainer.SpaceShipGO)//detection sol en evitant le vaisseau
         {
@@ -49,8 +49,8 @@ public class SpaceShipController : MonoBehaviour, IInteractable
         //calcul du mouvement
         if (spaceShipContainer.influenceByBody)
         {
-            CelestialBody.DoubleVector3 planetMove = spaceShipContainer.reference.currentVelocity * Time.fixedDeltaTime;
-            spaceShipContainer.SpaceShipRB.MovePosition(spaceShipContainer.SpaceShipRB.position + planetMove.convert);
+            Vector3 planetMove = spaceShipContainer.reference.currentVelocity.convert * Time.fixedDeltaTime;
+            spaceShipContainer.SpaceShipRB.MovePosition(spaceShipContainer.SpaceShipRB.position + planetMove);
         }
 
         if (spaceShipContainer.playerInSpaceShip && burning)
@@ -91,7 +91,7 @@ public class SpaceShipController : MonoBehaviour, IInteractable
 
     public void Interact(PlayerContainer playerContainer)
     {
-        //A changer vers qqchose de plus s�curiser
+        //A changer vers qqchose de plus sécuriser
         playerContainer.inSpaceShip = !playerContainer.inSpaceShip;
         playerInSpaceShip = playerContainer.inSpaceShip;
         if (playerInSpaceShip)
