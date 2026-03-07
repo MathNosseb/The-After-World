@@ -34,7 +34,7 @@ public class PlayerContainer : MonoBehaviour
     public bool inSpaceShip;
     private bool lastInSpaceShip;//permet de detecter un changement dans l etat
     [HideInInspector] public CelestialBody reference;
-    public Vector3 strongestGravitationalPull { get; private set; }
+    public CelestialBody.DoubleVector3 strongestGravitationalPull { get; private set; }
     public GameObject groundRefGameObject { get; private set; }
     Notifications interactionNotif;
     [HideInInspector] public GameObject playerFixedPoint;
@@ -58,6 +58,9 @@ public class PlayerContainer : MonoBehaviour
 
     //events
     public event Action<bool> OnChangementSpaceShip;
+
+    public CelestialBody.DoubleVector3 currentPosition;
+    public CelestialBody.DoubleVector3 currentVelocity;
     
 
     public void Awake()
@@ -82,6 +85,12 @@ public class PlayerContainer : MonoBehaviour
         if (playerMeshRenderer == null) Debug.LogError("player playerMeshRenderer = null");
         if (PlayerRB == null) Debug.LogError("player PlayerRB = null");
 
+        currentPosition = new CelestialBody.DoubleVector3(
+            (double)transform.position.x,
+            (double)transform.position.y,
+            (double)transform.position.z
+        );
+
     }
 
     private void Start()
@@ -93,7 +102,7 @@ public class PlayerContainer : MonoBehaviour
     {
         reference = PlayerGravity.reference;
         influenceByBody = InfluenceByBody(PlayerGO.transform, reference);
-        strongestGravitationalPull = GetBodyAcceleration(reference, PlayerRB.position);
+        strongestGravitationalPull = GetBodyAcceleration(reference, currentPosition);
         groundRefGameObject = PlayerController.groundRefGameObject;
 
         //on verifie a chaque frame si le input manager est pret
@@ -136,6 +145,12 @@ public class PlayerContainer : MonoBehaviour
         
     }
 
+    void FixedUpdate()
+    {
+        //PlayerRB.position = currentPosition.convert;
+        PlayerRB.MovePosition(currentPosition.convert);
+    }
+
     private void OnDisable()
     {
         GlobalContainer.inputManager.OnMouseMove -= PlayerController.HandleMouse;
@@ -145,13 +160,13 @@ public class PlayerContainer : MonoBehaviour
         OnChangementSpaceShip -= PlayerSpaceShipManager.HandleChangementSpaceShip;
     }
 
-    public Vector3 GetGravityAcceleration(Vector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)
+    public CelestialBody.DoubleVector3 GetGravityAcceleration(CelestialBody.DoubleVector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)
     {
         //A Changer vers un Action ou un FUNC pour eviter d appeler l appel d une fonction
         return GlobalContainer.GetGravityAcceleration(point, out strongestGravitationalBody, ignoreBody);
     }
 
-    public Vector3 GetBodyAcceleration(CelestialBody body, Vector3 point)
+    public CelestialBody.DoubleVector3 GetBodyAcceleration(CelestialBody body, CelestialBody.DoubleVector3 point)
     {
         return GlobalContainer.GetBodyAcceleration(body, point);
     }

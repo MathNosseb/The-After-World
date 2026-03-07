@@ -26,7 +26,7 @@ public class FloatingPoint : MonoBehaviour
         Rigidbody subjectRb = body;
 
         Vector3 offset = -subjectRb.position;
-
+        /*
         // 1️⃣ Déclenchement du floating origin
         if (!floatingShiftThisFrame && !pendingReenable &&
             subjectRb.position.magnitude > distance)
@@ -66,6 +66,7 @@ public class FloatingPoint : MonoBehaviour
             pendingReenable = false;
             floatingShiftThisFrame = false;
         }
+        */
     }
 
     /*   

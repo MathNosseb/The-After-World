@@ -19,28 +19,31 @@ public class PlayerGravity : MonoBehaviour
             usePhysic = false;
         }else
             usePhysic = true;
-        //Calcul de la gravité
+        //Calcul de la gravitï¿½
         CelestialBody strongestBody;
-        Vector3 acceleration = playerContainer.GetGravityAcceleration(playerContainer.PlayerRB.position, out strongestBody);
+        CelestialBody.DoubleVector3 acceleration = playerContainer.GetGravityAcceleration(playerContainer.currentPosition, out strongestBody);
         reference = strongestBody;
 
-        //application de la gravité
+        //application de la gravitÃ©
         if (usePhysic)
-            playerContainer.PlayerRB.AddForce(acceleration, ForceMode.Acceleration);
+            playerContainer.currentVelocity += acceleration * Time.fixedDeltaTime;
+            
 
-        //alignement avec la planete
+        //alignement avec la planete    
         if (usePhysic)
             AllignToPlanet(playerContainer.PlayerGO.transform, playerContainer.reference, playerContainer.strongestGravitationalPull);
 
+        playerContainer.currentPosition += playerContainer.currentVelocity * Time.fixedDeltaTime;
+
     }
 
-    void AllignToPlanet(Transform self, CelestialBody reference, Vector3 strongestGravitionalPull, float rotationSpeed = 10f)
+    void AllignToPlanet(Transform self, CelestialBody reference, CelestialBody.DoubleVector3 strongestGravitionalPull, float rotationSpeed = 10f)
     {
         if (playerContainer.InfluenceByBody(self, reference))
         {
             //Rotate for align with gravity up
-            Vector3 gravityUp = -strongestGravitionalPull.normalized;
-            Quaternion targetRotation = Quaternion.FromToRotation(self.transform.up, gravityUp) * playerContainer.PlayerRB.rotation;
+            CelestialBody.DoubleVector3 gravityUp = strongestGravitionalPull.normalized.negative;
+            Quaternion targetRotation = Quaternion.FromToRotation(self.transform.up, gravityUp.convert) * playerContainer.PlayerRB.rotation;
             Quaternion smoothRotation = Quaternion.Slerp(
                 playerContainer.PlayerRB.rotation,
                 targetRotation,

@@ -24,18 +24,19 @@ public class NbodySimulation : MonoBehaviour
         }
     }
 
-    public Vector3 GetBodyAcceleration(CelestialBody body, Vector3 point, float GravityConstant)
+    public CelestialBody.DoubleVector3 GetBodyAcceleration(CelestialBody body, CelestialBody.DoubleVector3 point, float GravityConstant)
     {
-        float sqrDst = (body.GetPosition() - point).sqrMagnitude;
-        Vector3 forceDir = (body.GetPosition() - point).normalized;
-        Vector3 acceleration = forceDir * GravityConstant * body.mass / sqrDst;
+        double sqrDst = (body.GetDoubleVector3Position() - point).sqrMagnitude;
+        CelestialBody.DoubleVector3 forceDir = (body.GetDoubleVector3Position() - point).normalized;
+        CelestialBody.DoubleVector3 acceleration = forceDir * GravityConstant * body.mass / sqrDst;
         return acceleration;
     }
 
-    public Vector3 CalculateAcceleration(Vector3 point, float GravityConstant,out CelestialBody strongestGravitationaBody, 
+    public CelestialBody.DoubleVector3 CalculateAcceleration(CelestialBody.DoubleVector3 point, float GravityConstant,
+        out CelestialBody strongestGravitationaBody, 
         CelestialBody ignoreBody = null)
     {
-        Vector3 acceleration = Vector3.zero;
+        CelestialBody.DoubleVector3 acceleration = CelestialBody.DoubleVector3.zero;
         strongestGravitationaBody = null;
         foreach (var body in bodies)
         {
@@ -59,7 +60,6 @@ public class NbodySimulation : MonoBehaviour
                 
             }
         }
-
         return acceleration;
     }
 
@@ -68,4 +68,6 @@ public class NbodySimulation : MonoBehaviour
         float distance = Vector3.Distance(self.position, referenceBody.transform.position);
         return distance <= referenceBody.distanceBeforeRotation ? true : false;
     }
+
+    
 }

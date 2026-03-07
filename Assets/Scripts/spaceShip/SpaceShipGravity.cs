@@ -14,14 +14,14 @@ public class SpaceShipGravity : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //calcul de la gravité
+        //calcul de la gravitï¿½
         CelestialBody strongestbody;
-        Vector3 acceleration = spaceShipContainer.GetGravityAcceleration(spaceShipContainer.SpaceShipRB.position, 
+        CelestialBody.DoubleVector3 acceleration = spaceShipContainer.GetGravityAcceleration(spaceShipContainer.currentPosition, 
             out strongestbody);
         reference = strongestbody;
 
-        //application de la gravité
-        spaceShipContainer.SpaceShipRB.AddForce(acceleration, ForceMode.Acceleration);
+        //application de la gravitÃ©
+        spaceShipContainer.SpaceShipRB.AddForce(acceleration.convert, ForceMode.Acceleration);
 
         //alignement avec la planete
         AllignToPlanet(spaceShipContainer.SpaceShipGO.transform, 
@@ -31,13 +31,13 @@ public class SpaceShipGravity : MonoBehaviour
 
     }
 
-    void AllignToPlanet(Transform self, Vector3 strongestGravitionalPull, float rotationSpeed = 10f)
+    void AllignToPlanet(Transform self, CelestialBody.DoubleVector3 strongestGravitionalPull, float rotationSpeed = 10f)
     {
         if (spaceShipContainer.influenceByBody)
         {
             //Rotate for align with gravity up
-            Vector3 gravityUp = -strongestGravitionalPull.normalized;
-            Quaternion targetRotation = Quaternion.FromToRotation(self.transform.forward, gravityUp) * spaceShipContainer.SpaceShipRB.rotation;
+            CelestialBody.DoubleVector3 gravityUp = strongestGravitionalPull.normalized.negative;
+            Quaternion targetRotation = Quaternion.FromToRotation(self.transform.forward, gravityUp.convert) * spaceShipContainer.SpaceShipRB.rotation;
             Quaternion smoothRotation = Quaternion.Slerp(
                 spaceShipContainer.SpaceShipRB.rotation,
                 targetRotation,

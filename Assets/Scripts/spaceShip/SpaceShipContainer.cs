@@ -24,7 +24,7 @@ public class SpaceShipContainer : MonoBehaviour
     public Rigidbody SpaceShipRB { get; private set; }
     public bool influenceByBody { get; private set; }
     [HideInInspector] public CelestialBody reference;
-    public Vector3 strongestGravitationalPull { get; private set; }
+    public CelestialBody.DoubleVector3 strongestGravitationalPull { get; private set; }
     public GameObject groundRefGameObject { get; private set; }
 
     [Header("SpaceShip Parameters")]
@@ -37,6 +37,9 @@ public class SpaceShipContainer : MonoBehaviour
     [Header("instance")]
     private bool suscribedInputs = false;
 
+    public CelestialBody.DoubleVector3 currentPosition;
+    public CelestialBody.DoubleVector3 currentVelocity;
+
     private void Awake()
     {
         spaceShipController = GetComponent<SpaceShipController>();
@@ -47,13 +50,19 @@ public class SpaceShipContainer : MonoBehaviour
 
         SpaceShipGO = gameObject;
         SpaceShipRB = GetComponent<Rigidbody>();
+
+        currentPosition = new CelestialBody.DoubleVector3(
+            (double)transform.position.x,
+            (double)transform.position.y,
+            (double)transform.position.z
+        );
     }
 
     private void Update()
     {
         reference = spaceShipGravity.reference;
         influenceByBody = InfluenceByBody(SpaceShipGO.transform, reference);
-        strongestGravitationalPull = GetBodyAcceleration(reference, SpaceShipRB.position);
+        strongestGravitationalPull = GetBodyAcceleration(reference, currentPosition);
         groundRefGameObject = spaceShipController.groundRefGameObject;
         playerInSpaceShip = spaceShipController.playerInSpaceShip;
 
@@ -71,6 +80,11 @@ public class SpaceShipContainer : MonoBehaviour
         
     }
 
+    void FixedUpdate()
+    {
+        SpaceShipRB.position = currentPosition.convert;
+    }
+
 
     private void OnDisable()
     {
@@ -80,13 +94,13 @@ public class SpaceShipContainer : MonoBehaviour
         
     }
 
-    public Vector3 GetGravityAcceleration(Vector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)
+    public CelestialBody.DoubleVector3 GetGravityAcceleration(CelestialBody.DoubleVector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)
     {
         //A Changer vers un Action ou un FUNC pour eviter d appeler l appel d une fonction
         return GlobalContainer.GetGravityAcceleration(point, out strongestGravitationalBody, ignoreBody);
     }
 
-    public Vector3 GetBodyAcceleration(CelestialBody body, Vector3 point)
+    public CelestialBody.DoubleVector3 GetBodyAcceleration(CelestialBody body, CelestialBody.DoubleVector3 point)
     {
         return GlobalContainer.GetBodyAcceleration(body, point);
     }
