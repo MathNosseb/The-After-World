@@ -22,6 +22,8 @@ public class StarTest : MonoBehaviour
     Texture2D spectrum;
     bool settingsUpdated;
 
+    public Transform playerCoords;
+
     void Start()
     {
         Init(true);
@@ -39,6 +41,8 @@ public class StarTest : MonoBehaviour
             Init(settingsUpdated);
             settingsUpdated = false;
         }
+        //garder les étoiles centrées
+        transform.position = playerCoords.position;
     }
 
     void Init(bool regenerateMesh)
