@@ -15,7 +15,7 @@ public class SpaceShipContainer : MonoBehaviour
     SpaceShipController spaceShipController;
     SpaceShipGravity spaceShipGravity;
     SpaceShipSoundSystem spaceShipSoundSystem;
-    public SoundsManager soundsManager;
+    [HideInInspector]public SoundsManager soundsManager;
 
     [Header("SpaceShip Objects")]
     public ParticleSystem gaz;

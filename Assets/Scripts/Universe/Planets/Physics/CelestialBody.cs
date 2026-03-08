@@ -1,10 +1,14 @@
 using System;
 using UnityEngine;
 
+public enum BodyType { Planet, Sun, Moon, Object };
 
 [RequireComponent(typeof(Rigidbody))]
 public class CelestialBody : MonoBehaviour
 {
+    [Header("Personalisation")]
+    public string Name;
+    public BodyType BodyType;
 
     [Header("Références")]
     GameObject sun;
@@ -38,8 +42,7 @@ public class CelestialBody : MonoBehaviour
     [Header("Debug")]
     public Color colorPath;
 
-    [Header("Personalisation")]
-    public string Name;
+    
 
     
 

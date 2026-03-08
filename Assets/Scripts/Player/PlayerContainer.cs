@@ -137,7 +137,7 @@ public class PlayerContainer : MonoBehaviour
         lastInSpaceShip = inSpaceShip;
 
         //placement crosshair et information de vol
-        CelestialBody planet = GlobalContainer.simulation.GetBodyByIndex(selectedIndex);
+        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(selectedIndex);
         Vector3 position = planet.GetVector3Position();
         Vector3 screenPos = Camera.main.WorldToScreenPoint(position);
 

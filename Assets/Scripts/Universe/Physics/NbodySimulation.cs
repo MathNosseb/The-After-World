@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class NbodySimulation : MonoBehaviour
@@ -5,9 +6,19 @@ public class NbodySimulation : MonoBehaviour
     [HideInInspector]
     public CelestialBody[] bodies;
 
+    List<CelestialBody> planets = new List<CelestialBody>();
+
     void Awake()
     {
         bodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
+
+        foreach (var bodi in bodies)
+        {
+            if (bodi.BodyType == BodyType.Planet)
+            {
+                planets.Add(bodi);
+            }
+        }
     }
 
     void FixedUpdate()
@@ -29,6 +40,13 @@ public class NbodySimulation : MonoBehaviour
         if (index < 0) index = 0;                  // éviter négatif
         if (index >= bodies.Length) index = bodies.Length - 1; // dernier élément valide
         return bodies[index];
+    }
+
+    public CelestialBody GetPlanetByIndex(int index)
+    {
+        if (index < 0) index = 0;                  // éviter négatif
+        if (index >= planets.Count) index = planets.Count - 1;
+        return planets[index];
     }
 
     public CelestialBody.DoubleVector3 GetBodyAcceleration(CelestialBody body, CelestialBody.DoubleVector3 point, float GravityConstant)
