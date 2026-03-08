@@ -6,6 +6,8 @@ public class FloatingPoint : MonoBehaviour
     CelestialBody[] bodies;
     CelestialBody.DoubleVector3[] positions;
     CelestialBody.DoubleVector3[] velocities;
+    public GameObject[] StaticObjects;
+    Vector3[] StaticObjectsPositions;
 
     Vector3 spaceShipPosition;
     Vector3 spaceShipVelocity;
@@ -27,6 +29,7 @@ public class FloatingPoint : MonoBehaviour
         positions = new CelestialBody.DoubleVector3[bodies.Length];
         velocities = new CelestialBody.DoubleVector3[bodies.Length];
         playerContainer = player.GetComponent<PlayerContainer>();
+        StaticObjectsPositions = new Vector3[StaticObjects.Length];
         
     }
 
@@ -47,6 +50,11 @@ public class FloatingPoint : MonoBehaviour
             //assignation vitesses et positions des corps
             positions[bodiIndex] = bodies[bodiIndex].GetDoubleVector3Position();
             velocities[bodiIndex] = bodies[bodiIndex].GetDoubleVector3Velocity();
+        }
+
+        for (int staticObjectIndex = 0; staticObjectIndex < StaticObjects.Length; staticObjectIndex++)
+        {
+            StaticObjectsPositions[staticObjectIndex] = StaticObjects[staticObjectIndex].transform.position;
         }
 
         playerPosition = Rb.position;
@@ -71,7 +79,7 @@ public class FloatingPoint : MonoBehaviour
         CelestialBody.DoubleVector3 playerCoordinate = new CelestialBody.DoubleVector3(
             playerPosition.x,
             playerPosition.y,
-            playerPosition.z
+            playerPosition.z 
         );
 
         //on deplace chaque objets
@@ -79,6 +87,11 @@ public class FloatingPoint : MonoBehaviour
         {
             bodies[bodiIndex].ChangePosition(positions[bodiIndex] - playerCoordinate);
             bodies[bodiIndex].currentVelocity = velocities[bodiIndex];
+        }
+
+        for (int staticObjectIndex = 0; staticObjectIndex < StaticObjects.Length; staticObjectIndex++)
+        {
+            StaticObjects[staticObjectIndex].transform.position = (StaticObjectsPositions[staticObjectIndex] - playerPosition);
         }
 
         if (!playerContainer.inSpaceShip)

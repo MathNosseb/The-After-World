@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-
 [RequireComponent(typeof(PlayerContainer))]
 public class PlayerUI : MonoBehaviour
 {
@@ -21,16 +20,23 @@ public class PlayerUI : MonoBehaviour
     public Text movementType;
     public Text FPS;
 
+    [Header("visé de planetes")]
+    public RectTransform crosshair;
+    [HideInInspector] public Vector2 screenPosCrosshair;
+    
+
     [Header("Canvas")]
     public Canvas canvas;
 
     [Header("References")]
     PlayerContainer playerContainer;
+    [HideInInspector] public Container GlobalContainer;
 
 
     private void Awake()
     {
         playerContainer = GetComponent<PlayerContainer>();
+        GlobalContainer = playerContainer.GlobalContainer;
     }
 
     public Notifications SendNotification(float coordX, float coordY, float time, string text)
@@ -68,9 +74,11 @@ public class PlayerUI : MonoBehaviour
         Destroy(notif.GetGameObject());
     }
 
+    
 
     private void Update()
     {
+
         CelestialBody reference = playerContainer.reference;
         float velocity = playerContainer.GetReferenceRigidbody().linearVelocity.magnitude;
 
@@ -92,6 +100,12 @@ public class PlayerUI : MonoBehaviour
 
         
         FPS.text = (int)playerContainer.GetFps(Time.deltaTime) + " FPS";
+
+        //placement du crosshair sur une planete
+       
+
+        crosshair.anchoredPosition = screenPosCrosshair;
+
 
     }
 

@@ -14,7 +14,7 @@ using UnityEngine;
 public class PlayerContainer : MonoBehaviour
 {
     [Header("Global References")]
-    [SerializeField] private Container GlobalContainer;
+    public Container GlobalContainer;
 
     [Header("Player References")]
     PlayerController PlayerController;
@@ -40,8 +40,6 @@ public class PlayerContainer : MonoBehaviour
     [HideInInspector] public GameObject playerFixedPoint;
     [HideInInspector] public Rigidbody spaceShipRB;
 
-
-
     [Header("Player Parameters")]
     [SerializeField] private float sensibility = 250f;
     [SerializeField] private float airWalkSpeed = 5f;
@@ -58,6 +56,12 @@ public class PlayerContainer : MonoBehaviour
 
     //events
     public event Action<bool> OnChangementSpaceShip;
+
+    [Header("visé de planetes")]
+    
+    public int selectedIndex;
+    int lastSelectedIndex;
+    Notifications selectedPlanetNotif;
     
 
     public void Awake()
@@ -114,7 +118,7 @@ public class PlayerContainer : MonoBehaviour
             interactionNotif = PlayerUI.SendNotification(500f, 200f, -1f, "press F for interact");
         }else if ((!playerInteractionSystem.canInteract && interactionNotif != null) || (inSpaceShip && interactionNotif != null))
         {
-            //si on eput pas interagir mais que on a la norif ou que on est dans le vaisseau
+            //si on eput pas interagir mais que on a la notif ou que on est dans le vaisseau
             //on detruit la notif d interaction
             PlayerUI.DestroyNotificationNow(interactionNotif);
             interactionNotif = null;
@@ -132,7 +136,47 @@ public class PlayerContainer : MonoBehaviour
         }
         lastInSpaceShip = inSpaceShip;
 
-        
+        //placement crosshair et information de vol
+        CelestialBody planet = GlobalContainer.simulation.GetBodyByIndex(selectedIndex);
+        Vector3 position = planet.GetVector3Position();
+        Vector3 screenPos = Camera.main.WorldToScreenPoint(position);
+
+        bool isBehind = screenPos.z < 0;
+
+        bool offScreen =
+            screenPos.x < 0 || screenPos.x > Screen.width ||
+            screenPos.y < 0 || screenPos.y > Screen.height;
+
+        if (screenPos.z < 0)
+        {
+            screenPos *= -1;
+        }
+        float margin = 50f;
+        screenPos.x = Mathf.Clamp(screenPos.x, margin, Screen.width - margin);
+        screenPos.y = Mathf.Clamp(screenPos.y, margin, Screen.height - margin);     
+
+        Vector2 uiPos;
+
+        RectTransform canvasRect = PlayerUI.canvas.GetComponent<RectTransform>();
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            screenPos,
+            PlayerUI.canvas.worldCamera,
+            out uiPos
+        );
+
+        PlayerUI.screenPosCrosshair = uiPos;
+    
+        if (lastSelectedIndex != selectedIndex)
+        {
+            if (selectedPlanetNotif != null)
+            {
+                PlayerUI.DestroyNotificationNow(selectedPlanetNotif);
+            }
+            selectedPlanetNotif = PlayerUI.SendNotification(1000f,500f, 3f, "vous sélectionnez " + planet.Name);
+            lastSelectedIndex = selectedIndex;
+        }
         
     }
 

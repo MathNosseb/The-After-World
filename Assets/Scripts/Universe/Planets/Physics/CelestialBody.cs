@@ -37,6 +37,9 @@ public class CelestialBody : MonoBehaviour
     [Header("Debug")]
     public Color colorPath;
 
+    [Header("Personalisation")]
+    public string Name;
+
     
 
     #if UNITY_EDITOR

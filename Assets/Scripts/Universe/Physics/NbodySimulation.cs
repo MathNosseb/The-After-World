@@ -7,7 +7,7 @@ public class NbodySimulation : MonoBehaviour
 
     void Awake()
     {
-        bodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.None);
+        bodies = FindObjectsByType<CelestialBody>(FindObjectsSortMode.InstanceID);
     }
 
     void FixedUpdate()
@@ -22,6 +22,13 @@ public class NbodySimulation : MonoBehaviour
         {
             bodies[i].UpdatePosition(dt);
         }
+    }
+
+    public CelestialBody GetBodyByIndex(int index)
+    {
+        if (index < 0) index = 0;                  // éviter négatif
+        if (index >= bodies.Length) index = bodies.Length - 1; // dernier élément valide
+        return bodies[index];
     }
 
     public CelestialBody.DoubleVector3 GetBodyAcceleration(CelestialBody body, CelestialBody.DoubleVector3 point, float GravityConstant)
