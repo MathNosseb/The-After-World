@@ -16,6 +16,7 @@ public class CelestialBody : MonoBehaviour
     [Header("Paramètres liés à la physique")]
     public float surfaceGravity;
     public float radius;
+    public float density;
     public bool fix = false;
     public float distanceBeforeRotation;
     public float jitteringStrength;
