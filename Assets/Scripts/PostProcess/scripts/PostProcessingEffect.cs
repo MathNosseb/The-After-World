@@ -12,7 +12,7 @@ public abstract class PostProcessingEffect : ScriptableObject
     {
         return null;
     }
-
+  
     public virtual void ReleaseBuffers()
     {
 
