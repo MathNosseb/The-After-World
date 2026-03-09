@@ -5,7 +5,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("References")]
     PlayerContainer playerContainer;
-
+    
     [Header("Ground Detection")]
     public bool grounded { get; private set; }
     public GameObject groundRefGameObject { get; private set; }
@@ -84,23 +84,33 @@ public class PlayerController : MonoBehaviour
 
     public void HandleMouse(Vector3 mouse)
     {
-        //s execute uniquement si on est pas dans le vaisseau
-        //gère la rotation du joueur dans l espace et sur une planete
+        // s execute uniquement si on est pas dans le vaisseau
         if (playerContainer.inSpaceShip) return;
-        Quaternion axeYRotation = Quaternion.Euler(Vector3.up * mouse.x * Time.deltaTime * playerContainer.Sensibility * rotateSpeedMultiplier);
+
+        float yaw = mouse.x * playerContainer.Sensibility * rotateSpeedMultiplier * Time.deltaTime;
+        float pitch = mouse.y * playerContainer.Sensibility * rotateSpeedMultiplier * Time.deltaTime;
+
+        // rotation horizontale du joueur
+        Quaternion axeYRotation = Quaternion.Euler(Vector3.up * yaw);
         playerContainer.PlayerRB.MoveRotation(playerContainer.PlayerRB.rotation * axeYRotation);
 
-        verticalLookRotation += mouse.y * Time.deltaTime * playerContainer.Sensibility * rotateSpeedMultiplier;//direction en Z
-        Quaternion axeZRotation = Quaternion.Euler(Vector3.left * mouse.y * Time.deltaTime * playerContainer.Sensibility * rotateSpeedMultiplier);
+        // accumulation rotation verticale
+        verticalLookRotation += pitch;
 
         if (playerContainer.influenceByBody)
         {
-            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -60f, 60f);//rotation cam (mouvemet planeteraire) -60,60 limite du mouvement
-            playerContainer.cameraT.localEulerAngles = Vector3.left * verticalLookRotation;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -60f, 60f);
+
+            // rotation caméra uniquement
+            playerContainer.cameraT.localRotation = Quaternion.Euler(-verticalLookRotation, 0f, 0f);
         }
         else
         {
-            playerContainer.cameraT.localRotation = Quaternion.identity;//on fixe la cam sur un axe 0,0,0
+            // caméra fixe
+            playerContainer.cameraT.localRotation = Quaternion.identity;
+
+            // rotation verticale du joueur (espace)
+            Quaternion axeZRotation = Quaternion.Euler(Vector3.left * pitch);
             playerContainer.PlayerRB.MoveRotation(playerContainer.PlayerRB.rotation * axeZRotation);
         }
     }

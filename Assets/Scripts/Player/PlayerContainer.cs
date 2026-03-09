@@ -39,6 +39,7 @@ public class PlayerContainer : MonoBehaviour
     Notifications interactionNotif;
     [HideInInspector] public GameObject playerFixedPoint;
     [HideInInspector] public Rigidbody spaceShipRB;
+    [HideInInspector] public GameObject spaceShipOutpoint;
 
     [Header("Player Parameters")]
     [SerializeField] private float sensibility = 250f;
@@ -118,7 +119,7 @@ public class PlayerContainer : MonoBehaviour
             interactionNotif = PlayerUI.SendNotification(500f, 200f, -1f, "press F for interact");
         }else if ((!playerInteractionSystem.canInteract && interactionNotif != null) || (inSpaceShip && interactionNotif != null))
         {
-            //si on eput pas interagir mais que on a la notif ou que on est dans le vaisseau
+            //si on ne peut pas interagir mais que on a la notif ou que on est dans le vaisseau
             //on detruit la notif d interaction
             PlayerUI.DestroyNotificationNow(interactionNotif);
             interactionNotif = null;
@@ -131,6 +132,7 @@ public class PlayerContainer : MonoBehaviour
             //changement d etat
             //changement sortie -> entrée
             //changement entrée -> sortie
+            Debug.Log("invocation");
             OnChangementSpaceShip?.Invoke(inSpaceShip);
             
         }

@@ -12,8 +12,8 @@ public class InputManager : MonoBehaviour
     {
 
         //Mouse
-        float rollInput = (((Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.JoystickButton4))? 1f : 0f) - ((Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.JoystickButton5))? 1f : 0f)) * Time.deltaTime;
-        Vector3 mouse = new Vector3(Input.GetAxisRaw("Mouse X") * Time.deltaTime, Input.GetAxisRaw("Mouse Y") * Time.deltaTime, rollInput).normalized;
+        float rollInput = (((Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.JoystickButton4))? 1f : 0f) - ((Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.JoystickButton5))? 1f : 0f));
+        Vector3 mouse = new Vector3(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"), rollInput);
         OnMouseMove?.Invoke(mouse);//declenche l'event si si qqn est abonn�e
 
         //Move

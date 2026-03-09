@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 [RequireComponent(typeof(SpaceShipContainer))]
 public class SpaceShipController : MonoBehaviour, IInteractable
@@ -23,10 +24,13 @@ public class SpaceShipController : MonoBehaviour, IInteractable
     bool burning = false;
 
 
+
     private void Awake()
     {
         spaceShipContainer = GetComponent<SpaceShipContainer>();
-        
+        targetRotation = transform.rotation;
+        smoothRot = transform.rotation;
+
     }
 
     private void Update()
@@ -42,6 +46,8 @@ public class SpaceShipController : MonoBehaviour, IInteractable
         }
         else
             groundRefGameObject = null;
+
+        
     }
 
     private void FixedUpdate()
@@ -58,15 +64,17 @@ public class SpaceShipController : MonoBehaviour, IInteractable
 
         spaceShipContainer.SpaceShipRB.MoveRotation(smoothRot);
 
+
+
     }
 
     public void HandleRotation(Vector3 mouse)
     {
         if (spaceShipContainer.playerInSpaceShip)
         {
-            float yawInput = mouse.x * spaceShipContainer.Sensibility * rotationMultipler / 100;
-            float pitchInput = mouse.y * spaceShipContainer.Sensibility * rotationMultipler / 100;
-            float rollInput = mouse.z; //qwerty (50f = sensi)
+            float yawInput = mouse.x * spaceShipContainer.Sensibility * rotationMultipler * Time.deltaTime;
+            float pitchInput = mouse.y * spaceShipContainer.Sensibility * rotationMultipler * Time.deltaTime;
+            float rollInput = mouse.z * spaceShipContainer.Sensibility * rotationMultipler * Time.deltaTime; //qwerty (50f = sensi)
 
             //Calculate rotation 
             var yaw = Quaternion.AngleAxis(yawInput, transform.up);
@@ -80,6 +88,50 @@ public class SpaceShipController : MonoBehaviour, IInteractable
         
     }
 
+    GameObject detectOutput()
+    {
+        GameObject validOutPoint = null;
+        //detecter le lieu de sortie adapté
+        foreach (var outpoint in spaceShipContainer.OutPoints)
+        {
+            Debug.Log(outpoint.gameObject.name);
+            Vector3 dir = (outpoint.transform.position - transform.position).normalized;
+            float distance = Vector3.Distance(transform.position, outpoint.transform.position);
+
+            Ray rayOut = new Ray(transform.position, (outpoint.transform.position - transform.position).normalized);
+            RaycastHit hitOut;
+            if (Physics.Raycast(rayOut, out hitOut, distance))
+            {
+                if (hitOut.collider != null)
+                {
+                    if (hitOut.collider.gameObject == spaceShipContainer.SpaceShipGO)
+                    {
+                        // touche seulement le vaisseau → on considère le point comme valide
+                        validOutPoint = outpoint;
+                        Debug.DrawRay(transform.position, dir * distance, Color.green);
+                        break;
+                    }
+                    else
+                    {
+                        // touche un autre obstacle → point invalide
+                        Debug.DrawRay(transform.position, dir * distance, Color.red);
+                        continue;
+                    }
+                }
+
+            }
+            else
+            {
+                // rien touché → point valide
+                validOutPoint = outpoint;
+                Debug.DrawRay(transform.position, dir * distance, Color.green);
+                break;
+            }
+        }
+
+        return validOutPoint;
+    }
+
     public void HandleBurning(bool burn)
     {
         burning = burn;
@@ -91,19 +143,31 @@ public class SpaceShipController : MonoBehaviour, IInteractable
 
     public void Interact(PlayerContainer playerContainer)
     {
+        Debug.Log("aaaaaaa");
         //A changer vers qqchose de plus sécuriser
-        playerContainer.inSpaceShip = !playerContainer.inSpaceShip;
-        playerInSpaceShip = playerContainer.inSpaceShip;
-        if (playerInSpaceShip)
+        if (!playerContainer.inSpaceShip)
         {
             playerContainer.playerFixedPoint = spaceShipContainer.playerHolder;
             playerContainer.spaceShipRB = spaceShipContainer.SpaceShipRB;
+            playerContainer.inSpaceShip = true;
+
         }
         else
         {
-            playerContainer.playerFixedPoint = null;
-            playerContainer.spaceShipRB = null;
+            GameObject output = detectOutput();
+            
+            //on verifie qu on peut sortir
+            if (output != null)
+            {
+                playerContainer.spaceShipOutpoint = output;
+                playerContainer.playerFixedPoint = null;
+                playerContainer.spaceShipRB = null;
+                playerContainer.inSpaceShip = false;
+            }
+            //on peut pas sortir -> aucune sortie valide
+            Debug.Log("aucune sortie valide");
         }
+        playerInSpaceShip = playerContainer.inSpaceShip;
             
     }
 }
