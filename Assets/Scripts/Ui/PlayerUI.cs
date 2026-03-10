@@ -33,6 +33,10 @@ public class PlayerUI : MonoBehaviour
     [HideInInspector] public Container GlobalContainer;
 
 
+    //test
+    Vector3 lastVelocity;
+
+
     private void Awake()
     {
         playerContainer = GetComponent<PlayerContainer>();
@@ -109,5 +113,7 @@ public class PlayerUI : MonoBehaviour
 
     }
 
-    
+
+
+
 }

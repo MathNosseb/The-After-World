@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40f155df9f663ce46836234e7fe51d31, type: 3}
-  m_Name: fakeMoon
+  m_Name: OranyxAtmosphere
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: c924c2546d0d5054699c5a41ce6f04e9, type: 3}
   opticalDepthCompute: {fileID: 7200000, guid: d8c59144778685d49aca56e2de2b9f7e, type: 3}
-  planetCentre: {x: 29319, y: 0, z: 0}
-  atmosphereRadius: 0
-  planetRadius: 4.96
-  densityFalloff: 7.26
-  numOpticalDepthPoints: 131.2
-  numInScatteringPoints: 14.31
-  waveLengths: {x: 434.6, y: 821.6, z: 524.4}
-  scatteringStrength: 21
-  lightDir: {x: -0.99999523, y: -0.00060845044, z: -0.0030291444}
+  planetCentre: {x: -35781.37, y: 2930.4119, z: -3515.6555}
+  atmosphereRadius: 271.7
+  planetRadius: 1.12
+  densityFalloff: 4.48
+  numOpticalDepthPoints: 118.5
+  numInScatteringPoints: 23.5
+  waveLengths: {x: 450, y: 540, z: 650}
+  scatteringStrength: 4.32
+  lightDir: {x: 0.10789425, y: -0.000000415211, z: -0.9941624}
   textureSize: 256
   blueNoise: {fileID: 2800000, guid: 9cbb9cec803df594792795f48acc420c, type: 3}
-  ditherStrength: 0.17
-  ditherScale: 6.03
-  intensity: 3.5
+  ditherStrength: 0.89
+  ditherScale: 3
+  intensity: 1.39

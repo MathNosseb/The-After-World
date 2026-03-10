@@ -19,7 +19,7 @@ public class CelestialBody : MonoBehaviour
 
     [Header("Paramètres liés à la physique")]
     public float surfaceGravity;
-    public float radius;
+    public float diametre;
     public float density;
     public bool fix = false;
     public float distanceBeforeRotation;
@@ -54,7 +54,7 @@ public class CelestialBody : MonoBehaviour
         sun = GameObject.Find("Sun");
 
         //la masse de la planete est calculé au lancement du jeu
-        mass = surfaceGravity * radius * radius / constantValue.GravityConstant;
+        mass = surfaceGravity * diametre * diametre / constantValue.GravityConstant;
     }
     #endif
 
@@ -77,7 +77,7 @@ public class CelestialBody : MonoBehaviour
         if (sunCelestial == null) {Debug.LogError("Le Celestial soleil est introuvable, assurez vous d avoir un CelestialBody");}
 
         //la masse de la planete est calculé au lancement du jeu
-        mass = surfaceGravity * radius * radius / constantValue.GravityConstant;
+        mass = surfaceGravity * diametre * diametre / constantValue.GravityConstant;
 
         //on initialise la vitesse de départ pour "lancer" la planete
         currentVelocity = initialVelocity;
@@ -139,6 +139,25 @@ public class CelestialBody : MonoBehaviour
             currentVelocity += acceleration * timeStep;
         }
     }
+
+    #if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        // Sphère d'influence (zone où le joueur est attiré)
+        Gizmos.color = new Color(colorPath.r, colorPath.g, colorPath.b, 0.15f);
+        Gizmos.DrawSphere(transform.position, distanceBeforeRotation);
+
+        // Contour de la sphère d'influence
+        Gizmos.color = colorPath;
+        Gizmos.DrawWireSphere(transform.position, distanceBeforeRotation);
+
+        // Rayon de la planète
+        Gizmos.color = new Color(1f, 1f, 1f, 0.05f);
+        Gizmos.DrawSphere(transform.position, diametre/2);
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, diametre/2);
+    }
+    #endif
 
     public void UpdatePosition(float timeStep)
     {
