@@ -7,6 +7,8 @@ public class InputManager : MonoBehaviour
     public event Action<Vector3> OnMove;
     public event Action<bool> OnJump;
     public event Action OnInteract;
+    public event Action OnPadUp;
+    public event Action OnPadDown;
 
     private void Update()
     {
@@ -35,6 +37,19 @@ public class InputManager : MonoBehaviour
         //Interact
         if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.JoystickButton2))
             OnInteract?.Invoke();
+
+        //up
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            // appui unique
+            OnPadUp?.Invoke();
+        }
+        //down
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            // appui unique
+            OnPadDown?.Invoke();
+        }
 
         for (int i = 0; i < 20; i++)
         {

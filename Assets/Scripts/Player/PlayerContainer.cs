@@ -57,6 +57,8 @@ public class PlayerContainer : MonoBehaviour
 
     //events
     public event Action<bool> OnChangementSpaceShip;
+    public event Action OnPadUp;
+    public event Action OnPadDown;
 
     [Header("visé de planetes")]
     
@@ -108,7 +110,10 @@ public class PlayerContainer : MonoBehaviour
             GlobalContainer.inputManager.OnMove += PlayerController.HandleMove;
             GlobalContainer.inputManager.OnJump += PlayerController.HandleJump;
             GlobalContainer.inputManager.OnInteract += playerInteractionSystem.OnInteract;
+            GlobalContainer.inputManager.OnPadUp += HandlePadUp;
+            GlobalContainer.inputManager.OnPadDown += HandlePadDown;
             OnChangementSpaceShip += PlayerSpaceShipManager.HandleChangementSpaceShip;
+            
             suscribedInputs = true;
         }
 
@@ -188,7 +193,32 @@ public class PlayerContainer : MonoBehaviour
         GlobalContainer.inputManager.OnMove -= PlayerController.HandleMove;
         GlobalContainer.inputManager.OnJump -= PlayerController.HandleJump;
         GlobalContainer.inputManager.OnInteract -= playerInteractionSystem.OnInteract;
+        GlobalContainer.inputManager.OnPadUp -= HandlePadUp;
+        GlobalContainer.inputManager.OnPadDown -= HandlePadDown;
         OnChangementSpaceShip -= PlayerSpaceShipManager.HandleChangementSpaceShip;
+    }
+
+    void HandlePadUp()
+    {
+        selectedIndex += 1;
+    }
+    void HandlePadDown()
+    {
+        if (selectedIndex <= 0) { return; }
+        selectedIndex -= 1;
+    }
+
+    public float GetSelectedPlanetDistance()
+    {
+        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(selectedIndex);
+        float dst = Vector3.Distance(planet.GetVector3Position(), PlayerRB.position);
+        return dst;
+    }
+
+    public string GetSelectedPlanetName()
+    {
+        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(selectedIndex);
+        return planet.Name;
     }
 
     public Vector3 GetGravityAcceleration(Vector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)

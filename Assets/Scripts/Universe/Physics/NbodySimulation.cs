@@ -44,8 +44,8 @@ public class NbodySimulation : MonoBehaviour
 
     public CelestialBody GetPlanetByIndex(int index)
     {
-        if (index < 0) index = 0;                  // éviter négatif
-        if (index >= planets.Count) index = planets.Count - 1;
+        index %= planets.Count;
+        
         return planets[index];
     }
 

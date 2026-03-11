@@ -23,7 +23,8 @@ public class PlayerUI : MonoBehaviour
     [Header("visé de planetes")]
     public RectTransform crosshair;
     [HideInInspector] public Vector2 screenPosCrosshair;
-    
+    public Text CrosshairDetails;
+
 
     [Header("Canvas")]
     public Canvas canvas;
@@ -32,9 +33,6 @@ public class PlayerUI : MonoBehaviour
     PlayerContainer playerContainer;
     [HideInInspector] public Container GlobalContainer;
 
-
-    //test
-    Vector3 lastVelocity;
 
 
     private void Awake()
@@ -106,9 +104,25 @@ public class PlayerUI : MonoBehaviour
         FPS.text = (int)playerContainer.GetFps(Time.deltaTime) + " FPS";
 
         //placement du crosshair sur une planete
-       
-
         crosshair.anchoredPosition = screenPosCrosshair;
+        float distanceSelectedPlanet = playerContainer.GetSelectedPlanetDistance();
+        string distanceNotation = "m";
+        if (distanceSelectedPlanet >=1000f)
+        {
+            distanceNotation = "Km";
+            distanceSelectedPlanet /= 1000f;
+        }
+        if (distanceSelectedPlanet >= 1000f)
+        {
+            distanceNotation = "Mm";
+            distanceSelectedPlanet /= 1000f;
+        }
+        if (distanceSelectedPlanet >= 1000f)
+        {
+            distanceNotation = "Gm";
+            distanceSelectedPlanet /= 1000f;
+        }
+        CrosshairDetails.text = playerContainer.GetSelectedPlanetName() + " " + distanceSelectedPlanet.ToString("F2") + distanceNotation;
 
 
     }

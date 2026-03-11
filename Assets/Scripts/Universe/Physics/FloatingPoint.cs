@@ -43,7 +43,7 @@ public class FloatingPoint : MonoBehaviour
         Rb = playerContainer.GetReferenceRigidbody();
         Debug.Log("Recentrage de l univers " + Rb);
 
-        //sauvegarde des paramètres
+        //sauvegarde des paramètres 
 
         for (int bodiIndex = 0; bodiIndex < bodies.Length; bodiIndex++)
         {
