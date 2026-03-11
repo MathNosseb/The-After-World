@@ -1,6 +1,4 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 [RequireComponent(typeof(SpaceShipContainer))]
 public class SpaceShipController : MonoBehaviour, IInteractable
@@ -14,7 +12,7 @@ public class SpaceShipController : MonoBehaviour, IInteractable
 
     [Header("Rotation")]
     public float rotationMultipler = 1f;
-    [Range(1f, 100f)]
+    [Range(1f, 100f)] 
     public int rotationSmoothEffect;
     Quaternion targetRotation = Quaternion.identity;
     Quaternion smoothRot = Quaternion.identity;

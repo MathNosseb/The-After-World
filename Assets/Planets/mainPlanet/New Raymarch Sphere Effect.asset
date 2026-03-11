@@ -22,9 +22,9 @@ MonoBehaviour:
   numInScatteringPoints: 23.5
   waveLengths: {x: 700, y: 530, z: 460}
   scatteringStrength: 2.82
-  lightDir: {x: -0.992188, y: 0, z: 0.12475186}
+  lightDir: {x: 1.75, y: 2.76, z: 1.83}
   textureSize: 256
   blueNoise: {fileID: 2800000, guid: 9cbb9cec803df594792795f48acc420c, type: 3}
   ditherStrength: 0.89
   ditherScale: 3
-  intensity: 1.39
+  intensity: 1
