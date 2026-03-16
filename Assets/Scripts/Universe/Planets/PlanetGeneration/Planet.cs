@@ -3,55 +3,40 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class Planet : MonoBehaviour
 {
-    
-    public int seed;
-    public float size;
-    [Range(1,100)]
-    public int quality;
-    
-    public bool automaticGenerate;
 
-    [Header("noise")]
-    
-    [Range(0.1f,100)] public float noiseScale1;
-    [Range(0.1f,100)] public float noiseScale2;
-    
+    public Shape shape;
+    [HideInInspector] public bool shapeFoldout;
 
-    private FastNoiseLite _noise;
+    public Shading shading;
+    [HideInInspector] public bool shadingFoldout;
+
+    FastNoiseLite noise;
     MeshCollider meshCollider;
-    private Mesh mesh;
+    Mesh mesh;
 
-
-    int[] triangles;
-
-    void OnValidate()
-    {
-        if (automaticGenerate)
-            Generate();
-    }
 
     void InitNoise()
     {
-        _noise = new FastNoiseLite();
-        _noise.SetSeed(seed);
+        noise = new FastNoiseLite();
+        noise.SetSeed(shape.seed);
     }
 
     float GetPlanetHeight(Vector3 p)
     {
         // ─── ÉTAPE 1 : Forme des continents ───────────────────────────────
         // Basse fréquence, peu d'octaves → grandes masses terrestres
-        _noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-        _noise.SetFractalType(FastNoiseLite.FractalType.FBm);
-        _noise.SetFrequency(0.35f);
-        _noise.SetFractalOctaves(3);
-        _noise.SetFractalGain(0.5f);
-        float continent = _noise.GetNoise(p.x, p.y, p.z); // [-1, 1]
+        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+        noise.SetFrequency(0.35f);
+        noise.SetFractalOctaves(3);
+        noise.SetFractalGain(0.5f);
+        float continent = noise.GetNoise(p.x, p.y, p.z); // [-1, 1]
 
         // ─── ÉTAPE 2 : Océans plats ────────────────────────────────────────
         // Tout ce qui est sous le seuil = fond plat (pas de bruit sous l'eau)
         float seaLevel = -0.05f;
         if (continent < seaLevel)
-            return continent * 0.3f * noiseScale1; // fond marin légèrement vallonné
+            return continent * 0.3f * shape.noiseScale1; // fond marin légèrement vallonné
 
         // ─── ÉTAPE 3 : Plaines ────────────────────────────────────────────
         // Continent émergé mais "écrasé" → zones plates
@@ -62,41 +47,41 @@ public class Planet : MonoBehaviour
         // ─── ÉTAPE 4 : Montagnes ──────────────────────────────────────────
         // Ridged noise haute fréquence, mais MULTIPLIÉ par le masque
         // → montagnes absentes sur les plaines, présentes sur les hauts plateaux
-        _noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-        _noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
-        _noise.SetFrequency(1.2f);
-        _noise.SetFractalOctaves(5);
-        _noise.SetFractalLacunarity(2.2f);
-        _noise.SetFractalGain(0.45f);
+        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
+        noise.SetFrequency(1.2f);
+        noise.SetFractalOctaves(5);
+        noise.SetFractalLacunarity(2.2f);
+        noise.SetFractalGain(0.45f);
 
         // Domain warp : déforme les coordonnées avant d'échantillonner
         // → les chaînes de montagnes s'incurvent naturellement
         float warpStrength = 0.4f;
-        _noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-        _noise.SetFrequency(0.6f);
-        _noise.SetFractalOctaves(2);
-        float wx = _noise.GetNoise(p.x + 100f, p.y, p.z) * warpStrength;
-        float wy = _noise.GetNoise(p.x, p.y + 100f, p.z) * warpStrength;
-        float wz = _noise.GetNoise(p.x, p.y, p.z + 100f) * warpStrength;
+        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        noise.SetFrequency(0.6f);
+        noise.SetFractalOctaves(2);
+        float wx = noise.GetNoise(p.x + 100f, p.y, p.z) * warpStrength;
+        float wy = noise.GetNoise(p.x, p.y + 100f, p.z) * warpStrength;
+        float wz = noise.GetNoise(p.x, p.y, p.z + 100f) * warpStrength;
 
-        _noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-        _noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
-        _noise.SetFrequency(1.2f);
-        _noise.SetFractalOctaves(5);
-        float mountain = _noise.GetNoise(p.x + wx, p.y + wy, p.z + wz);
+        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
+        noise.SetFrequency(1.2f);
+        noise.SetFractalOctaves(5);
+        float mountain = noise.GetNoise(p.x + wx, p.y + wy, p.z + wz);
         mountain = Mathf.Max(0f, mountain); // supprime les valeurs négatives
 
         // ─── ÉTAPE 5 : Masque de montagne séparé ──────────────────────────
         // Les montagnes n'apparaissent que dans certaines zones (pas partout)
-        _noise.SetFractalType(FastNoiseLite.FractalType.FBm);
-        _noise.SetFrequency(0.25f);
-        _noise.SetFractalOctaves(2);
-        float mountainMask = _noise.GetNoise(p.x + 50f, p.y + 50f, p.z + 50f);
+        noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+        noise.SetFrequency(0.25f);
+        noise.SetFractalOctaves(2);
+        float mountainMask = noise.GetNoise(p.x + 50f, p.y + 50f, p.z + 50f);
         mountainMask = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(-0.1f, 0.6f, mountainMask));
 
         // ─── ASSEMBLAGE FINAL ─────────────────────────────────────────────
-        float plains    = continent * noiseScale1;                         // terrain de base plat
-        float mountains = mountain  * mountainMask * landMask * noiseScale2 * 3f; // relief masqué
+        float plains    = continent * shape.noiseScale1;                         // terrain de base plat
+        float mountains = mountain  * mountainMask * landMask * shape.noiseScale2 * 3f; // relief masqué
 
         return plains + mountains;
     }
@@ -110,7 +95,7 @@ public class Planet : MonoBehaviour
 
     Vector3[] CreateVertices(int presetQuality, float radius)
     {
-        if (_noise == null) {InitNoise();}
+        if (noise == null) {InitNoise();}
         int verticesPerFace = (presetQuality + 1) * (presetQuality + 1);
         Vector3[] vertices = new Vector3[verticesPerFace * 6];
 
@@ -150,7 +135,7 @@ public class Planet : MonoBehaviour
                     float noise = GetPlanetHeight(point);
 
                     // noise est dans [-1, 1] → on aplatit les océans
-                    float height = Mathf.Max(0f, noise) * noiseScale1;
+                    float height = Mathf.Max(0f, noise) * shape.noiseScale1;
                     vertices[v++] = point * (radius + noise);
                 }
             }
@@ -161,7 +146,7 @@ public class Planet : MonoBehaviour
 
     int[] CreateTriangles(int presetQuality)
     {
-        triangles = new int[presetQuality * presetQuality * 6 * 6];
+        int[]  triangles = new int[presetQuality * presetQuality * 6 * 6];
 
         int ti = 0;
         int faceOffset = 0;
@@ -195,12 +180,15 @@ public class Planet : MonoBehaviour
     [ContextMenu("Regenerate Dots")]
     public void Generate()
     {
+        InitNoise();
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
-		mesh.name = "Procedural Grid";
-        
-        mesh.vertices = CreateVertices(quality,size);
-        
-        mesh.triangles = CreateTriangles(quality);
+        GetComponent<MeshRenderer>().material = shading.material;
+        mesh.name = "Procedural Grid";
+
+        Debug.Log(shape.quality + shape.radius);
+        mesh.vertices = CreateVertices(shape.quality, shape.radius);
+
+        mesh.triangles = CreateTriangles(shape.quality);
         mesh.RecalculateNormals();
         meshCollider = GetComponent<MeshCollider>();
         meshCollider.sharedMesh = mesh;
