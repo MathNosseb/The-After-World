@@ -20,7 +20,8 @@ public class PlayerContainer : MonoBehaviour
     PlayerController PlayerController;
     PlayerGravity PlayerGravity;
     PlayerInteractionSystem playerInteractionSystem;
-    PlayerUI PlayerUI;
+    public PlayerUI PlayerUI { get; private set; }
+    PlayerCrossHair playerCrossHair;
     PlayerSpaceShipManager PlayerSpaceShipManager;
     public List<Notifications> notifications = new List<Notifications>();
     public MeshRenderer playerMeshRenderer { get; private set; }
@@ -60,35 +61,12 @@ public class PlayerContainer : MonoBehaviour
     public event Action OnPadUp;
     public event Action OnPadDown;
 
-    [Header("visé de planetes")]
     
-    public int selectedIndex;
-    int lastSelectedIndex;
-    Notifications selectedPlanetNotif;
     
 
     public void Awake()
     {
-        PlayerController = GetComponent<PlayerController>();
-        PlayerGravity = GetComponent<PlayerGravity>();
-        playerInteractionSystem = GetComponent<PlayerInteractionSystem>();
-        PlayerUI = GetComponent<PlayerUI>();
-        PlayerSpaceShipManager = GetComponent<PlayerSpaceShipManager>();
-        playerCollider = GetComponent<Collider>();
-        playerMeshRenderer = GetComponent<MeshRenderer>();
-
-        PlayerGO = gameObject;
-        PlayerRB = GetComponent<Rigidbody>();
-
-        //vérifications des composants
-        if (PlayerController == null) Debug.LogError("player FPScontroller = null");
-        if (PlayerGravity == null) Debug.LogError("player PlayerGravity = null");
-        if (playerInteractionSystem == null) Debug.LogError("player playerInteractionSystem = null");
-        if (PlayerUI == null) Debug.LogError("player PlayerUI = null");
-        if (playerCollider == null) Debug.LogError("player playerCollider = null");
-        if (playerMeshRenderer == null) Debug.LogError("player playerMeshRenderer = null");
-        if (PlayerRB == null) Debug.LogError("player PlayerRB = null");
-
+        Init();
     }
 
     private void Start()
@@ -110,8 +88,8 @@ public class PlayerContainer : MonoBehaviour
             GlobalContainer.inputManager.OnMove += PlayerController.HandleMove;
             GlobalContainer.inputManager.OnJump += PlayerController.HandleJump;
             GlobalContainer.inputManager.OnInteract += playerInteractionSystem.OnInteract;
-            GlobalContainer.inputManager.OnPadUp += HandlePadUp;
-            GlobalContainer.inputManager.OnPadDown += HandlePadDown;
+            GlobalContainer.inputManager.OnPadUp += playerCrossHair.HandlePadUp;
+            GlobalContainer.inputManager.OnPadDown += playerCrossHair.HandlePadDown;
             OnChangementSpaceShip += PlayerSpaceShipManager.HandleChangementSpaceShip;
             
             suscribedInputs = true;
@@ -143,47 +121,7 @@ public class PlayerContainer : MonoBehaviour
         }
         lastInSpaceShip = inSpaceShip;
 
-        //placement crosshair et information de vol
-        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(selectedIndex);
-        Vector3 position = planet.GetVector3Position();
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(position);
-
-        bool isBehind = screenPos.z < 0;
-
-        bool offScreen =
-            screenPos.x < 0 || screenPos.x > Screen.width ||
-            screenPos.y < 0 || screenPos.y > Screen.height;
-
-        if (screenPos.z < 0)
-        {
-            screenPos *= -1;
-        }
-        float margin = 50f;
-        screenPos.x = Mathf.Clamp(screenPos.x, margin, Screen.width - margin);
-        screenPos.y = Mathf.Clamp(screenPos.y, margin, Screen.height - margin);     
-
-        Vector2 uiPos;
-
-        RectTransform canvasRect = PlayerUI.canvas.GetComponent<RectTransform>();
-
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvasRect,
-            screenPos,
-            PlayerUI.canvas.worldCamera,
-            out uiPos
-        );
-
-        PlayerUI.screenPosCrosshair = uiPos;
-    
-        if (lastSelectedIndex != selectedIndex)
-        {
-            if (selectedPlanetNotif != null)
-            {
-                PlayerUI.DestroyNotificationNow(selectedPlanetNotif);
-            }
-            selectedPlanetNotif = PlayerUI.SendNotification(1000f,500f, 3f, "vous sélectionnez " + planet.Name);
-            lastSelectedIndex = selectedIndex;
-        }
+        
         
     }
 
@@ -193,31 +131,47 @@ public class PlayerContainer : MonoBehaviour
         GlobalContainer.inputManager.OnMove -= PlayerController.HandleMove;
         GlobalContainer.inputManager.OnJump -= PlayerController.HandleJump;
         GlobalContainer.inputManager.OnInteract -= playerInteractionSystem.OnInteract;
-        GlobalContainer.inputManager.OnPadUp -= HandlePadUp;
-        GlobalContainer.inputManager.OnPadDown -= HandlePadDown;
+        GlobalContainer.inputManager.OnPadUp -= playerCrossHair.HandlePadUp;
+        GlobalContainer.inputManager.OnPadDown -= playerCrossHair.HandlePadDown;
         OnChangementSpaceShip -= PlayerSpaceShipManager.HandleChangementSpaceShip;
     }
 
-    void HandlePadUp()
+    void Init()
     {
-        selectedIndex += 1;
+        PlayerController = GetComponent<PlayerController>();
+        PlayerGravity = GetComponent<PlayerGravity>();
+        playerInteractionSystem = GetComponent<PlayerInteractionSystem>();
+        PlayerUI = GetComponent<PlayerUI>();
+        PlayerSpaceShipManager = GetComponent<PlayerSpaceShipManager>();
+        playerCrossHair = GetComponent<PlayerCrossHair>();
+        playerCollider = GetComponent<Collider>();
+        playerMeshRenderer = GetComponent<MeshRenderer>();
+
+        PlayerGO = gameObject;
+        PlayerRB = GetComponent<Rigidbody>();
+
+        //vérifications des composants
+        if (PlayerController == null) Debug.LogError("player FPScontroller = null");
+        if (PlayerGravity == null) Debug.LogError("player PlayerGravity = null");
+        if (playerInteractionSystem == null) Debug.LogError("player playerInteractionSystem = null");
+        if (PlayerUI == null) Debug.LogError("player PlayerUI = null");
+        if (playerCrossHair == null) Debug.LogError("player playerCrossHair = null");
+        if (playerCollider == null) Debug.LogError("player playerCollider = null");
+        if (playerMeshRenderer == null) Debug.LogError("player playerMeshRenderer = null");
+        if (PlayerRB == null) Debug.LogError("player PlayerRB = null");
     }
-    void HandlePadDown()
-    {
-        if (selectedIndex <= 0) { return; }
-        selectedIndex -= 1;
-    }
+    
 
     public float GetSelectedPlanetDistance()
     {
-        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(selectedIndex);
+        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(playerCrossHair.selectedIndex);
         float dst = Vector3.Distance(planet.GetVector3Position(), PlayerRB.position);
         return dst;
     }
 
     public string GetSelectedPlanetName()
     {
-        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(selectedIndex);
+        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(playerCrossHair.selectedIndex);
         return planet.Name;
     }
 
