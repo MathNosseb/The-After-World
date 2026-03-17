@@ -71,4 +71,12 @@ public class PlayerCrossHair : MonoBehaviour
         if (selectedIndex <= 0) { return; }
         selectedIndex -= 1;
     }
+
+    public void TeleportToSelectedPlanet()
+    {
+        CelestialBody planet = playerContainer.GlobalContainer.simulation.GetPlanetByIndex(selectedIndex);
+        Vector3 position = planet.GetVector3Position();
+        playerContainer.SetVelocityTo(planet.GetDoubleVector3Velocity().convert);
+        playerContainer.TeleportTo(position + new Vector3(0,planet.diametre,0));
+    }
 }

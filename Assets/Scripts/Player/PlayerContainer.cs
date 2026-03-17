@@ -213,4 +213,14 @@ public class PlayerContainer : MonoBehaviour
         return PlayerRB;
     }
 
+    public void TeleportTo(Vector3 newPosition)
+    {
+        PlayerRB.position = newPosition;
+    }
+
+    public void SetVelocityTo(Vector3 newLinearVelocity)
+    {
+        PlayerRB.linearVelocity = newLinearVelocity;
+    }
+
 }
