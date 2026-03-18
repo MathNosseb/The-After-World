@@ -54,7 +54,7 @@ public class CelestialBody : MonoBehaviour
         sun = GameObject.Find("Sun");
 
         //la masse de la planete est calculé au lancement du jeu
-        mass = surfaceGravity * diametre * diametre / constantValue.GravityConstant;
+        mass = surfaceGravity * (diametre/2) * (diametre/2) / constantValue.GravityConstant;
         Debug.Log(Name + " " + mass + "kg");
     }
     #endif
@@ -78,7 +78,7 @@ public class CelestialBody : MonoBehaviour
         if (sunCelestial == null) {Debug.LogError("Le Celestial soleil est introuvable, assurez vous d avoir un CelestialBody");}
 
         //la masse de la planete est calculé au lancement du jeu
-        mass = surfaceGravity * diametre * diametre / constantValue.GravityConstant;
+        mass = surfaceGravity * (diametre/2) * (diametre/2) / constantValue.GravityConstant;
 
         //on initialise la vitesse de départ pour "lancer" la planete
         currentVelocity = initialVelocity;

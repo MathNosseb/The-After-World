@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37bfc8c0d95445b4ebc7b9f2e3eaafad, type: 3}
   m_Name: OranyxShape
   m_EditorClassIdentifier: 
+  planetParameter: 0
   radius: 200
-  quality: 100
+  quality: 64
+  facesQuality: 
   seed: 538
-  noiseScale1: 58.5
-  noiseScale2: 22
+  noiseScale1: 66
+  noiseScale2: 15
+  oceanScale: 0.294

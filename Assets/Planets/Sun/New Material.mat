@@ -40,8 +40,8 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _CellDensity: 1.91
-    - _strenght: 1.36
+    - _CellDensity: 2.54
+    - _strenght: 0.07
     m_Colors:
     - _BaseColor: {r: 0.8690605, g: 0.41848257, b: 0.094284825, a: 0}
     - _CellColor: {r: 1.696772, g: 0.1695598, b: 0.02401087, a: 0}

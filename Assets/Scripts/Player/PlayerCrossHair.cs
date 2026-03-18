@@ -76,7 +76,11 @@ public class PlayerCrossHair : MonoBehaviour
     {
         CelestialBody planet = playerContainer.GlobalContainer.simulation.GetPlanetByIndex(selectedIndex);
         Vector3 position = planet.GetVector3Position();
-        playerContainer.SetVelocityTo(planet.GetDoubleVector3Velocity().convert);
+        bool isKinematic = playerContainer.PlayerRB.isKinematic;
+        playerContainer.PlayerRB.isKinematic = true;
+        
         playerContainer.TeleportTo(position + new Vector3(0,planet.diametre,0));
+        playerContainer.PlayerRB.isKinematic = isKinematic;
+        playerContainer.SetVelocityTo(planet.GetDoubleVector3Velocity().convert);
     }
 }

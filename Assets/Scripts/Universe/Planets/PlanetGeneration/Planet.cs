@@ -1,5 +1,8 @@
 using UnityEngine;
-
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Mathematics;
+using System;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class Planet : MonoBehaviour
 {
@@ -34,7 +37,7 @@ public class Planet : MonoBehaviour
 
         // ─── ÉTAPE 2 : Océans plats ────────────────────────────────────────
         // Tout ce qui est sous le seuil = fond plat (pas de bruit sous l'eau)
-        float seaLevel = -0.05f;
+        float seaLevel = -shape.oceanScale;
         if (continent < seaLevel)
             return continent * 0.3f * shape.noiseScale1; // fond marin légèrement vallonné
 
@@ -135,12 +138,10 @@ public class Planet : MonoBehaviour
                     float noise = GetPlanetHeight(point);
 
                     // noise est dans [-1, 1] → on aplatit les océans
-                    float height = Mathf.Max(0f, noise) * shape.noiseScale1;
                     vertices[v++] = point * (radius + noise);
                 }
             }
         }
-
         return vertices;
     }
 
@@ -175,23 +176,27 @@ public class Planet : MonoBehaviour
         return triangles;
     }
 
-
-
     [ContextMenu("Regenerate Dots")]
     public void Generate()
     {
         InitNoise();
         GetComponent<MeshFilter>().mesh = mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         GetComponent<MeshRenderer>().material = shading.material;
         mesh.name = "Procedural Grid";
 
         Debug.Log(shape.quality + shape.radius);
-        mesh.vertices = CreateVertices(shape.quality, shape.radius);
+        Vector3[] rawVerts = CreateVertices(shape.quality, shape.radius);
+        int[]     rawTris  = CreateTriangles(shape.quality);
 
-        mesh.triangles = CreateTriangles(shape.quality);
+        mesh.vertices  = rawVerts;
+        mesh.triangles = rawTris;
         mesh.RecalculateNormals();
         meshCollider = GetComponent<MeshCollider>();
-        meshCollider.sharedMesh = mesh;
+        if (shape.planetParameter == PlanetParameter.Solid)
+            meshCollider.sharedMesh = mesh;
+        else
+            meshCollider.sharedMesh = null;
         
     }
 
