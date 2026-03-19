@@ -82,7 +82,7 @@ public class AtmosphereGenerator : PostProcessingEffect
             opticalDepthCompute.SetTexture(0, "Result", opticalDepthTexture);
             opticalDepthCompute.SetInt("textureSize", textureSize);
             opticalDepthCompute.SetInt("numOutScatteringSteps", (int)numOpticalDepthPoints);
-            opticalDepthCompute.SetFloat("atmosphereRadius", (1 + atmosphereRadius));
+            opticalDepthCompute.SetFloat("atmosphereRadius", (atmosphereRadius));
             opticalDepthCompute.SetFloat("densityFalloff", densityFalloff);//
             //planetRadius
             opticalDepthCompute.SetFloat("planetRadius", planetRadius); 

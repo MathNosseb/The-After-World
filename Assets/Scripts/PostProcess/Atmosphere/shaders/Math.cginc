@@ -69,6 +69,7 @@ float random(float2 uv)
 			if (dstToSphereFar >= 0) {
 				return float2(dstToSphereNear, dstToSphereFar - dstToSphereNear);
 			}
+			return float2(maxFloat, 0);
 		}
 		// Ray did not intersect sphere
 		return float2(maxFloat, 0);

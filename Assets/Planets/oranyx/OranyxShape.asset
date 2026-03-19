@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planetParameter: 0
   radius: 200
-  quality: 64
-  facesQuality: 
+  baseQuality: 100
   seed: 538
   noiseScale1: 66
   noiseScale2: 15

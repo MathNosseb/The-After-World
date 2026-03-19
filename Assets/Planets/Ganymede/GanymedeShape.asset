@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37bfc8c0d95445b4ebc7b9f2e3eaafad, type: 3}
   m_Name: GanymedeShape
   m_EditorClassIdentifier: 
+  planetParameter: 0
   radius: 150
-  quality: 100
+  baseQuality: 20
   seed: 1609
   noiseScale1: 58
   noiseScale2: 18
+  oceanScale: 0

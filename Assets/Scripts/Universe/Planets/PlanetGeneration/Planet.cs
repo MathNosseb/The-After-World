@@ -1,9 +1,6 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
-using System;
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
+
+[RequireComponent(typeof(PlanetLOD))]
 public class Planet : MonoBehaviour
 {
 
@@ -14,9 +11,8 @@ public class Planet : MonoBehaviour
     [HideInInspector] public bool shadingFoldout;
 
     FastNoiseLite noise;
-    MeshCollider meshCollider;
-    Mesh mesh;
 
+    [HideInInspector] public GameObject[] MeshChilds;
 
     void InitNoise()
     {
@@ -89,18 +85,11 @@ public class Planet : MonoBehaviour
         return plains + mountains;
     }
 
-    [ContextMenu("Clear")]
-    public void Clear()
-    {
-        GetComponent<MeshFilter>().mesh = null;
-    }
-
-
-    Vector3[] CreateVertices(int presetQuality, float radius)
+    public Vector3[] CreateVertices(int presetQuality, float radius, int face)
     {
         if (noise == null) {InitNoise();}
         int verticesPerFace = (presetQuality + 1) * (presetQuality + 1);
-        Vector3[] vertices = new Vector3[verticesPerFace * 6];
+        Vector3[] vertices = new Vector3[verticesPerFace];
 
         Vector3[] directions =
         {
@@ -111,92 +100,111 @@ public class Planet : MonoBehaviour
             Vector3.forward,
             Vector3.back
         };
-
+        Vector3 localUp = directions[face];
+        Vector3 axisA = new Vector3(localUp.y, localUp.z, localUp.x);
+        Vector3 axisB = Vector3.Cross(localUp, axisA);
         int v = 0;
-
-        for (int f = 0; f < 6; f++)
+        for (int y = 0; y <= presetQuality; y++)
         {
-            Vector3 localUp = directions[f];
-            Vector3 axisA = new Vector3(localUp.y, localUp.z, localUp.x);
-            Vector3 axisB = Vector3.Cross(localUp, axisA);
-
-            for (int y = 0; y <= presetQuality; y++)
+            for (int x = 0; x <= presetQuality; x++)
             {
-                for (int x = 0; x <= presetQuality; x++)
-                {
-                    Vector2 percent = new Vector2(x, y) / presetQuality;
+                Vector2 percent = new Vector2(x, y) / presetQuality;
 
-                    // position sur le cube
-                    Vector3 point = localUp +
-                                    (percent.x - 0.5f) * 2f * axisA +
-                                    (percent.y - 0.5f) * 2f * axisB;
+                // position sur le cube
+                Vector3 point = localUp +
+                                (percent.x - 0.5f) * 2f * axisA +
+                                (percent.y - 0.5f) * 2f * axisB;
 
-                    // normalisation pour passer sur la sphère
-                    point = point.normalized;
+                // normalisation pour passer sur la sphère
+                point = point.normalized;
 
-                    // GetNoise prend directement X Y Z → 0 couture, 0 artefact
-                    float noise = GetPlanetHeight(point);
+                // GetNoise prend directement X Y Z → 0 couture, 0 artefact
+                float noise = GetPlanetHeight(point);
 
-                    // noise est dans [-1, 1] → on aplatit les océans
-                    vertices[v++] = point * (radius + noise);
-                }
+                // noise est dans [-1, 1] → on aplatit les océans
+                vertices[v++] = point * (radius + noise);
             }
         }
         return vertices;
     }
 
-    int[] CreateTriangles(int presetQuality)
+    public int[] CreateTriangles(int presetQuality)
     {
-        int[]  triangles = new int[presetQuality * presetQuality * 6 * 6];
+        int faceOffset = 0;
+        int[]  triangles = new int[presetQuality * presetQuality * 6];
 
         int ti = 0;
-        int faceOffset = 0;
-
-        for (int f = 0; f < 6; f++)
+        for (int y = 0; y < presetQuality; y++)
         {
-            for (int y = 0; y < presetQuality; y++)
+            for (int x = 0; x < presetQuality; x++)
             {
-                for (int x = 0; x < presetQuality; x++)
-                {
-                    int vi = faceOffset + x + y * (presetQuality + 1);
+                int vi = faceOffset + x + y * (presetQuality + 1);
 
-                    triangles[ti++] = vi;
-                    triangles[ti++] = vi + 1;
-                    triangles[ti++] = vi + presetQuality + 1;
+                triangles[ti++] = vi;
+                triangles[ti++] = vi + 1;
+                triangles[ti++] = vi + presetQuality + 1;
 
-                    triangles[ti++] = vi + 1;
-                    triangles[ti++] = vi + presetQuality + 2;
-                    triangles[ti++] = vi + presetQuality + 1;
-                }
+                triangles[ti++] = vi + 1;
+                triangles[ti++] = vi + presetQuality + 2;
+                triangles[ti++] = vi + presetQuality + 1;
             }
-
-            faceOffset += (presetQuality + 1) * (presetQuality + 1);
         }
+
+        faceOffset += (presetQuality + 1) * (presetQuality + 1);
 
         return triangles;
     }
 
-    [ContextMenu("Regenerate Dots")]
     public void Generate()
     {
         InitNoise();
-        GetComponent<MeshFilter>().mesh = mesh = new Mesh();
-        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-        GetComponent<MeshRenderer>().material = shading.material;
-        mesh.name = "Procedural Grid";
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+            DestroyImmediate(transform.GetChild(i).gameObject);
+        }
+        MeshChilds = new GameObject[6];
 
-        Debug.Log(shape.quality + shape.radius);
-        Vector3[] rawVerts = CreateVertices(shape.quality, shape.radius);
-        int[]     rawTris  = CreateTriangles(shape.quality);
+        for (int f = 0; f < 6; f++)
+        {
 
-        mesh.vertices  = rawVerts;
-        mesh.triangles = rawTris;
-        mesh.RecalculateNormals();
-        meshCollider = GetComponent<MeshCollider>();
-        if (shape.planetParameter == PlanetParameter.Solid)
-            meshCollider.sharedMesh = mesh;
-        else
-            meshCollider.sharedMesh = null;
+            GameObject child = new GameObject("mesh " + f);
+            MeshChilds[f] = child;
+            //Ajout des composants à l'enfant
+            child.AddComponent<MeshFilter>();
+            child.AddComponent<MeshRenderer>();
+            child.AddComponent<MeshCollider>();
+            child.AddComponent<MeshProperties>();
+
+            MeshProperties meshProperties;
+            meshProperties = child.GetComponent<MeshProperties>();
+
+            meshProperties.quality = shape.baseQuality;
+
+            //setup en temps qu enfant
+            child.transform.parent = transform;
+
+            //creation du mesh
+            Mesh mesh = new Mesh();
+            MeshCollider meshCollider = new MeshCollider();
+            child.GetComponent<MeshFilter>().mesh = mesh;
+            mesh.name = "Procedural Grid " + f;
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            child.GetComponent<MeshRenderer>().material = shading.material;
+            mesh.vertices = CreateVertices(meshProperties.quality, shape.radius, f);
+            mesh.triangles = CreateTriangles(meshProperties.quality);
+
+            mesh.RecalculateNormals();
+            meshCollider = child.GetComponent<MeshCollider>();
+            if (shape.planetParameter == PlanetParameter.Solid)
+                meshCollider.sharedMesh = mesh;
+            else
+                meshCollider.sharedMesh = null;
+
+            child.transform.position = transform.position;
+
+
+        }
+        
         
     }
 

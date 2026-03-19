@@ -60,10 +60,13 @@ public class CelestialBody : MonoBehaviour
     #endif
 
 
-    [ContextMenu("Mettre � jour la position")]
+    [ContextMenu("Atmosphere Update")]
     public void AtmosphereUpdatePosition()
     {
-        if (useAtmosphere) { planetAtmosphere.planetCentre = transform.position; }
+        if (useAtmosphere) { 
+            planetAtmosphere.planetCentre = transform.position; 
+            planetAtmosphere.lightDir = (GameObject.Find("Sun").GetComponent<CelestialBody>().GetDoubleVector3Position() - currentPosition).normalized.convert; 
+        }
     }
 
 

@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37bfc8c0d95445b4ebc7b9f2e3eaafad, type: 3}
   m_Name: ForanShape
   m_EditorClassIdentifier: 
+  planetParameter: 0
   radius: 1000
-  quality: 100
+  baseQuality: 30
   seed: 315
   noiseScale1: 37
   noiseScale2: 43
+  oceanScale: 0

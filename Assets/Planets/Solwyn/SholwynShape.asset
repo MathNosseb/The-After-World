@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37bfc8c0d95445b4ebc7b9f2e3eaafad, type: 3}
   m_Name: SholwynShape
   m_EditorClassIdentifier: 
+  planetParameter: 0
   radius: 600
-  quality: 100
+  baseQuality: 100
   seed: 1317
-  noiseScale1: 65.8
-  noiseScale2: 33.2
+  noiseScale1: 29
+  noiseScale2: 37
+  oceanScale: 0.139
