@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planetParameter: 0
   radius: 200
-  baseQuality: 100
+  maxQuality: 100
+  mediumQuality: 60
+  lowQuality: 10
+  maxQualityDistance: 100
+  mediumQualityDistance: 300
+  lowQualityDistance: 500
   seed: 538
   noiseScale1: 66
   noiseScale2: 15

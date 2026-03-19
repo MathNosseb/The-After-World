@@ -92,7 +92,6 @@ public class SpaceShipController : MonoBehaviour, IInteractable
         //detecter le lieu de sortie adapté
         foreach (var outpoint in spaceShipContainer.OutPoints)
         {
-            Debug.Log(outpoint.gameObject.name);
             Vector3 dir = (outpoint.transform.position - transform.position).normalized;
             float distance = Vector3.Distance(transform.position, outpoint.transform.position);
 
@@ -141,7 +140,6 @@ public class SpaceShipController : MonoBehaviour, IInteractable
 
     public void Interact(PlayerContainer playerContainer)
     {
-        Debug.Log("aaaaaaa");
         //A changer vers qqchose de plus sécuriser
         if (!playerContainer.inSpaceShip)
         {

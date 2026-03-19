@@ -178,7 +178,7 @@ public class Planet : MonoBehaviour
             MeshProperties meshProperties;
             meshProperties = child.GetComponent<MeshProperties>();
 
-            meshProperties.quality = shape.baseQuality;
+            meshProperties.quality = shape.maxQuality;
 
             //setup en temps qu enfant
             child.transform.parent = transform;

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Planet))]
@@ -9,20 +10,46 @@ public class PlanetLOD : MonoBehaviour
 
     int[] currentQuality;
     MeshRenderer[] meshRenderers;
+    MeshProperties[] meshProperties;
+    MeshFilter[] meshFilters;
+    MeshCollider[] meshColliders;
 
     void Start()
     {
         cam = Camera.main;
         planet = GetComponent<Planet>();
+
+
+        meshRenderers = new MeshRenderer[6];
         currentQuality = new int[6];
-        for (int i = 0; i < currentQuality.Length; i++)
-            currentQuality[i] = 10; // LOW
+        meshProperties = new MeshProperties[6];
+        meshFilters = new MeshFilter[6];
+        meshColliders = new MeshCollider[6];
+
+
+    
+            
+
+        //on genere la planete a sa qualté maximale
         planet.Generate();
+
         for (int i = 0; i < 6; i++)
         {
-            SetQuality(i, planet.shape.baseQuality);
+            currentQuality[i] = planet.shape.lowQuality; // LOW
+            meshRenderers[i] = planet.MeshChilds[i].GetComponent<MeshRenderer>();
+            meshProperties[i] = planet.MeshChilds[i].GetComponent<MeshProperties>();
+            meshFilters[i] = planet.MeshChilds[i].GetComponent<MeshFilter>();
+            meshColliders[i] = planet.MeshChilds[i].GetComponent<MeshCollider>();
         }
-        meshRenderers = new MeshRenderer[6];
+
+        if (!useLOD) {return;}
+
+        //si c est pas LOD on change pas la qualité
+        for (int i = 0; i < 6; i++)
+        {
+            SetQuality(i, planet.shape.lowQuality);
+        }
+        
 
         
     }
@@ -34,41 +61,56 @@ public class PlanetLOD : MonoBehaviour
 
         for (int i = 0; i < planet.MeshChilds.Length; i++)
         {
-            if (meshRenderers[i] == null)
-            {
-                meshRenderers[i] = planet.MeshChilds[i].GetComponent<MeshRenderer>();
-            }
 
-            float enterHigh = planet.shape.radius-20f;
-            float exitHigh  = planet.shape.radius+120f;
+
+            float margin = 20f;
+
+            float enterHigh  = planet.shape.maxQualityDistance - margin;
+            float exitHigh   = planet.shape.maxQualityDistance + margin;
+
+            float enterMedium = planet.shape.mediumQualityDistance - margin;
+            float exitMedium  = planet.shape.mediumQualityDistance + margin;
             float sqrDst = (pos - meshRenderers[i].bounds.center).sqrMagnitude;
 
-            if (currentQuality[i] == 10 && sqrDst < enterHigh * enterHigh)
+            if (currentQuality[i] == planet.shape.lowQuality)
             {
-                // passe en HIGH
-                SetQuality(i, 100);
+                if (sqrDst < enterMedium * enterMedium)
+                {
+                    SetQuality(i, planet.shape.mediumQuality); // LOW -> MEDIUM
+                }
             }
-            else if (currentQuality[i] == 100 && sqrDst > exitHigh * exitHigh)
+            else if (currentQuality[i] == planet.shape.mediumQuality)
             {
-                // repasse en LOW
-                SetQuality(i, 10);
+                if (sqrDst < enterHigh * enterHigh)
+                {
+                    SetQuality(i, planet.shape.maxQuality); // MEDIUM -> HIGH
+                }
+                else if (sqrDst > exitMedium * exitMedium)
+                {
+                    SetQuality(i, planet.shape.lowQuality); // MEDIUM -> LOW
+                }
+            }
+            else if (currentQuality[i] == planet.shape.maxQuality)
+            {
+                if (sqrDst > exitHigh * exitHigh)
+                {
+                    SetQuality(i, planet.shape.mediumQuality); // HIGH -> MEDIUM
+                }
             }
         }
     }
 
     void SetQuality(int i, int quality)
     {
-        Debug.Log($"[UPDATE] Chunk {i} de {gameObject.name} : quality = {quality}");
-        MeshProperties meshProperties;
-        meshProperties = planet.MeshChilds[i].GetComponent<MeshProperties>();
-        meshProperties.quality = quality;
-        Mesh mesh = planet.MeshChilds[i].GetComponent<MeshFilter>().mesh;
-        mesh.Clear();
-        
-        mesh.vertices = planet.CreateVertices(meshProperties.quality, planet.shape.radius, i);
-        mesh.triangles = planet.CreateTriangles(meshProperties.quality);
-        mesh.RecalculateNormals();
-        planet.MeshChilds[i].GetComponent<MeshCollider>().sharedMesh = mesh;
+        meshProperties[i].quality = quality;
+        meshFilters[i].mesh.Clear();        
+        meshFilters[i].mesh.vertices = planet.CreateVertices(meshProperties[i].quality, planet.shape.radius, i);
+        meshFilters[i].mesh.triangles = planet.CreateTriangles(meshProperties[i].quality);
+        meshFilters[i].mesh.RecalculateNormals();
+        if (quality >= planet.shape.mediumQuality && planet.shape.planetParameter == PlanetParameter.Solid)
+            meshColliders[i].sharedMesh = meshFilters[i].mesh;
+        else
+            meshColliders[i].sharedMesh = null;
         currentQuality[i] = quality;
     }
 }

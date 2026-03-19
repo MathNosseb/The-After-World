@@ -6,7 +6,16 @@ public class Shape : ScriptableObject
     [Header("Planet Parameters")]
     public PlanetParameter planetParameter;
     public float radius;
-    public int baseQuality;
+
+    [Header("LOD Quality")]
+    public int maxQuality;
+    public int mediumQuality;
+    public int lowQuality;
+
+    [Header("LOD Distance")]
+    public int maxQualityDistance;
+    public int mediumQualityDistance;
+    public int lowQualityDistance;
 
     [Header("Noise")]
     public int seed;
