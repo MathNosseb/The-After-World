@@ -55,7 +55,7 @@ public class CelestialBody : MonoBehaviour
 
         //la masse de la planete est calculé au lancement du jeu
         mass = surfaceGravity * (diametre/2) * (diametre/2) / constantValue.GravityConstant;
-        Debug.Log(Name + " " + mass + "kg");
+        Debug.Log("[INFORMATION] " + Name + " " + mass + "kg");
     }
     #endif
 

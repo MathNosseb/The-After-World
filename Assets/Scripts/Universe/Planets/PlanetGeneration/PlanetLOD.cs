@@ -14,9 +14,9 @@ public class PlanetLOD : MonoBehaviour
     MeshFilter[] meshFilters;
     MeshCollider[] meshColliders;
 
-    void Start()
+    public void Init(Camera camera)
     {
-        cam = Camera.main;
+        cam = camera;
         planet = GetComponent<Planet>();
 
 
@@ -25,10 +25,6 @@ public class PlanetLOD : MonoBehaviour
         meshProperties = new MeshProperties[6];
         meshFilters = new MeshFilter[6];
         meshColliders = new MeshCollider[6];
-
-
-    
-            
 
         //on genere la planete a sa qualté maximale
         planet.Generate();

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class NbodySimulation : MonoBehaviour
 {
-    [HideInInspector]
-    public CelestialBody[] bodies;
+    [HideInInspector] public CelestialBody[] bodies;
+    [SerializeField] Camera cam;
 
     List<CelestialBody> planets = new List<CelestialBody>();
 
@@ -18,6 +18,22 @@ public class NbodySimulation : MonoBehaviour
             {
                 planets.Add(bodi);
             }
+        }
+    }
+
+    void Start()
+    {
+        PlanetLOD[] objects = FindObjectsByType<PlanetLOD>(FindObjectsSortMode.None);
+        for (int i = 0; i < objects.Length; i++)
+        {
+            PlanetLOD planetLOD = objects[i].GetComponentInChildren<PlanetLOD>();
+            if (planetLOD == null)
+            {
+                Debug.LogError("[CUSTOM ERROR] planet LOD est null sur " + objects[i].name);
+                continue;
+            }
+            Debug.Log("[GENERATION] Génération de " + objects[i].name);
+            planetLOD.Init(cam);
         }
     }
 
