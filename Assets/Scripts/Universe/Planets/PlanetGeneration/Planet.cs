@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(PlanetLOD))]
@@ -120,7 +121,7 @@ public class Planet : MonoBehaviour
 
                 // GetNoise prend directement X Y Z → 0 couture, 0 artefact
                 float noise = GetPlanetHeight(point);
-
+             
                 // noise est dans [-1, 1] → on aplatit les océans
                 vertices[v++] = point * (radius + noise);
             }
@@ -189,7 +190,6 @@ public class Planet : MonoBehaviour
             child.GetComponent<MeshFilter>().mesh = mesh;
             mesh.name = "Procedural Grid " + f;
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            child.GetComponent<MeshRenderer>().material = shading.material;
             mesh.vertices = CreateVertices(meshProperties.quality, shape.radius, f);
             mesh.triangles = CreateTriangles(meshProperties.quality);
 
@@ -202,10 +202,17 @@ public class Planet : MonoBehaviour
 
             child.transform.position = transform.position;
 
+            //apply shading
+            shading.material.SetColor("_LOWColor", shading.minColor);
+            shading.material.SetColor("_HIGHColor", shading.maxColor);
+            shading.material.SetFloat("_maxHeight", shading.maxHeight);
+            shading.material.SetFloat("_minHeight", shading.minHeight);
+            shading.material.SetFloat("_Metalic", shading.metalic);
+            shading.material.SetFloat("_Smooth", shading.smoothness);
+            child.GetComponent<MeshRenderer>().material = shading.material;
+
 
         }
-        
-        
     }
 
     
