@@ -17,7 +17,7 @@ MonoBehaviour:
   maxQuality: 100
   mediumQuality: 40
   lowQuality: 10
-  maxQualityDistance: 220
+  maxQualityDistance: 260
   mediumQualityDistance: 300
   lowQualityDistance: 500
   seed: 1337
