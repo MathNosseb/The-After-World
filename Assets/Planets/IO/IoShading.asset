@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: IoShading
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: e0204855b4442ef4da71123ca36889cb, type: 2}
+  minColor: {r: 0.4056604, g: 0.3539961, b: 0.3539961, a: 0.99215686}
+  maxColor: {r: 0.3773585, g: 0.3542186, b: 0.3542186, a: 1}
+  maxHeight: 0
+  minHeight: 0
+  metalic: 0
+  smoothness: 0.2

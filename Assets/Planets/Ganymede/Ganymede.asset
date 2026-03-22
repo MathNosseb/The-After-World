@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: Ganymede
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: b4be42612cccdd14cb46b04cfe6c4012, type: 2}
+  minColor: {r: 0.09112555, g: 0.4339623, b: 0.05117479, a: 1}
+  maxColor: {r: 0.4811321, g: 0.17674509, b: 0.070354216, a: 1}
+  maxHeight: 194.9
+  minHeight: 148.3
+  metalic: 0
+  smoothness: 0.2

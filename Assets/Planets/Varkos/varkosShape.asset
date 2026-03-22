@@ -17,9 +17,9 @@ MonoBehaviour:
   maxQuality: 150
   mediumQuality: 60
   lowQuality: 10
-  maxQualityDistance: 260
-  mediumQualityDistance: 300
-  lowQualityDistance: 1000
+  maxQualityDistance: 600
+  mediumQualityDistance: 1500
+  lowQualityDistance: 3000
   seed: 1337
   noiseScale1: 55
   noiseScale2: 27.6

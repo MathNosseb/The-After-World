@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: c924c2546d0d5054699c5a41ce6f04e9, type: 3}
   opticalDepthCompute: {fileID: 7200000, guid: d8c59144778685d49aca56e2de2b9f7e, type: 3}
-  planetCentre: {x: 0, y: 0, z: 30053}
+  planetCentre: {x: 0, y: 0, z: 25924}
   atmosphereRadius: 779
   planetRadius: 4.96
   densityFalloff: 7.26

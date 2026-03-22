@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: MinimusShading
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: e0204855b4442ef4da71123ca36889cb, type: 2}
+  minColor: {r: 0.38679248, g: 0.3521271, b: 0.3521271, a: 0.99215686}
+  maxColor: {r: 0.3018868, g: 0.2776789, b: 0.2776789, a: 1}
+  maxHeight: 146.1
+  minHeight: 73.7
+  metalic: 0
+  smoothness: 0.2

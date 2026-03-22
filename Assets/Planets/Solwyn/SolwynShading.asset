@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: SolwynShading
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 2c9fb94fb9279b4478ead0114a9f2658, type: 2}
+  minColor: {r: 0.115258485, g: 0.41509432, b: 0.06069775, a: 1}
+  maxColor: {r: 0.6320754, g: 0.0506853, b: 0.2555621, a: 1}
+  maxHeight: 643.1
+  minHeight: 596.7
+  metalic: 0
+  smoothness: 0.2
