@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-
 [RequireComponent(typeof(PlayerContainer))]
 public class PlayerUI : MonoBehaviour
 {
@@ -21,16 +20,25 @@ public class PlayerUI : MonoBehaviour
     public Text movementType;
     public Text FPS;
 
+    [Header("visé de planetes")]
+    public RectTransform crosshair;
+    [HideInInspector] public Vector2 screenPosCrosshair;
+    public Text CrosshairDetails;
+
+
     [Header("Canvas")]
     public Canvas canvas;
 
     [Header("References")]
     PlayerContainer playerContainer;
+    [HideInInspector] public Container GlobalContainer;
+
 
 
     private void Awake()
     {
         playerContainer = GetComponent<PlayerContainer>();
+        GlobalContainer = playerContainer.GlobalContainer;
     }
 
     public Notifications SendNotification(float coordX, float coordY, float time, string text)
@@ -68,9 +76,11 @@ public class PlayerUI : MonoBehaviour
         Destroy(notif.GetGameObject());
     }
 
+    
 
     private void Update()
     {
+
         CelestialBody reference = playerContainer.reference;
         float velocity = playerContainer.GetReferenceRigidbody().linearVelocity.magnitude;
 
@@ -93,7 +103,31 @@ public class PlayerUI : MonoBehaviour
         
         FPS.text = (int)playerContainer.GetFps(Time.deltaTime) + " FPS";
 
+        //placement du crosshair sur une planete
+        crosshair.anchoredPosition = screenPosCrosshair;
+        float distanceSelectedPlanet = playerContainer.GetSelectedPlanetDistance();
+        string distanceNotation = "m";
+        if (distanceSelectedPlanet >=1000f)
+        {
+            distanceNotation = "Km";
+            distanceSelectedPlanet /= 1000f;
+        }
+        if (distanceSelectedPlanet >= 1000f)
+        {
+            distanceNotation = "Mm";
+            distanceSelectedPlanet /= 1000f;
+        }
+        if (distanceSelectedPlanet >= 1000f)
+        {
+            distanceNotation = "Gm";
+            distanceSelectedPlanet /= 1000f;
+        }
+        CrosshairDetails.text = playerContainer.GetSelectedPlanetName() + " " + distanceSelectedPlanet.ToString("F2") + distanceNotation;
+
+
     }
 
-    
+
+
+
 }

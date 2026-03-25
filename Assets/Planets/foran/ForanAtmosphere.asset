@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f155df9f663ce46836234e7fe51d31, type: 3}
+  m_Name: ForanAtmosphere
+  m_EditorClassIdentifier: 
+  shader: {fileID: 4800000, guid: c924c2546d0d5054699c5a41ce6f04e9, type: 3}
+  opticalDepthCompute: {fileID: 7200000, guid: d8c59144778685d49aca56e2de2b9f7e, type: 3}
+  planetCentre: {x: -127390, y: 0, z: 0}
+  atmosphereRadius: 1310
+  planetRadius: 2.27
+  densityFalloff: 9.26
+  numOpticalDepthPoints: 113.9
+  numInScatteringPoints: 11.6
+  waveLengths: {x: 557.4, y: 462.9, z: 516.7}
+  scatteringStrength: 38.9
+  lightDir: {x: 0.992188, y: 0, z: 0.12475186}
+  textureSize: 256
+  blueNoise: {fileID: 2800000, guid: 9cbb9cec803df594792795f48acc420c, type: 3}
+  ditherStrength: 0.89
+  ditherScale: 3
+  intensity: 1

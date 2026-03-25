@@ -14,13 +14,14 @@ using UnityEngine;
 public class PlayerContainer : MonoBehaviour
 {
     [Header("Global References")]
-    [SerializeField] private Container GlobalContainer;
+    public Container GlobalContainer;
 
     [Header("Player References")]
     PlayerController PlayerController;
     PlayerGravity PlayerGravity;
     PlayerInteractionSystem playerInteractionSystem;
-    PlayerUI PlayerUI;
+    public PlayerUI PlayerUI { get; private set; }
+    PlayerCrossHair playerCrossHair;
     PlayerSpaceShipManager PlayerSpaceShipManager;
     public List<Notifications> notifications = new List<Notifications>();
     public MeshRenderer playerMeshRenderer { get; private set; }
@@ -39,8 +40,7 @@ public class PlayerContainer : MonoBehaviour
     Notifications interactionNotif;
     [HideInInspector] public GameObject playerFixedPoint;
     [HideInInspector] public Rigidbody spaceShipRB;
-
-
+    [HideInInspector] public GameObject spaceShipOutpoint;
 
     [Header("Player Parameters")]
     [SerializeField] private float sensibility = 250f;
@@ -58,30 +58,15 @@ public class PlayerContainer : MonoBehaviour
 
     //events
     public event Action<bool> OnChangementSpaceShip;
+    public event Action OnPadUp;
+    public event Action OnPadDown;
+
+    
     
 
     public void Awake()
     {
-        PlayerController = GetComponent<PlayerController>();
-        PlayerGravity = GetComponent<PlayerGravity>();
-        playerInteractionSystem = GetComponent<PlayerInteractionSystem>();
-        PlayerUI = GetComponent<PlayerUI>();
-        PlayerSpaceShipManager = GetComponent<PlayerSpaceShipManager>();
-        playerCollider = GetComponent<Collider>();
-        playerMeshRenderer = GetComponent<MeshRenderer>();
-
-        PlayerGO = gameObject;
-        PlayerRB = GetComponent<Rigidbody>();
-
-        //vérifications des composants
-        if (PlayerController == null) Debug.LogError("player FPScontroller = null");
-        if (PlayerGravity == null) Debug.LogError("player PlayerGravity = null");
-        if (playerInteractionSystem == null) Debug.LogError("player playerInteractionSystem = null");
-        if (PlayerUI == null) Debug.LogError("player PlayerUI = null");
-        if (playerCollider == null) Debug.LogError("player playerCollider = null");
-        if (playerMeshRenderer == null) Debug.LogError("player playerMeshRenderer = null");
-        if (PlayerRB == null) Debug.LogError("player PlayerRB = null");
-
+        Init();
     }
 
     private void Start()
@@ -103,7 +88,10 @@ public class PlayerContainer : MonoBehaviour
             GlobalContainer.inputManager.OnMove += PlayerController.HandleMove;
             GlobalContainer.inputManager.OnJump += PlayerController.HandleJump;
             GlobalContainer.inputManager.OnInteract += playerInteractionSystem.OnInteract;
+            GlobalContainer.inputManager.OnPadUp += playerCrossHair.HandlePadUp;
+            GlobalContainer.inputManager.OnPadDown += playerCrossHair.HandlePadDown;
             OnChangementSpaceShip += PlayerSpaceShipManager.HandleChangementSpaceShip;
+            
             suscribedInputs = true;
         }
 
@@ -114,7 +102,7 @@ public class PlayerContainer : MonoBehaviour
             interactionNotif = PlayerUI.SendNotification(500f, 200f, -1f, "press F for interact");
         }else if ((!playerInteractionSystem.canInteract && interactionNotif != null) || (inSpaceShip && interactionNotif != null))
         {
-            //si on eput pas interagir mais que on a la norif ou que on est dans le vaisseau
+            //si on ne peut pas interagir mais que on a la notif ou que on est dans le vaisseau
             //on detruit la notif d interaction
             PlayerUI.DestroyNotificationNow(interactionNotif);
             interactionNotif = null;
@@ -127,6 +115,7 @@ public class PlayerContainer : MonoBehaviour
             //changement d etat
             //changement sortie -> entrée
             //changement entrée -> sortie
+            Debug.Log("invocation");
             OnChangementSpaceShip?.Invoke(inSpaceShip);
             
         }
@@ -142,7 +131,48 @@ public class PlayerContainer : MonoBehaviour
         GlobalContainer.inputManager.OnMove -= PlayerController.HandleMove;
         GlobalContainer.inputManager.OnJump -= PlayerController.HandleJump;
         GlobalContainer.inputManager.OnInteract -= playerInteractionSystem.OnInteract;
+        GlobalContainer.inputManager.OnPadUp -= playerCrossHair.HandlePadUp;
+        GlobalContainer.inputManager.OnPadDown -= playerCrossHair.HandlePadDown;
         OnChangementSpaceShip -= PlayerSpaceShipManager.HandleChangementSpaceShip;
+    }
+
+    void Init()
+    {
+        PlayerController = GetComponent<PlayerController>();
+        PlayerGravity = GetComponent<PlayerGravity>();
+        playerInteractionSystem = GetComponent<PlayerInteractionSystem>();
+        PlayerUI = GetComponent<PlayerUI>();
+        PlayerSpaceShipManager = GetComponent<PlayerSpaceShipManager>();
+        playerCrossHair = GetComponent<PlayerCrossHair>();
+        playerCollider = GetComponent<Collider>();
+        playerMeshRenderer = GetComponent<MeshRenderer>();
+
+        PlayerGO = gameObject;
+        PlayerRB = GetComponent<Rigidbody>();
+
+        //vérifications des composants
+        if (PlayerController == null) Debug.LogError("player FPScontroller = null");
+        if (PlayerGravity == null) Debug.LogError("player PlayerGravity = null");
+        if (playerInteractionSystem == null) Debug.LogError("player playerInteractionSystem = null");
+        if (PlayerUI == null) Debug.LogError("player PlayerUI = null");
+        if (playerCrossHair == null) Debug.LogError("player playerCrossHair = null");
+        if (playerCollider == null) Debug.LogError("player playerCollider = null");
+        if (playerMeshRenderer == null) Debug.LogError("player playerMeshRenderer = null");
+        if (PlayerRB == null) Debug.LogError("player PlayerRB = null");
+    }
+    
+
+    public float GetSelectedPlanetDistance()
+    {
+        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(playerCrossHair.selectedIndex);
+        float dst = Vector3.Distance(planet.GetVector3Position(), PlayerRB.position);
+        return dst;
+    }
+
+    public string GetSelectedPlanetName()
+    {
+        CelestialBody planet = GlobalContainer.simulation.GetPlanetByIndex(playerCrossHair.selectedIndex);
+        return planet.Name;
     }
 
     public Vector3 GetGravityAcceleration(Vector3 point, out CelestialBody strongestGravitationalBody, CelestialBody ignoreBody = null)
@@ -181,6 +211,16 @@ public class PlayerContainer : MonoBehaviour
         if (spaceShipRB != null)
             return spaceShipRB;
         return PlayerRB;
+    }
+
+    public void TeleportTo(Vector3 newPosition)
+    {
+        PlayerRB.position = newPosition;
+    }
+
+    public void SetVelocityTo(Vector3 newLinearVelocity)
+    {
+        PlayerRB.linearVelocity = newLinearVelocity;
     }
 
 }

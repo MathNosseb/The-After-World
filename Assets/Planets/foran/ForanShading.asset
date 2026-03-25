@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 479645f695b45b64ab75e574fb9e0f13, type: 3}
+  m_Name: ForanShading
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 3e7e3524ffc94734680fd1d1234ed4ef, type: 2}
+  minColor: {r: 0.6509434, g: 0.54204816, b: 0.08904416, a: 0.99215686}
+  maxColor: {r: 0.44344977, g: 0.6037736, b: 0.0768957, a: 1}
+  maxHeight: 1079.9
+  minHeight: 996.9
+  metalic: 0
+  smoothness: 0.2

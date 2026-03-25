@@ -1,207 +1,176 @@
-﻿using NUnit.Framework.Internal;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Unity.VisualScripting;
-using UnityEditor;
+using Unity.Mathematics;
 using UnityEngine;
+using Unity.Collections;
+using Unity.Jobs;
 
-
+[RequireComponent(typeof(PlanetLOD))]
 public class Planet : MonoBehaviour
 {
 
+    public Shape shape;
+    [HideInInspector] public bool shapeFoldout;
 
-    [Range(2, 256)]
-    public int resolution = 10;
-    public bool usePerlin;
-    [Range(0.1f, 1f)]
-    public float scale = 1f;
-    [Range(0.1f, 10f)]
-    public float amplitude = 10f;
+    public Shading shading;
+    [HideInInspector] public bool shadingFoldout;
 
 
-    [SerializeField, HideInInspector]
-    MeshFilter[] meshFilters;
-    TerrainFace[] terrainFaces;
-    MeshFilter meshFilterExport;
+    [HideInInspector] public GameObject[] MeshChilds;
 
-    float level = 0;
-
-
-    private void OnValidate()
+    FastNoiseLite continentNoise;
+    FastNoiseLite warpNoise;
+    FastNoiseLite mountainNoise;
+    FastNoiseLite mountainMaskNoise;
+    public void InitNoise()
     {
-#if UNITY_EDITOR
-        if (!Application.isPlaying)
-        {
-            EditorApplication.delayCall += () =>
-            {
-                if (this != null)
-                {
-                    DestroyAllChild(gameObject); // seulement en édition
-                    Initialize();
-                    GenerateMesh();
-                }
-            };
-        }
-#endif
+
+        continentNoise = new FastNoiseLite();
+        continentNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        continentNoise.SetFractalType(FastNoiseLite.FractalType.FBm);
+        continentNoise.SetFrequency(0.35f);
+        continentNoise.SetFractalOctaves(3);
+        continentNoise.SetFractalGain(0.5f);
+
+        warpNoise = new FastNoiseLite();
+        warpNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        warpNoise.SetFrequency(0.6f);
+        warpNoise.SetFractalOctaves(2);
+
+        mountainNoise = new FastNoiseLite();
+        mountainNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        mountainNoise.SetFractalType(FastNoiseLite.FractalType.Ridged);
+        mountainNoise.SetFrequency(1.2f);
+        mountainNoise.SetFractalOctaves(5);
+        mountainNoise.SetFractalLacunarity(2.2f);
+        mountainNoise.SetFractalGain(0.45f);
+
+        mountainMaskNoise = new FastNoiseLite();
+        mountainMaskNoise.SetFractalType(FastNoiseLite.FractalType.FBm);
+        mountainMaskNoise.SetFrequency(0.25f);
+        mountainMaskNoise.SetFractalOctaves(2);
+
+        continentNoise.SetSeed(shape.seed);
+        warpNoise.SetSeed(shape.seed + 1);
+        mountainNoise.SetSeed(shape.seed + 2);
+        mountainMaskNoise.SetSeed(shape.seed + 3);
     }
 
 
-
-    [ContextMenu("Clear Mesh")]
-    public void SubdiviseMeshEditor()
+    public Vector3[] CreateVertices(int presetQuality, float radius, int face)
     {
-        level = 0;
-        DestroyAllChild(gameObject);
-        Initialize();
-        GenerateMesh();
-        SubdiviseMesh(gameObject, level);
-    }
-
-    public void DestroyAllChild(GameObject parent)
-    {
-        for (int i = parent.transform.childCount - 1; i >= 0; i--)
-        {
-            GameObject child = parent.transform.GetChild(i).gameObject;
-            DestroyImmediate(child);
-        }
-    }
-
-
-    void Initialize()
-    {
-        if (meshFilters == null || meshFilters.Length == 0)
-        {
-            meshFilters = new MeshFilter[6];
-        }
-        terrainFaces = new TerrainFace[6];
-
-        Vector3[] directions = { Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back };
-
-        for (int i = 0; i < 6; i++)
-        {
-            if (meshFilters[i] == null)
-            {
-                GameObject meshObj = new GameObject("mesh");
-                meshObj.transform.parent = transform;
-
-                meshObj.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
-                meshFilters[i] = meshObj.AddComponent<MeshFilter>();
-                meshFilters[i].sharedMesh = new Mesh();
-
-                
-            }
-
-            terrainFaces[i] = new TerrainFace(meshFilters[i].sharedMesh, resolution, directions[i], scale, amplitude, usePerlin);
-            MeshCollider meshCollider = meshFilters[i].AddComponent<MeshCollider>();
-            meshCollider.sharedMesh = terrainFaces[i].mesh;
-        }
-    }
-
-    void GenerateMesh()
-    {
-        foreach (TerrainFace face in terrainFaces)
-        {
-            face.ConstructMesh();
-        }
+        NativeArray<Vector3> directions = new NativeArray<Vector3>(6, Allocator.TempJob);
+        directions[0] = Vector3.up;
+        directions[1] = Vector3.down;
+        directions[2] = Vector3.left;
+        directions[3] = Vector3.right;
+        directions[4] = Vector3.forward;
+        directions[5] = Vector3.back;
         
+        var job = new GenerateVerticiesJob
+        {
+            vertices = new NativeArray<Vector3>((presetQuality + 1) * (presetQuality + 1), Allocator.TempJob),
+            directions = directions,
+            presetQuality = presetQuality,
+            face = face,
+            radius = radius,
+            continentNoise = continentNoise,
+            warpNoise = warpNoise,
+            mountainNoise = mountainNoise,
+            mountainMaskNoise = mountainMaskNoise,
+            oceanScale = shape.oceanScale,
+            noiseScale1 = shape.noiseScale1,
+            noiseScale2 = shape.noiseScale2
+        };
+        
+        var handlejob = job.Schedule((presetQuality + 1) * (presetQuality + 1), 64);
+        handlejob.Complete();
+        
+
+        Vector3[] verticies = job.vertices.ToArray();
+        job.vertices.Dispose();
+        directions.Dispose();
+
+        return verticies;
     }
-    [ContextMenu("Export Mesh")]
-    void ExportMesh()
+
+    public int[] CreateTriangles(int presetQuality)
     {
-        string folder = Path.Combine(Application.dataPath, "Exports");
-        if (!Directory.Exists(folder))
-            Directory.CreateDirectory(folder);
+        int[] triangles = new int[presetQuality * presetQuality * 6];
 
-        string fileName = "Planet.obj";
-        string path = Path.Combine(folder, fileName);
-        StringBuilder sb = new StringBuilder();
-
-        sb.AppendLine("# Unity Planet Export");
-        int vertexOffset = 0;
-
-        for (int k = 0; k < transform.childCount; k++)
+        int ti = 0;
+        for (int y = 0; y < presetQuality; y++)
         {
-            GameObject child = transform.GetChild(k).gameObject;
-            MeshFilter mf = child.GetComponent<MeshFilter>();
-            if (mf == null || mf.sharedMesh == null) continue;
-
-            Mesh mesh = mf.sharedMesh;
-            sb.AppendLine("o " + child.name);
-
-            // Vertices en coordonnées monde
-            foreach (Vector3 v in mesh.vertices)
+            for (int x = 0; x < presetQuality; x++)
             {
-                Vector3 wv = child.transform.TransformPoint(v);
-                sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "v {0} {1} {2}\n", wv.x, wv.y, wv.z);
-            }
+                int vi = x + y * (presetQuality + 1);
 
-            // UVs (si présents)
-            if (mesh.uv != null && mesh.uv.Length > 0)
-            {
-                foreach (Vector2 uv in mesh.uv)
-                    sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "vt {0} {1}\n", uv.x, 1 - uv.y);
-            }
+                triangles[ti++] = vi;
+                triangles[ti++] = vi + 1;
+                triangles[ti++] = vi + presetQuality + 1;
 
-            // Normales (monde)
-            if (mesh.normals != null && mesh.normals.Length > 0)
-            {
-                foreach (Vector3 n in mesh.normals)
-                {
-                    Vector3 wn = child.transform.TransformDirection(n);
-                    sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture, "vn {0} {1} {2}\n", wn.x, wn.y, wn.z);
-                }
+                triangles[ti++] = vi + 1;
+                triangles[ti++] = vi + presetQuality + 2;
+                triangles[ti++] = vi + presetQuality + 1;
             }
-
-            // Faces — inclure indices UV + normales si dispo
-            int[] tris = mesh.triangles;
-            for (int i = 0; i < tris.Length; i += 3)
-            {
-                int a = tris[i + 0] + 1 + vertexOffset;
-                int b = tris[i + 1] + 1 + vertexOffset;
-                int c = tris[i + 2] + 1 + vertexOffset;
-                sb.AppendLine($"f {a}/{a}/{a} {b}/{b}/{b} {c}/{c}/{c}");
-            }
-
-            vertexOffset += mesh.vertexCount;
         }
-
-        File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
-        Debug.Log("✅ Mesh exporté avec succès dans : " + path);
+        return triangles;
     }
 
-    void SubdiviseMesh(GameObject parent, float level) 
+    public void Generate()
     {
-        if (level == 0)
+        for (int i = transform.childCount - 1; i >= 0; i--)
         {
-            //si on est sur earth et pas sur les premiers mesh
-            for (int i = parent.transform.childCount - 1; i >= 0; i--)
-            {
-                SubdiviseMesh(parent.transform.GetChild(i).gameObject, level + 1);
-            }
-
+            DestroyImmediate(transform.GetChild(i).gameObject);
         }
-        else
+        MeshChilds = new GameObject[6];
+
+        for (int f = 0; f < 6; f++)
         {
-            //premiere etape everifier si le parent actuelle a + de 255 faces
-            MeshFilter parentMesh = parent.GetComponent<MeshFilter>();
-            //suppression de tout les enfants
-            DestroyAllChild(parent);
-            if (parentMesh.sharedMesh.vertexCount > 255)
-            {
 
-                //creation des enfants + subdivision
-                MeshSplitter splitter = parent.AddComponent<MeshSplitter>();
-                splitter.SplitMesh();
+            GameObject child = new GameObject("mesh " + f);
+            MeshChilds[f] = child;
+            //Ajout des composants à l'enfant
+            child.AddComponent<MeshFilter>();
+            child.AddComponent<MeshRenderer>();
+            child.AddComponent<MeshCollider>();
+            child.AddComponent<MeshProperties>();
 
-                //passage a la generation suivante
-                for (int i = parent.transform.childCount - 1; i >= 0; i--)
-                {
-                    SubdiviseMesh(parent.transform.GetChild(i).gameObject, level + 1);
-                }
+            MeshProperties meshProperties;
+            meshProperties = child.GetComponent<MeshProperties>();
 
-            }
+            meshProperties.quality = shape.maxQuality;
+
+            //setup en temps qu enfant
+            child.transform.parent = transform;
+
+            //creation du mesh
+            Mesh mesh = new Mesh();
+            MeshCollider meshCollider = new MeshCollider();
+            child.GetComponent<MeshFilter>().mesh = mesh;
+            mesh.name = "Procedural Grid " + f;
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            mesh.vertices = CreateVertices(meshProperties.quality, shape.radius, f);
+            mesh.triangles = CreateTriangles(meshProperties.quality);
+
+            mesh.RecalculateNormals();
+            meshCollider = child.GetComponent<MeshCollider>();
+            if (shape.planetParameter == PlanetParameter.Solid)
+                meshCollider.sharedMesh = mesh;
+            else
+                meshCollider.sharedMesh = null;
+
+            child.transform.position = transform.position;
+
+            //apply shading
+            shading.material.SetColor("_LOWColor", shading.minColor);
+            shading.material.SetColor("_HIGHColor", shading.maxColor);
+            shading.material.SetFloat("_maxHeight", shading.maxHeight);
+            shading.material.SetFloat("_minHeight", shading.minHeight);
+            shading.material.SetFloat("_Metalic", shading.metalic);
+            shading.material.SetFloat("_Smooth", shading.smoothness);
+            child.GetComponent<MeshRenderer>().material = shading.material;
         }
     }
+
+    
 }
+

@@ -24,11 +24,25 @@ public class SpaceShipGravity : MonoBehaviour
         spaceShipContainer.SpaceShipRB.AddForce(acceleration, ForceMode.Acceleration);
 
         //alignement avec la planete
-        AllignToPlanet(spaceShipContainer.SpaceShipGO.transform, 
-            spaceShipContainer.strongestGravitationalPull);
+        //AllignToPlanet(spaceShipContainer.SpaceShipGO.transform, 
+        //spaceShipContainer.strongestGravitationalPull);
 
+        //force de l atmosphere
+        if (spaceShipContainer.reference != null)
+        {
+            float dst = Vector3.Distance(spaceShipContainer.SpaceShipRB.position, spaceShipContainer.reference.GetVector3Position());
+            Vector3 force = AtmosphericEffect(dst, spaceShipContainer.reference.distanceBeforeRotation,
+                                             spaceShipContainer.reference.density, spaceShipContainer.strongestGravitationalPull);
+            spaceShipContainer.SpaceShipRB.AddForce(force);
+        }
 
+    }
 
+    Vector3 AtmosphericEffect(float playerHeight, float AtmosphereHeight, float density, Vector3 strongestGravitionalPull)
+    {
+        float strength = Mathf.Max(0, 1 - (playerHeight / AtmosphereHeight));
+        Vector3 atmosphericForce = strongestGravitionalPull.normalized * strength * density;
+        return atmosphericForce;
     }
 
     void AllignToPlanet(Transform self, Vector3 strongestGravitionalPull, float rotationSpeed = 10f)

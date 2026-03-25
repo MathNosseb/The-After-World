@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 479645f695b45b64ab75e574fb9e0f13, type: 3}
+  m_Name: VarkosShading
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: bb215a90e3c9dfd4b886aaab50d14f66, type: 2}
+  minColor: {r: 0.05931826, g: 0.4056604, b: 0.079299286, a: 0.9843137}
+  maxColor: {r: 0.5372549, g: 0.31764707, b: 0.16078432, a: 0.99215686}
+  maxHeight: 330.4
+  minHeight: 300.2
+  metalic: 0
+  smoothness: 0.2

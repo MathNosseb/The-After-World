@@ -65,7 +65,7 @@ float calculateOutScattering(float2 inPoint, float2 outPoint) {
 [numthreads(8, 8, 1)]
 void CSMain(uint2 id : SV_DispatchThreadID)
 {
-    const float planetRadius = 1;
+    //const float planetRadius = 1;
 
     float2 uv = id / (float) textureSize;
     float height01 = uv.y;
@@ -78,7 +78,7 @@ void CSMain(uint2 id : SV_DispatchThreadID)
 	
     float2 inPoint = float2(0, lerp(planetRadius, atmosphereRadius, height01));
     float dstThroughAtmosphere = raySphere(0, atmosphereRadius, float3(inPoint, 0), float3(dir, 0)).y;
-    float2 outPoint = inPoint + dir * raySphere(0, atmosphereRadius, float3(inPoint, 0), float3(dir, 0)).y;
+    float2 outPoint = inPoint + dir * dstThroughAtmosphere;
 	//float outScattering = calculateOutScattering(inPoint, outPoint);
     float outScattering = opticalDepth(inPoint + dir * 0.0001, dir, dstThroughAtmosphere - 0.0002);
 

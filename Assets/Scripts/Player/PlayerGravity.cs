@@ -24,14 +24,27 @@ public class PlayerGravity : MonoBehaviour
         Vector3 acceleration = playerContainer.GetGravityAcceleration(playerContainer.PlayerRB.position, out strongestBody);
         reference = strongestBody;
 
-        //application de la gravité
+        
         if (usePhysic)
+        {
+            //application de la gravité
             playerContainer.PlayerRB.AddForce(acceleration, ForceMode.Acceleration);
-
-        //alignement avec la planete
-        if (usePhysic)
+            //alignement avec la planete
             AllignToPlanet(playerContainer.PlayerGO.transform, playerContainer.reference, playerContainer.strongestGravitationalPull);
+            //force de l atmosphere  
+            float dst = Vector3.Distance(playerContainer.PlayerRB.position, playerContainer.reference.GetVector3Position());
+            Vector3 force = AtmosphericEffect(dst, playerContainer.reference.distanceBeforeRotation, playerContainer.reference.density, playerContainer.strongestGravitationalPull);
+            playerContainer.PlayerRB.AddForce(force);
+        }
+            
 
+    }
+
+    Vector3 AtmosphericEffect(float playerHeight, float AtmosphereHeight, float density, Vector3 strongestGravitionalPull)
+    {
+        float strength = Mathf.Max(0, 1 - (playerHeight / AtmosphereHeight));
+        Vector3 atmosphericForce = strongestGravitionalPull.normalized * strength * density;
+        return atmosphericForce;
     }
 
     void AllignToPlanet(Transform self, CelestialBody reference, Vector3 strongestGravitionalPull, float rotationSpeed = 10f)

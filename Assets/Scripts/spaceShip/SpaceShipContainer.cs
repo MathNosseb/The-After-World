@@ -1,6 +1,6 @@
 using UnityEngine;
 
-
+[RequireComponent(typeof(SpaceShipCollisions))]
 [RequireComponent (typeof(SpaceShipController))]
 [RequireComponent(typeof(SpaceShipGravity))]
 [RequireComponent(typeof(SpaceShipSoundSystem))]
@@ -15,7 +15,7 @@ public class SpaceShipContainer : MonoBehaviour
     SpaceShipController spaceShipController;
     SpaceShipGravity spaceShipGravity;
     SpaceShipSoundSystem spaceShipSoundSystem;
-    public SoundsManager soundsManager;
+    [HideInInspector]public SoundsManager soundsManager;
 
     [Header("SpaceShip Objects")]
     public ParticleSystem gaz;
@@ -36,6 +36,9 @@ public class SpaceShipContainer : MonoBehaviour
 
     [Header("instance")]
     private bool suscribedInputs = false;
+
+    [Header("entree / sortie")]
+    public GameObject[] OutPoints;
 
     private void Awake()
     {

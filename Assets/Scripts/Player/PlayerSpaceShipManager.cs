@@ -4,9 +4,9 @@ using UnityEngine;
 [RequireComponent (typeof(PlayerContainer))]
 public class PlayerSpaceShipManager : MonoBehaviour
 {
-    [Header("Réferences")]
+    [Header("References")]
     PlayerContainer playerContainer;
-    //va gérer le mouvement du joueur lorsqu'il est dans le vaisseau
+    //va gerer le mouvement du joueur lorsqu'il est dans le vaisseau
 
     private void Awake()
     {
@@ -38,7 +38,7 @@ public class PlayerSpaceShipManager : MonoBehaviour
         Debug.Log("changement");
         if (newSpaceShipEtat)
         {
-            Debug.Log("entrée dans le vaisseau");
+            Debug.Log("entree dans le vaisseau");
             playerContainer.playerMeshRenderer.enabled = false;
             playerContainer.playerCollider.enabled = false;
         }
@@ -51,6 +51,11 @@ public class PlayerSpaceShipManager : MonoBehaviour
             //replacement de la camera sur le joueur et reset de la camera
             playerContainer.cameraT.localPosition = new Vector3(0f,0.5f,0f);
             playerContainer.cameraT.localRotation = Quaternion.identity;
+
+            if (playerContainer.spaceShipOutpoint != null)
+                playerContainer.PlayerRB.position = playerContainer.spaceShipOutpoint.transform.position;
+            else
+                Debug.Log("aucune sortie valide");
         }
     }
 

@@ -8,7 +8,7 @@ using UnityEngine;
 public class Container : MonoBehaviour
 {
     public constant Constant { get; private set; }
-    NbodySimulation simulation;
+    public NbodySimulation simulation { get; private set; }
     public InputManager inputManager { get; private set; }
     float fps;
 
