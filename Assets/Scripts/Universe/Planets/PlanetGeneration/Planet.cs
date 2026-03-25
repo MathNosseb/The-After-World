@@ -1,5 +1,7 @@
 using Unity.Mathematics;
 using UnityEngine;
+using Unity.Collections;
+using Unity.Jobs;
 
 [RequireComponent(typeof(PlanetLOD))]
 public class Planet : MonoBehaviour
@@ -11,84 +13,118 @@ public class Planet : MonoBehaviour
     public Shading shading;
     [HideInInspector] public bool shadingFoldout;
 
-    FastNoiseLite noise;
 
     [HideInInspector] public GameObject[] MeshChilds;
 
+    FastNoiseLite continentNoise;
+    FastNoiseLite warpNoise;
+    FastNoiseLite mountainNoise;
+    FastNoiseLite mountainMaskNoise;
+
     void InitNoise()
     {
-        noise = new FastNoiseLite();
-        noise.SetSeed(shape.seed);
+
+        continentNoise = new FastNoiseLite();
+        continentNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        continentNoise.SetFractalType(FastNoiseLite.FractalType.FBm);
+        continentNoise.SetFrequency(0.35f);
+        continentNoise.SetFractalOctaves(3);
+        continentNoise.SetFractalGain(0.5f);
+
+        warpNoise = new FastNoiseLite();
+        warpNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        warpNoise.SetFrequency(0.6f);
+        warpNoise.SetFractalOctaves(2);
+
+        mountainNoise = new FastNoiseLite();
+        mountainNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        mountainNoise.SetFractalType(FastNoiseLite.FractalType.Ridged);
+        mountainNoise.SetFrequency(1.2f);
+        mountainNoise.SetFractalOctaves(5);
+        mountainNoise.SetFractalLacunarity(2.2f);
+        mountainNoise.SetFractalGain(0.45f);
+
+        mountainMaskNoise = new FastNoiseLite();
+        mountainMaskNoise.SetFractalType(FastNoiseLite.FractalType.FBm);
+        mountainMaskNoise.SetFrequency(0.25f);
+        mountainMaskNoise.SetFractalOctaves(2);
+
+        continentNoise.SetSeed(shape.seed);
+        warpNoise.SetSeed(shape.seed + 1);
+        mountainNoise.SetSeed(shape.seed + 2);
+        mountainMaskNoise.SetSeed(shape.seed + 3);
     }
 
     float GetPlanetHeight(Vector3 p)
     {
-        // ─── ÉTAPE 1 : Forme des continents ───────────────────────────────
-        // Basse fréquence, peu d'octaves → grandes masses terrestres
-        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-        noise.SetFractalType(FastNoiseLite.FractalType.FBm);
-        noise.SetFrequency(0.35f);
-        noise.SetFractalOctaves(3);
-        noise.SetFractalGain(0.5f);
-        float continent = noise.GetNoise(p.x, p.y, p.z); // [-1, 1]
+        float continent = continentNoise.GetNoise(p.x, p.y, p.z);
 
-        // ─── ÉTAPE 2 : Océans plats ────────────────────────────────────────
-        // Tout ce qui est sous le seuil = fond plat (pas de bruit sous l'eau)
         float seaLevel = -shape.oceanScale;
+
         if (continent < seaLevel)
-            return continent * 0.3f * shape.noiseScale1; // fond marin légèrement vallonné
+            return continent * 0.3f * shape.noiseScale1;
 
-        // ─── ÉTAPE 3 : Plaines ────────────────────────────────────────────
-        // Continent émergé mais "écrasé" → zones plates
-        // SmoothStep aplatit les valeurs proches du niveau de la mer
         float landMask = Mathf.InverseLerp(seaLevel, seaLevel + 0.3f, continent);
-        landMask = Mathf.SmoothStep(0f, 1f, landMask); // courbe en S → transition douce
+        landMask = Mathf.SmoothStep(0f, 1f, landMask);
 
-        // ─── ÉTAPE 4 : Montagnes ──────────────────────────────────────────
-        // Ridged noise haute fréquence, mais MULTIPLIÉ par le masque
-        // → montagnes absentes sur les plaines, présentes sur les hauts plateaux
-        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-        noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
-        noise.SetFrequency(1.2f);
-        noise.SetFractalOctaves(5);
-        noise.SetFractalLacunarity(2.2f);
-        noise.SetFractalGain(0.45f);
-
-        // Domain warp : déforme les coordonnées avant d'échantillonner
-        // → les chaînes de montagnes s'incurvent naturellement
         float warpStrength = 0.4f;
-        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-        noise.SetFrequency(0.6f);
-        noise.SetFractalOctaves(2);
-        float wx = noise.GetNoise(p.x + 100f, p.y, p.z) * warpStrength;
-        float wy = noise.GetNoise(p.x, p.y + 100f, p.z) * warpStrength;
-        float wz = noise.GetNoise(p.x, p.y, p.z + 100f) * warpStrength;
 
-        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-        noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
-        noise.SetFrequency(1.2f);
-        noise.SetFractalOctaves(5);
-        float mountain = noise.GetNoise(p.x + wx, p.y + wy, p.z + wz);
-        mountain = Mathf.Max(0f, mountain); // supprime les valeurs négatives
+        float wx = warpNoise.GetNoise(p.x + 100f, p.y, p.z) * warpStrength;
+        float wy = warpNoise.GetNoise(p.x, p.y + 100f, p.z) * warpStrength;
+        float wz = warpNoise.GetNoise(p.x, p.y, p.z + 100f) * warpStrength;
 
-        // ─── ÉTAPE 5 : Masque de montagne séparé ──────────────────────────
-        // Les montagnes n'apparaissent que dans certaines zones (pas partout)
-        noise.SetFractalType(FastNoiseLite.FractalType.FBm);
-        noise.SetFrequency(0.25f);
-        noise.SetFractalOctaves(2);
-        float mountainMask = noise.GetNoise(p.x + 50f, p.y + 50f, p.z + 50f);
+        float mountain = mountainNoise.GetNoise(p.x + wx, p.y + wy, p.z + wz);
+        mountain = Mathf.Max(0f, mountain);
+
+        float mountainMask = mountainMaskNoise.GetNoise(p.x + 50f, p.y + 50f, p.z + 50f);
         mountainMask = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(-0.1f, 0.6f, mountainMask));
 
-        // ─── ASSEMBLAGE FINAL ─────────────────────────────────────────────
-        float plains    = continent * shape.noiseScale1;                         // terrain de base plat
-        float mountains = mountain  * mountainMask * landMask * shape.noiseScale2 * 3f; // relief masqué
+        float plains    = continent * shape.noiseScale1;
+        float mountains = mountain * mountainMask * landMask * shape.noiseScale2 * 3f;
 
         return plains + mountains;
     }
 
     public Vector3[] CreateVertices(int presetQuality, float radius, int face)
     {
-        if (noise == null) {InitNoise();}
+        NativeArray<Vector3> directions = new NativeArray<Vector3>(6, Allocator.TempJob);
+        directions[0] = Vector3.up;
+        directions[1] = Vector3.down;
+        directions[2] = Vector3.left;
+        directions[3] = Vector3.right;
+        directions[4] = Vector3.forward;
+        directions[5] = Vector3.back;
+        
+        var job = new GenerateVerticiesJob
+        {
+            vertices = new NativeArray<Vector3>((presetQuality + 1) * (presetQuality + 1), Allocator.TempJob),
+            directions = directions,
+            presetQuality = presetQuality,
+            face = face,
+            radius = radius,
+            continentNoise = continentNoise,
+            warpNoise = warpNoise,
+            mountainNoise = mountainNoise,
+            mountainMaskNoise = mountainMaskNoise,
+            oceanScale = shape.oceanScale,
+            noiseScale1 = shape.noiseScale1,
+            noiseScale2 = shape.noiseScale2
+        };
+        
+        var handlejob = job.Schedule((presetQuality + 1) * (presetQuality + 1), 64);
+        handlejob.Complete();
+        
+
+        Vector3[] verticies = job.vertices.ToArray();
+        job.vertices.Dispose();
+        directions.Dispose();
+
+        return verticies;
+
+        /*
+        
+        //if (noise == null) {InitNoise();}
+        Debug.Log("[GENERATION] Generation Verticies");
         int verticesPerFace = (presetQuality + 1) * (presetQuality + 1);
         Vector3[] vertices = new Vector3[verticesPerFace];
 
@@ -127,10 +163,12 @@ public class Planet : MonoBehaviour
             }
         }
         return vertices;
+        */
     }
 
     public int[] CreateTriangles(int presetQuality)
     {
+        Debug.Log("[GENERATION] Generation Triangles");
         int faceOffset = 0;
         int[]  triangles = new int[presetQuality * presetQuality * 6];
 
