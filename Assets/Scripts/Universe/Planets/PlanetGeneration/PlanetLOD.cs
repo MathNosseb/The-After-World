@@ -27,6 +27,7 @@ public class PlanetLOD : MonoBehaviour
         meshColliders = new MeshCollider[6];
 
         //on genere la planete a sa qualté maximale
+        planet.InitNoise();
         planet.Generate();
 
         for (int i = 0; i < 6; i++)

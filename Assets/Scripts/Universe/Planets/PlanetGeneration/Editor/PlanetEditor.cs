@@ -19,6 +19,7 @@ public class PlanetEditor : Editor {
 
         if (GUILayout.Button("Generate Planet"))
         {
+            planet.InitNoise();
             planet.Generate();
         }
 
