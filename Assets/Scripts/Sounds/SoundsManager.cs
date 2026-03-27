@@ -21,11 +21,11 @@ public class SoundsManager : MonoBehaviour
 
     void playSound(SoundMaker sound)
     {
-        //vérifier si il est pas déjà entrain d'être joué
+        //vï¿½rifier si il est pas dï¿½jï¿½ entrain d'ï¿½tre jouï¿½
         AudioSource source = sound.source;
         if (source.isPlaying)
             return;
-
+        source.volume = sound.volume;
         source.clip = sound.clip;
         source.Play();
     }
@@ -36,6 +36,11 @@ public class SoundsManager : MonoBehaviour
         if (!source.isPlaying)
             return;
         source.Stop();
+    }
+
+    public void stopSmooth(SoundMaker sound)
+    {
+        
     }
 
 

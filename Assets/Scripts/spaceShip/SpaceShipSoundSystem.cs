@@ -29,10 +29,10 @@ public class SpaceShipSoundSystem : MonoBehaviour
     public void HandleBurnSound(bool burning)
     {
         if (!spaceShipContainer.playerInSpaceShip) return;
-        //appelé par l event
+        //appelï¿½ par l event
         if (burningSound == null)
         {
-            Debug.LogError("burning sound non trouvé");
+            Debug.LogError("burning sound non trouvï¿½");
             return;
         }
         if (burning) burningSound.play = true;
