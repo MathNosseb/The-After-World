@@ -1,6 +1,5 @@
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 
 [CreateAssetMenu(menuName = "PostProcessing/Atmosphere")]     
 public class AtmosphereGenerator : PostProcessingEffect

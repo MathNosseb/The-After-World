@@ -2,6 +2,8 @@ using Unity.Mathematics;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.VisualScripting;
+using System.Runtime.InteropServices;
 
 [RequireComponent(typeof(PlanetLOD))]
 public class Planet : MonoBehaviour
@@ -20,6 +22,10 @@ public class Planet : MonoBehaviour
     FastNoiseLite warpNoise;
     FastNoiseLite mountainNoise;
     FastNoiseLite mountainMaskNoise;
+
+    public bool useGrass = false;
+    public Grass grass;
+
     public void InitNoise()
     {
 
@@ -122,12 +128,22 @@ public class Planet : MonoBehaviour
             DestroyImmediate(transform.GetChild(i).gameObject);
         }
         MeshChilds = new GameObject[6];
-
+        if (useGrass) 
+        {
+            grass.surface = new GameObject[6];
+            grass.positionsBuffer = new ComputeBuffer[6];
+            grass.argsBuffer = new ComputeBuffer[6];
+            grass.rotationBuffer = new ComputeBuffer[6];
+            grass.noiseBuffer = new ComputeBuffer[6];
+            grass.faceInit = new bool[6];
+            
+        }
         for (int f = 0; f < 6; f++)
         {
 
             GameObject child = new GameObject("mesh " + f);
             MeshChilds[f] = child;
+            
             //Ajout des composants à l'enfant
             child.AddComponent<MeshFilter>();
             child.AddComponent<MeshRenderer>();
@@ -168,6 +184,12 @@ public class Planet : MonoBehaviour
             shading.material.SetFloat("_Metalic", shading.metalic);
             shading.material.SetFloat("_Smooth", shading.smoothness);
             child.GetComponent<MeshRenderer>().material = shading.material;
+
+            if (useGrass) 
+            {
+                grass.surface[f] = child;
+                GetComponent<GenerateGrassTerrain>().SetUpGrass(f, grass);
+            }
         }
     }
 
