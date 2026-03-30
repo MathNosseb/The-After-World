@@ -22,12 +22,17 @@ Shader "Custom/GrassShader"
                 float noise : TEXCOORD2;
             };
 
+            struct BladeData {
+                float3 position;
+                float4 rotation;
+                float noise;
+            };
+
             float4x4 _ObjectToWorld;
-            StructuredBuffer<float3> _Positions;
             float4 _Color;
-            StructuredBuffer<float4> _Rotations;
-            StructuredBuffer<float> _Noises;
+            StructuredBuffer<BladeData> _Blades;
             float3 _dirToSun;
+            float3 playerPosition;
 
             float4 quatMul(float4 a, float4 b)
             {
@@ -61,35 +66,17 @@ Shader "Custom/GrassShader"
 
                 v2f o;
 
-                float3 pos = _Positions[instanceID];
+                float3 pos = _Blades[instanceID].position;
 
-                float4 rot = normalize(_Rotations[instanceID]);
+                float4 rot = normalize(_Blades[instanceID].rotation);
 
                 float4 qConjugue = float4(-rot.x, -rot.y, -rot.z, rot.w);
-
-                /*
-                float angle = _Rotations[instanceID];
-                float rad = radians(angle);
-
-                float s = sin(rad);
-                float c = cos(rad);
-
-                float3 v = vertex.xyz;
-
-                // rotation autour de Y
-                float3 rotated;
-                rotated.x = v.x * c - v.z * s;
-                rotated.z = v.x * s + v.z * c;
-                rotated.y = v.y;
-                */
-                // position finale
-                //float3 worldPos = rotated + _Positions[instanceID];
                     
-                float3 worldPos = rotateVector(vertex.xyz, normalize(_Rotations[instanceID])) + mul(_ObjectToWorld, float4(pos, 1.0)).xyz;
+                float3 worldPos = rotateVector(vertex.xyz, normalize(_Blades[instanceID].rotation)) + mul(_ObjectToWorld, float4(pos, 1.0)).xyz;
 
                 o.pos = mul(UNITY_MATRIX_VP, float4(worldPos, 1.0));
                 o.uid = instanceID;
-                o.noise = _Noises[instanceID];
+                o.noise = _Blades[instanceID].noise;
                 // Normale fixe (important pour éviter les artefacts)
                 o.normal = float3(0,1,0);
 
@@ -105,7 +92,7 @@ Shader "Custom/GrassShader"
                 float NdotL = abs(dot(normalize(i.normal), _dirToSun));
                 float r = frac(sin(i.uid * 12.9898) * 43758.5453);
                 //float3 baseColor = float3(0.2, 0.8, 0.2);
-                float variation = lerp(0.7, 1.3, (r*i.noise));
+                float variation = lerp(0.7, 1.3, i.noise);
 
                 float3 color = _Color * variation;
                 //return float4(0.2, 0.8, 0.2, 1.0);

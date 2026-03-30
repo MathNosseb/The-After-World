@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40078970f116fc62c875cb931b5e1b53, type: 3}
+  m_Name: Grass
+  m_EditorClassIdentifier: 
+  computeShader: {fileID: 7200000, guid: 9469633eefc2e3ce594c2e8a6122f50b, type: 3}
+  kernel: 0
+  mat:
+  - {fileID: 2100000, guid: 47f4c5b0aa43384cbb7c56f0b6ba1ec8, type: 2}
+  - {fileID: 2100000, guid: 21f181c02da5529f390eb06997124bd6, type: 2}
+  - {fileID: 2100000, guid: 28298840424aa169f8998857d6edb76e, type: 2}
+  - {fileID: 2100000, guid: dd2e66ee9bb3bbd1cbbcbfdf29c264f4, type: 2}
+  - {fileID: 2100000, guid: 1e887659de84109d28b8e6f234cc72ac, type: 2}
+  - {fileID: 2100000, guid: d72b4b72855bb0854a6efec793aa9e4b, type: 2}
+  surface:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  color: {r: 0.07297721, g: 0.4339623, b: 0.038892835, a: 0}
+  grassMesh: {fileID: 0}
+  sun: {fileID: 0}
+  sunCelestial: {fileID: 0}
+  bladeCounts: 73040600112c200026dd0c00693e2b001e9e2600d9c81b00
+  density: 100
+  spread: 1.846
+  minDistance: 300
+  maxDistance: 20
+  viewDistance: 44.2
+  cameraEvent: 13
+  faceInit: 010101010101

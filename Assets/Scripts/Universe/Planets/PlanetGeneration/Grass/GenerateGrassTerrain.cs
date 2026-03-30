@@ -10,18 +10,20 @@ public class GenerateGrassTerrain : MonoBehaviour
 {
     Grass grass;
 
+    
+
+
     public void SetUpGrass(int face, Grass grassCompo)
     {
         grass = grassCompo;
         grass.cmd = new CommandBuffer();
         CameraManager.cam.AddCommandBuffer(grass.cameraEvent, grass.cmd);
-        
+
         grass.positionsBuffer[face]?.Release();
         grass.rotationBuffer[face]?.Release();
         grass.argsBuffer[face]?.Release();
         grass.noiseBuffer[face]?.Release();
 
-        Transform surfaceTransform = grass.surface[face].GetComponent<Transform>();
         Mesh surfaceMesh = grass.surface[face].GetComponent<MeshFilter>().sharedMesh;
         Debug.Log("[INFORMATION] Création de " + grass.density * surfaceMesh.vertexCount + " grass Mesh");
         Vector3[] vertsMesh = surfaceMesh.vertices; // une seule alloc
@@ -72,6 +74,8 @@ public class GenerateGrassTerrain : MonoBehaviour
             return;
         }
 
+        grass.bladeCounts[face] = finalPosition.Count;
+
         grass.grassMesh = GetComponent<GrassMesh>().GetGrassMesh();
 
         grass.positionsBuffer[face] = new ComputeBuffer(finalPosition.Count, sizeof(float) * 3);
@@ -82,15 +86,15 @@ public class GenerateGrassTerrain : MonoBehaviour
         grass.noiseBuffer[face].SetData(finalNoise);
 
 
-        grass.mat.SetBuffer("_Positions", grass.positionsBuffer[face]);
-        grass.mat.SetBuffer("_Rotations", grass.rotationBuffer[face]);
-        grass.mat.SetColor("_Color", grass.color);
-        grass.mat.SetBuffer("_Noises", grass.noiseBuffer[face]);
+        grass.mat[face].SetBuffer("_Positions", grass.positionsBuffer[face]);
+        grass.mat[face].SetBuffer("_Rotations", grass.rotationBuffer[face]);
+        grass.mat[face].SetColor("_Color", grass.color);
+        grass.mat[face].SetBuffer("_Noises", grass.noiseBuffer[face]);
         grass.sun = GameObject.Find("Sun");
         
         grass.sunCelestial = grass.sun.GetComponent<CelestialBody>();
         Vector3 lightDir = (grass.sunCelestial.GetDoubleVector3Position().convert - transform.position).normalized;
-        grass.mat.SetVector("_dirToSun", lightDir);
+        grass.mat[face].SetVector("_dirToSun", lightDir);
 
         grass.argsBuffer[face] = new ComputeBuffer(
             1,
@@ -117,25 +121,64 @@ public class GenerateGrassTerrain : MonoBehaviour
 
         grass.argsBuffer[face].SetData(args);
 
+        grass.outputBladeData[face] = new ComputeBuffer(grass.bladeCounts[face], 
+                                                                sizeof(float) * 3 +  sizeof(float) * 4 + sizeof(float), 
+                                                                ComputeBufferType.Append);
+
         grass.faceInit[face] = true;
     }
 
     void Update()
     {
+        grass.cmd.Clear();
         for (int i = 0; i < 6; i++)
         {
-            if (!grass.faceInit[i]) return;
-            if (grass.argsBuffer[i] == null || grass.grassMesh == null ) return;
-            Vector3 lightDir = (grass.sunCelestial.GetDoubleVector3Position().convert - transform.position).normalized;
-            grass.mat.SetVector("_dirToSun", lightDir);
-            grass.mat.SetMatrix("_ObjectToWorld", grass.surface[i].transform.localToWorldMatrix); 
+            grass.outputBladeData[i].SetCounterValue(0);
+            
+            grass.computeShader.SetBuffer(grass.kernel, "inputPositions", grass.positionsBuffer[i]);
+            grass.computeShader.SetBuffer(grass.kernel, "inputRotations", grass.rotationBuffer[i]);
+            grass.computeShader.SetBuffer(grass.kernel, "inputNoises", grass.noiseBuffer[i]);
+            grass.computeShader.SetBuffer(grass.kernel, "outputBlades", grass.outputBladeData[i]);
+            Vector3 localPlayerPos = grass.surface[i].transform.InverseTransformPoint(
+                CameraManager.cam.transform.position
+            );
+            grass.computeShader.SetVector("_PlayerPos", localPlayerPos);
 
-            grass.cmd.Clear();
-            grass.cmd.DrawMeshInstancedIndirect(grass.grassMesh, 0, grass.mat, 0, grass.argsBuffer[i]);
+            grass.computeShader.SetFloat("_MaxDistance", grass.viewDistance);
+            grass.computeShader.SetInt("_BladeCount", grass.bladeCounts[i]);
+
+            int groups = Mathf.CeilToInt(grass.bladeCounts[i] / 64f);
+            grass.computeShader.Dispatch(grass.kernel, groups, 1, 1);
+
+            ComputeBuffer.CopyCount(grass.outputBladeData[i], grass.argsBuffer[i], sizeof(uint));
+
+            Vector3 lightDir = (grass.sunCelestial.GetDoubleVector3Position().convert - transform.position).normalized;
+            grass.mat[i].SetVector("_dirToSun", lightDir);
+            grass.mat[i].SetMatrix("_ObjectToWorld", grass.surface[i].transform.localToWorldMatrix); 
+            grass.mat[i].SetVector("playerPosition", localPlayerPos);
+            grass.mat[i].SetBuffer("_Blades", grass.outputBladeData[i]);
+
+            grass.cmd.DrawMeshInstancedIndirect(grass.grassMesh, 0, grass.mat[i], 0, grass.argsBuffer[i]);
+
+            
         }
         
 
 
+    }
+
+    void OnDestroy()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            grass.positionsBuffer[i]?.Release();
+            grass.rotationBuffer[i]?.Release();
+            grass.argsBuffer[i]?.Release();
+            grass.noiseBuffer[i]?.Release();
+            grass.outputBladeData[i]?.Release();
+        }
+
+        
     }
 
 }

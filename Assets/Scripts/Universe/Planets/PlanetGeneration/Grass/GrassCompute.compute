@@ -1,0 +1,38 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+float3 _PlayerPos;
+float _MaxDistance;
+int _BladeCount;
+
+StructuredBuffer<float3> inputPositions;
+StructuredBuffer<float4> inputRotations;
+StructuredBuffer<float> inputNoises;
+
+struct BladeData {
+    float3 position;
+    float4 rotation;
+    float noise;
+};
+
+AppendStructuredBuffer<BladeData> outputBlades;
+
+[numthreads(64,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= _BladeCount) return; // sécurité obligatoire
+    float3 bladePos = inputPositions[id.x];
+    float4 bladRot = inputRotations[id.x];
+    float bladNoise = inputNoises[id.x];
+    float3 diff = _PlayerPos - bladePos;
+    float distSq = dot(diff, diff); // x² + y² + z², pas de sqrt
+    if (distSq > _MaxDistance * _MaxDistance) return;
+
+    BladeData blade;
+    blade.position = bladePos;
+    blade.rotation = bladRot;
+    blade.noise = bladNoise;
+
+    outputBlades.Append(blade);
+}
+

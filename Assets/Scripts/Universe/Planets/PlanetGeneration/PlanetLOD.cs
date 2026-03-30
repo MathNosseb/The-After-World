@@ -8,7 +8,7 @@ public class PlanetLOD : MonoBehaviour
     Camera cam;
     Planet planet;
 
-    int[] currentQuality;
+    public int[] currentQuality;
     MeshRenderer[] meshRenderers;
     MeshProperties[] meshProperties;
     MeshFilter[] meshFilters;

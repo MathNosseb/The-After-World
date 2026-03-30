@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GrassMaterial
+  m_Name: GrassMaterial 3
   m_Shader: {fileID: 4800000, guid: c8af6973f3e0e9f17a3f902c1d993066, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -78,7 +78,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.05228728, g: 0.4433962, b: 0.07687911, a: 0}
+    - _Color: {r: 0.07297721, g: 0.4339623, b: 0.038892835, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

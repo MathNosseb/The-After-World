@@ -136,6 +136,11 @@ public class Planet : MonoBehaviour
             grass.rotationBuffer = new ComputeBuffer[6];
             grass.noiseBuffer = new ComputeBuffer[6];
             grass.faceInit = new bool[6];
+            grass.bladeCounts = new int[6];
+            grass.outputBladeData = new ComputeBuffer[6];
+
+
+            grass.kernel = grass.computeShader.FindKernel("CSMain");
             
         }
         for (int f = 0; f < 6; f++)
