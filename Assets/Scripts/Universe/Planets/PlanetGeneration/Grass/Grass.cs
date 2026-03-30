@@ -46,5 +46,8 @@ public class Grass : ScriptableObject
 
     [HideInInspector] public bool[] faceInit;
 
+    [Range(0,0.3f)]
+    public float cropEffect;
+
     
 }

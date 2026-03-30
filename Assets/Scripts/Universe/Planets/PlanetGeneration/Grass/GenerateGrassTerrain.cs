@@ -130,6 +130,8 @@ public class GenerateGrassTerrain : MonoBehaviour
 
     void Update()
     {
+        Camera camera;
+        camera = CameraManager.cam;
         grass.cmd.Clear();
         for (int i = 0; i < 6; i++)
         {
@@ -140,12 +142,18 @@ public class GenerateGrassTerrain : MonoBehaviour
             grass.computeShader.SetBuffer(grass.kernel, "inputNoises", grass.noiseBuffer[i]);
             grass.computeShader.SetBuffer(grass.kernel, "outputBlades", grass.outputBladeData[i]);
             Vector3 localPlayerPos = grass.surface[i].transform.InverseTransformPoint(
-                CameraManager.cam.transform.position
+                camera.transform.position
+            );
+
+            Vector3 localCamForward = grass.surface[i].transform.InverseTransformDirection(
+                camera.transform.forward
             );
             grass.computeShader.SetVector("_PlayerPos", localPlayerPos);
-
             grass.computeShader.SetFloat("_MaxDistance", grass.viewDistance);
             grass.computeShader.SetInt("_BladeCount", grass.bladeCounts[i]);
+            grass.computeShader.SetVector("_CamForward", localCamForward);
+            grass.computeShader.SetFloat("_Fov", camera.fieldOfView);
+            grass.computeShader.SetFloat("_Crop", grass.cropEffect);
 
             int groups = Mathf.CeilToInt(grass.bladeCounts[i] / 64f);
             grass.computeShader.Dispatch(grass.kernel, groups, 1, 1);
