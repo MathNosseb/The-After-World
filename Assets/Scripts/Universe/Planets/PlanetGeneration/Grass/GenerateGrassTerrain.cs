@@ -10,10 +10,7 @@ public class GenerateGrassTerrain : MonoBehaviour
 {
     Grass grass;
 
-    
-
-
-    public void SetUpGrass(int face, Grass grassCompo)
+    public void SetUpGrass(int face, Grass grassCompo, GrassMeshData grassMeshData)
     {
         grass = grassCompo;
         grass.cmd = new CommandBuffer();
@@ -76,7 +73,7 @@ public class GenerateGrassTerrain : MonoBehaviour
 
         grass.bladeCounts[face] = finalPosition.Count;
 
-        grass.grassMesh = GetComponent<GrassMesh>().GetGrassMesh();
+        grass.grassMesh = grassMeshData.GetCustomMesh();
 
         grass.positionsBuffer[face] = new ComputeBuffer(finalPosition.Count, sizeof(float) * 3);
         grass.positionsBuffer[face].SetData(finalPosition);
@@ -88,7 +85,8 @@ public class GenerateGrassTerrain : MonoBehaviour
 
         grass.mat[face].SetBuffer("_Positions", grass.positionsBuffer[face]);
         grass.mat[face].SetBuffer("_Rotations", grass.rotationBuffer[face]);
-        grass.mat[face].SetColor("_Color", grass.color);
+        grass.mat[face].SetColor("_ColorBase", grass.BaseColor);
+        grass.mat[face].SetColor("_ColorTip", grass.TopColor);
         grass.mat[face].SetBuffer("_Noises", grass.noiseBuffer[face]);
         grass.sun = GameObject.Find("Sun");
         

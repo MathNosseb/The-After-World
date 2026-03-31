@@ -5,6 +5,7 @@ Shader "Custom/GrassShader"
         Tags { "Queue"="Geometry" "RenderType"="Opaque" }
         Pass
         {
+            Tags { "LightMode"="ForwardBase" }
             Cull Off
             ZWrite On
             CGPROGRAM
@@ -13,6 +14,7 @@ Shader "Custom/GrassShader"
 
             #include "UnityCG.cginc"
             #include "UnityInstancing.cginc"
+            #include "Lighting.cginc"
 
             struct v2f
             {
@@ -20,6 +22,7 @@ Shader "Custom/GrassShader"
                 float3 normal : TEXCOORD0;
                 float uid : TEXCOORD1;
                 float noise : TEXCOORD2;
+                float2 uv : TEXCOORD3;
             };
 
             struct BladeData {
@@ -29,7 +32,8 @@ Shader "Custom/GrassShader"
             };
 
             float4x4 _ObjectToWorld;
-            float4 _Color;
+            float4 _ColorBase;
+            float4 _ColorTip;
             StructuredBuffer<BladeData> _Blades;
             float3 _dirToSun;
             float3 playerPosition;
@@ -60,11 +64,13 @@ Shader "Custom/GrassShader"
                 return frac(sin(dot(co, float2(12.9898, 78.233))) * 43758.5453);
             }
 
-            v2f vert(float4 vertex : POSITION, float3 normal : NORMAL, uint instanceID : SV_InstanceID)
+            v2f vert(float4 vertex : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD0, uint instanceID : SV_InstanceID)
             {
                 UNITY_SETUP_INSTANCE_ID(vertex);
 
                 v2f o;
+
+                o.uv = uv;
 
                 float3 pos = _Blades[instanceID].position;
 
@@ -72,7 +78,7 @@ Shader "Custom/GrassShader"
 
                 float4 qConjugue = float4(-rot.x, -rot.y, -rot.z, rot.w);
                     
-                float3 worldPos = rotateVector(vertex.xyz, normalize(_Blades[instanceID].rotation)) + mul(_ObjectToWorld, float4(pos, 1.0)).xyz;
+                float3 worldPos = rotateVector(vertex.xyz*0.5, normalize(_Blades[instanceID].rotation)) + mul(_ObjectToWorld, float4(pos, 1.0)).xyz;
 
                 o.pos = mul(UNITY_MATRIX_VP, float4(worldPos, 1.0));
                 o.uid = instanceID;
@@ -88,16 +94,10 @@ Shader "Custom/GrassShader"
 
             float4 frag(v2f i) : SV_Target
             {
-                //float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
-                float NdotL = abs(dot(normalize(i.normal), _dirToSun));
-                float r = frac(sin(i.uid * 12.9898) * 43758.5453);
-                //float3 baseColor = float3(0.2, 0.8, 0.2);
                 float variation = lerp(0.7, 1.3, i.noise);
-
-                float3 color = _Color * variation;
-                //return float4(0.2, 0.8, 0.2, 1.0);
-                //return float4(0.2, 0.8, 0.2, 1.0);
-                return _Color * variation;
+                float3 color = lerp(_ColorBase.rgb, _ColorTip.rgb, i.uv.y);
+                return float4(color * variation, 1.0);
+                //return _Color * variation;
             }
             ENDCG
         }

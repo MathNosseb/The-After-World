@@ -50,6 +50,7 @@ public class CelestialBody : MonoBehaviour
 
     private void OnValidate()
     {
+        if (Application.isPlaying) return;
         constantValue = GameObject.Find("Universe").GetComponent<constant>();
         sun = GameObject.Find("Sun");
 

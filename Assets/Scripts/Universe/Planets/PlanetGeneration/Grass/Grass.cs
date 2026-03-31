@@ -14,7 +14,8 @@ public class Grass : ScriptableObject
     [HideInInspector] public int kernel;
     public Material[] mat;
     [HideInInspector] public GameObject[] surface;
-    public Color color;
+    public Color BaseColor;
+    public Color TopColor;
 
     [HideInInspector] public Mesh grassMesh;
 
@@ -34,7 +35,7 @@ public class Grass : ScriptableObject
 
     [HideInInspector] public CommandBuffer cmd;
 
-    [Range(1, 100)] public int density;
+    [Range(1, 200)] public int density;
     [Range(1,2)] public float spread;
 
     public float minDistance;

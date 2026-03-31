@@ -2,8 +2,6 @@ using Unity.Mathematics;
 using UnityEngine;
 using Unity.Collections;
 using Unity.Jobs;
-using Unity.VisualScripting;
-using System.Runtime.InteropServices;
 
 [RequireComponent(typeof(PlanetLOD))]
 public class Planet : MonoBehaviour
@@ -25,6 +23,7 @@ public class Planet : MonoBehaviour
 
     public bool useGrass = false;
     public Grass grass;
+    public GrassMeshData grassMeshData;
 
     public void InitNoise()
     {
@@ -193,7 +192,7 @@ public class Planet : MonoBehaviour
             if (useGrass) 
             {
                 grass.surface[f] = child;
-                GetComponent<GenerateGrassTerrain>().SetUpGrass(f, grass);
+                GetComponent<GenerateGrassTerrain>().SetUpGrass(f, grass, grassMeshData);
             }
         }
     }
