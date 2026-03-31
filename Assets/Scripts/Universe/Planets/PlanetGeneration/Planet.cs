@@ -137,7 +137,7 @@ public class Planet : MonoBehaviour
             grass.faceInit = new bool[6];
             grass.bladeCounts = new int[6];
             grass.outputBladeData = new ComputeBuffer[6];
-
+            grass.meshRenderers = new MeshRenderer[6];
 
             grass.kernel = grass.computeShader.FindKernel("CSMain");
             
@@ -192,6 +192,7 @@ public class Planet : MonoBehaviour
             if (useGrass) 
             {
                 grass.surface[f] = child;
+                grass.meshRenderers[f] = child.GetComponent<MeshRenderer>();
                 GetComponent<GenerateGrassTerrain>().SetUpGrass(f, grass, grassMeshData);
             }
         }

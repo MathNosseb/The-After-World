@@ -130,9 +130,12 @@ public class GenerateGrassTerrain : MonoBehaviour
     {
         Camera camera;
         camera = CameraManager.cam;
+        Debug.Log(camera);
         grass.cmd.Clear();
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
         for (int i = 0; i < 6; i++)
         {
+            if (!GeometryUtility.TestPlanesAABB(planes, grass.meshRenderers[i].bounds)) continue; //pas visible a l ecran
             grass.outputBladeData[i].SetCounterValue(0);
             
             grass.computeShader.SetBuffer(grass.kernel, "inputPositions", grass.positionsBuffer[i]);

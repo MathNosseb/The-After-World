@@ -14,6 +14,7 @@ public class Grass : ScriptableObject
     [HideInInspector] public int kernel;
     public Material[] mat;
     [HideInInspector] public GameObject[] surface;
+    [HideInInspector] public MeshRenderer[] meshRenderers;
     public Color BaseColor;
     public Color TopColor;
 

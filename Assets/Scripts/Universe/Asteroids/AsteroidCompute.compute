@@ -1,0 +1,33 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+
+StructuredBuffer<float3> inputPositions;
+float3 center;
+int count;
+float radius;
+
+AppendStructuredBuffer<float3> outputPositions;
+
+
+float rand(uint seed)
+{
+    seed = seed ^ (seed << 13);
+    seed = seed ^ (seed >> 17);
+    seed = seed ^ (seed << 5);
+    return (seed & 0x7FFFFFFF) / (float)0x7FFFFFFF;
+}
+
+[numthreads(64,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= (uint)count) return;
+   float pi = 3.14159265359;
+   float r = rand(id.x);
+   float angle = 2 * pi * id.x / count;
+
+   float x = center.x + (radius + r*1000) * cos(angle);
+   float z = center.y + (radius + r*1000) * sin(angle);    
+
+    outputPositions.Append(float3(x,center.y, z));
+}

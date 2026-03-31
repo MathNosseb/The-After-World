@@ -6,7 +6,7 @@ Shader "Custom/GrassShader"
         Pass
         {
             Tags { "LightMode"="ForwardBase" }
-            Cull Off
+            Cull Back
             ZWrite On
             CGPROGRAM
             #pragma vertex vert

@@ -28,6 +28,13 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  meshRenderers:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   BaseColor: {r: 0.05882353, g: 0.40392157, b: 0.078431375, a: 0}
   TopColor: {r: 0.025885278, g: 0.3207547, b: 0.022694904, a: 0}
   grassMesh: {fileID: 4300000, guid: 283834766537a8e639663a47a1342e69, type: 2}
@@ -38,7 +45,7 @@ MonoBehaviour:
   spread: 1.846
   minDistance: 301
   maxDistance: 20
-  viewDistance: 70.4
+  viewDistance: 76.3
   cameraEvent: 13
   faceInit: 010101010101
-  cropEffect: 0.246
+  cropEffect: 0.203
