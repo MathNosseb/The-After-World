@@ -11,6 +11,9 @@ public struct GenerateVerticiesJob : IJobParallelFor
     public NativeArray<Vector3> vertices;
     [ReadOnly]
     public NativeArray<Vector3> directions;
+    public int useCrater;
+    [ReadOnly]
+    public NativeArray<float> cratersDepth;
     public int presetQuality;
     public int face;
     public float radius;
@@ -42,8 +45,12 @@ public struct GenerateVerticiesJob : IJobParallelFor
         point = point.normalized;
 
         float noise = GetPlanetHeight(point);
+        if (useCrater == 0)
+            vertices[index] = point * (radius + noise);
+        else
+            vertices[index] = point * (radius + cratersDepth[index]);
+        
 
-        vertices[index] = point * (radius + noise);
     }
 
     float GetPlanetHeight(Vector3 p)

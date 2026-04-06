@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37bfc8c0d95445b4ebc7b9f2e3eaafad, type: 3}
-  m_Name: ForanShape
+  m_Name: Shape
   m_EditorClassIdentifier: 
   planetParameter: 0
-  radius: 1000
-  maxQuality: 100
-  mediumQuality: 60
+  radius: 600000
+  maxQuality: 10
+  mediumQuality: 10
   lowQuality: 10
-  maxQualityDistance: 1000
-  mediumQualityDistance: 2000
-  lowQualityDistance: 3000
+  maxQualityDistance: 10000000
+  mediumQualityDistance: 5000000
+  lowQualityDistance: 10000000
   seed: 0
-  noiseScale1: 15
-  noiseScale2: 95
+  noiseScale1: 0
+  noiseScale2: 0
   oceanScale: 0

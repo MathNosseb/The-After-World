@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8335cf5c47bd57ce8ba6bbf51c4dfb07, type: 3}
+  m_Name: CratersParameters
+  m_EditorClassIdentifier: 
+  cratertexture: {fileID: 2800000, guid: b2035a22152dfe3c2b6ff88692b2a766, type: 3}

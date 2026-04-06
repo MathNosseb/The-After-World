@@ -14,7 +14,10 @@ public class GenerateGrassTerrain : MonoBehaviour
     {
         grass = grassCompo;
         grass.cmd = new CommandBuffer();
-        CameraManager.cam.AddCommandBuffer(grass.cameraEvent, grass.cmd);
+        Debug.Log(grass.cameraEvent);
+        Debug.Log(grass.cmd); 
+        
+        FindFirstObjectByType<Camera>().AddCommandBuffer(grass.cameraEvent, grass.cmd);
 
         grass.positionsBuffer[face]?.Release();
         grass.rotationBuffer[face]?.Release();
@@ -129,13 +132,20 @@ public class GenerateGrassTerrain : MonoBehaviour
     void Update()
     {
         Camera camera;
-        camera = CameraManager.cam;
+        camera = FindFirstObjectByType<Camera>();
         Debug.Log(camera);
         grass.cmd.Clear();
-        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera); 
         for (int i = 0; i < 6; i++)
         {
+            if (!grass.faceInit[i]) continue;
             if (!GeometryUtility.TestPlanesAABB(planes, grass.meshRenderers[i].bounds)) continue; //pas visible a l ecran
+            if (grass.outputBladeData[i] == null)
+            {
+                continue;
+                //grass.outputBladeData = new ComputeBuffer[6];
+            
+            }
             grass.outputBladeData[i].SetCounterValue(0);
             
             grass.computeShader.SetBuffer(grass.kernel, "inputPositions", grass.positionsBuffer[i]);

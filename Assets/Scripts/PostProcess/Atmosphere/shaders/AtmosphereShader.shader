@@ -39,6 +39,7 @@
             float _ditherStrength;
             float _ditherScale;
             float intensity;
+            int gaz;
 
             struct appdata {
                 float4 vertex : POSITION;
@@ -128,6 +129,9 @@
                 float viewRayOpticalDepth = 0;
 
                 for (int i = 0; i < _numInScatteringPoints; i ++) {
+                    if (gaz == 1){
+                        _dirToSun = float3(0,0,0);
+                    }
 					float sunRayLength = raySphere(_planetCentre, _atmosphereRadius, inScatterPoint, _dirToSun).y;
 					float sunRayOpticalDepth = opticalDepthBaked(inScatterPoint +_dirToSun * _ditherStrength, _dirToSun);
 					float localDensity = densityAtPoint(inScatterPoint);
@@ -143,7 +147,7 @@
 				// Attenuate brightness of original col (i.e light reflected from planet surfaces)
 				// This is a hacky mess, TODO: figure out a proper way to do this
 				const float brightnessAdaptionStrength = 0.15;
-				const float reflectedLightOutScatterStrength = 3;
+				const float reflectedLightOutScatterStrength = 8;
 				float brightnessAdaption = dot (inScatteredLight,1) * brightnessAdaptionStrength;
 				float brightnessSum = viewRayOpticalDepth * intensity * reflectedLightOutScatterStrength + brightnessAdaption;
 				float reflectedLightStrength = exp(-brightnessSum);
@@ -159,6 +163,7 @@
 
             float4 frag(v2f i) : SV_Target
             {
+                
                 //_dirToSun = normalize(-_WorldSpaceLightPos0.xyz);
                 float4 originalCol = tex2D(_MainTex, i.uv);
                 float sceneDepthNonLinear = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);

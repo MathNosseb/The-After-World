@@ -1,9 +1,10 @@
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class CameraManager : MonoBehaviour
 {
-    [HideInInspector]
-    public static Camera cam;
+
+    public Camera cam;
 
     void Awake()
     {

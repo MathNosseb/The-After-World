@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b45547c3a9cb4ff119bcbb1ec38d232d, type: 3}
+  m_Name: GrassMeshData
+  m_EditorClassIdentifier: 
+  hauteur: 1
+  longueur: 1
+  customMeshCondition: 1
+  customMesh: {fileID: -421567839211691160, guid: 11ae83aa3941a0a4491f3cf3cf8f9a61, type: 3}

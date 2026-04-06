@@ -15,14 +15,15 @@ public class AtmosphereGenerator : PostProcessingEffect
     public Vector3 waveLengths = new Vector3(700, 530, 440);
     public float scatteringStrength = 1;
     public Vector3 lightDir;
-
-
     public int textureSize = 256;
     public Texture2D blueNoise;
     RenderTexture opticalDepthTexture;
     public float ditherStrength = 0.8f;
     public float ditherScale = 4;
     public float intensity = 1;
+
+    public bool Gaz; 
+    public Color gazColor;
     bool settingsUpToDate;
 
     void OnEnable() 
@@ -63,6 +64,7 @@ public class AtmosphereGenerator : PostProcessingEffect
         material.SetFloat("_ditherStrength", ditherStrength);
         material.SetFloat("_ditherScale", ditherScale);
         material.SetTexture("_BlueNoise", blueNoise);
+        material.SetInt("gaz", Gaz ? 1 : 0);
 
         PrecomputeOutScattering(); 
         material.SetTexture("_BakedOpticalDepth", opticalDepthTexture);

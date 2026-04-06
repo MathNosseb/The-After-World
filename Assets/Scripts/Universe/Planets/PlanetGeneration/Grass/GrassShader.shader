@@ -96,8 +96,15 @@ Shader "Custom/GrassShader"
             {
                 float variation = lerp(0.7, 1.3, i.noise);
                 float3 color = lerp(_ColorBase.rgb, _ColorTip.rgb, i.uv.y);
-                return float4(color * variation, 1.0);
-                //return _Color * variation;
+
+                float lightProduct = dot(_dirToSun, color * variation);
+                float lightSaturate = saturate(lightProduct);
+                float lightSmooth = smoothstep(-0.2, 0.3, lightSaturate);
+                float lightBackSide = 1 - lightSmooth;
+                float3 lightColor = color * variation * lightBackSide * 0.1;
+
+
+                return float4(lightColor, 1.0);
             }
             ENDCG
         }
