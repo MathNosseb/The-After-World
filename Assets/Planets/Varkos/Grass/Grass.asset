@@ -37,10 +37,11 @@ MonoBehaviour:
   - {fileID: 0}
   BaseColor: {r: 0.05882353, g: 0.40392157, b: 0.078431375, a: 0}
   TopColor: {r: 0.025885278, g: 0.3207547, b: 0.022694904, a: 0}
+  maxAngleTerrain: 0.7
   grassMesh: {fileID: 4300000, guid: 283834766537a8e639663a47a1342e69, type: 2}
   sun: {fileID: 0}
   sunCelestial: {fileID: 0}
-  bladeCounts: 7fc6040039d22a00e3390f006a3d370099c42e005e682200
+  bladeCounts: 7fc60400f0742600b9330e00e017370099c42e00ce561d00
   density: 130
   spread: 1.846
   minDistance: 301
@@ -48,4 +49,4 @@ MonoBehaviour:
   viewDistance: 76.3
   cameraEvent: 13
   faceInit: 010101010101
-  cropEffect: 0.203
+  cropEffect: 0.3

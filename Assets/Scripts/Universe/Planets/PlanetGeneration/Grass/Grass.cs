@@ -18,6 +18,9 @@ public class Grass : ScriptableObject
     public Color BaseColor;
     public Color TopColor;
 
+
+    public float maxAngleTerrain;
+
     [HideInInspector] public Mesh grassMesh;
 
     [HideInInspector] public GameObject sun;

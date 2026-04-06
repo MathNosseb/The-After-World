@@ -145,7 +145,7 @@ public class Planet : MonoBehaviour
         MeshChilds = new GameObject[6];
         if (useGrass) 
         {
-            grass.surface = new GameObject[6];
+            grass.surface = new GameObject[6]; 
             grass.positionsBuffer = new ComputeBuffer[6];
             grass.argsBuffer = new ComputeBuffer[6];
             grass.rotationBuffer = new ComputeBuffer[6];

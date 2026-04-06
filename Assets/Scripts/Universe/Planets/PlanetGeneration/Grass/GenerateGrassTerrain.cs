@@ -14,10 +14,10 @@ public class GenerateGrassTerrain : MonoBehaviour
     {
         grass = grassCompo;
         grass.cmd = new CommandBuffer();
-        Debug.Log(grass.cameraEvent);
-        Debug.Log(grass.cmd); 
         
         FindFirstObjectByType<Camera>().AddCommandBuffer(grass.cameraEvent, grass.cmd);
+
+        float3 planetPosition = transform.position;
 
         grass.positionsBuffer[face]?.Release();
         grass.rotationBuffer[face]?.Release();
@@ -46,6 +46,8 @@ public class GenerateGrassTerrain : MonoBehaviour
             valid = new NativeArray<bool>(surfaceMesh.vertexCount * grass.density, Allocator.TempJob),
             minDistance = grass.minDistance,
             maxDistance = grass.maxDistance + grass.minDistance,
+            planetPosition = planetPosition,
+            maxAngleTerrain = grass.maxAngleTerrain
         };
 
         var handlejob = job.Schedule(surfaceMesh.vertexCount * grass.density, 64);

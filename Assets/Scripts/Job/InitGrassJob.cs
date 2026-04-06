@@ -10,9 +10,12 @@ public struct InitGrassJob : IJobParallelFor
 {
     public int density;
     public float spread;
-
+    
     public float minDistance;
     public float maxDistance;
+
+    public float3 planetPosition;
+    public float maxAngleTerrain;
 
 
     [ReadOnly] public NativeArray<Vector3> verts;
@@ -49,7 +52,10 @@ public struct InitGrassJob : IJobParallelFor
         float3 position = worldPos + offset;
         float distance = math.length(position);
 
-        if (distance <= maxDistance && distance >= minDistance)
+        float3 planetUp = math.normalize(position);
+        float angleFromNormal = math.dot(N, planetUp);
+
+        if (distance <= maxDistance && distance >= minDistance && angleFromNormal >= maxAngleTerrain)
         {
             positions[index] = worldPos + offset;
         
