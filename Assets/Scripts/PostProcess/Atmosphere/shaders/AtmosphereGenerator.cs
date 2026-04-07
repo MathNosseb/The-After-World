@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "PostProcessing/Atmosphere")]     
@@ -21,9 +22,13 @@ public class AtmosphereGenerator : PostProcessingEffect
     public float ditherStrength = 0.8f;
     public float ditherScale = 4;
     public float intensity = 1;
+    [Range(1,10)]
+    public float reflectedLightOutScatterStrength;
+    [Range(0.05f,2)]
+    public float brightnessAdaptionStrength;
+    [Range(0.001f,1)]
+    public float stepMultiplicator = 1;
 
-    public bool Gaz; 
-    public Color gazColor;
     bool settingsUpToDate;
 
     void OnEnable() 
@@ -43,7 +48,7 @@ public class AtmosphereGenerator : PostProcessingEffect
         { 
             Graphics.Blit(source, destination);
             return;
-        }
+        } 
          
         Camera cam = Camera.current;
         float scatterR = Mathf.Pow(400 / waveLengths.x, 4) * scatteringStrength; 
@@ -64,7 +69,10 @@ public class AtmosphereGenerator : PostProcessingEffect
         material.SetFloat("_ditherStrength", ditherStrength);
         material.SetFloat("_ditherScale", ditherScale);
         material.SetTexture("_BlueNoise", blueNoise);
-        material.SetInt("gaz", Gaz ? 1 : 0);
+        material.SetFloat("_reflectedLightOutScatterStrength",reflectedLightOutScatterStrength);
+        material.SetFloat("_brightnessAdaptionStrength", brightnessAdaptionStrength);
+        material.SetFloat("_stepMultiplicator", stepMultiplicator);
+
 
         PrecomputeOutScattering(); 
         material.SetTexture("_BakedOpticalDepth", opticalDepthTexture);

@@ -132,10 +132,9 @@ public class GenerateGrassTerrain : MonoBehaviour
     }
 
     void Update()
-    {
+    { 
         Camera camera;
         camera = FindFirstObjectByType<Camera>();
-        Debug.Log(camera);
         grass.cmd.Clear();
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera); 
         for (int i = 0; i < 6; i++)

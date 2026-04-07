@@ -36,6 +36,7 @@ Material:
     - _RippleSpeed: 0
     - _WaveScale: 1
     - _WaveSpeed: 0.1
+    - _emissionMultiply: 0.1
     m_Colors:
     - _BaseColor: {r: 1, g: 0.6652649, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}

@@ -94,6 +94,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
+    - _emissionMultiply: 0.05
     - _maxHeight: 240.6
     - _minHeight: 197.2
     m_Colors:
