@@ -63,7 +63,7 @@ public class Planet : MonoBehaviour
     }
 
 
-    public Vector3[] CreateVertices(int presetQuality, float radius, int face)
+    public (Vector3[],Vector2[]) CreateVertices(int presetQuality, float radius, int face)
     {
         NativeArray<Vector3> directions = new NativeArray<Vector3>(6, Allocator.TempJob);
         directions[0] = Vector3.up;
@@ -86,6 +86,7 @@ public class Planet : MonoBehaviour
         var job = new GenerateVerticiesJob
         {
             vertices = new NativeArray<Vector3>((presetQuality + 1) * (presetQuality + 1), Allocator.TempJob),
+            uvs = new NativeArray<Vector2>((presetQuality + 1) * (presetQuality + 1), Allocator.TempJob),
             directions = directions,
             presetQuality = presetQuality,
             face = face,
@@ -106,11 +107,13 @@ public class Planet : MonoBehaviour
         
 
         Vector3[] verticies = job.vertices.ToArray();
+        Vector2[] uvs = job.uvs.ToArray();
+        job.uvs.Dispose();
         job.vertices.Dispose();
         directions.Dispose();
         cratersDepth.Dispose();
 
-        return verticies;
+        return (verticies,uvs);
     }
 
     public int[] CreateTriangles(int presetQuality)
@@ -184,7 +187,10 @@ public class Planet : MonoBehaviour
             child.GetComponent<MeshFilter>().mesh = mesh;
             mesh.name = "Procedural Grid " + f;
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-            mesh.vertices = CreateVertices(meshProperties.quality, shape.radius, f);
+            (var vertices, var uvArray) = CreateVertices(meshProperties.quality, shape.radius, f);
+            mesh.vertices = vertices;
+            mesh.uv = uvArray;
+            
             mesh.triangles = CreateTriangles(meshProperties.quality);
 
             mesh.RecalculateNormals();
@@ -196,15 +202,22 @@ public class Planet : MonoBehaviour
 
             child.transform.position = transform.position;
 
-            //apply shading
-            shading.material.SetColor("_LOWColor", shading.minColor);
-            shading.material.SetColor("_HIGHColor", shading.maxColor);
-            shading.material.SetFloat("_maxHeight", shading.maxHeight);
-            shading.material.SetFloat("_minHeight", shading.minHeight);
-            shading.material.SetFloat("_Metalic", shading.metalic);
-            shading.material.SetFloat("_Smooth", shading.smoothness);
-            child.GetComponent<MeshRenderer>().material = shading.material;
+            if (shape.planetParameter == PlanetParameter.Solid)
+            {
+                //apply shading
 
+                shading.material.SetTexture("_LOWTexture", shading.minTexture);
+                shading.material.SetTexture("_HIGHTexture", shading.maxTexture);
+                shading.material.SetVector("_Tiling", shading.Tiling);
+                shading.material.SetVector("_Offset", shading.Offset);
+                shading.material.SetFloat("_maxHeight", shading.maxHeight);
+                shading.material.SetFloat("_minHeight", shading.minHeight);
+                shading.material.SetFloat("_Metalic", shading.metalic);
+                shading.material.SetFloat("_Smooth", shading.smoothness);
+                
+            }
+            
+            child.GetComponent<MeshRenderer>().material = shading.material;
             if (useGrass) 
             {
                 grass.surface[f] = child;

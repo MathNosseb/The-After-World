@@ -29,6 +29,8 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float4 bladRot = inputRotations[id.x];
     float bladNoise = inputNoises[id.x];
 
+    if (bladNoise < 0) return;
+
     float3 diff = _PlayerPos - bladePos; 
     float distSq = dot(diff, diff); // x² + y² + z², pas de sqrt
     if (distSq > _MaxDistance * _MaxDistance) return;

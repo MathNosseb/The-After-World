@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shape
   m_EditorClassIdentifier: 
   planetParameter: 0
-  radius: 600000
+  radius: 6000000
   maxQuality: 10
   mediumQuality: 10
   lowQuality: 10

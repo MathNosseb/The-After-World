@@ -9,6 +9,7 @@ using Unity.Collections;
 public struct GenerateVerticiesJob : IJobParallelFor
 {
     public NativeArray<Vector3> vertices;
+    public NativeArray<Vector2> uvs;
     [ReadOnly]
     public NativeArray<Vector3> directions;
     public int useCrater;
@@ -37,6 +38,8 @@ public struct GenerateVerticiesJob : IJobParallelFor
         Vector3 axisB = Vector3.Cross(localUp, axisA);
 
         Vector2 percent = new Vector2(x,y) / presetQuality;
+
+        uvs[index] = percent;
 
         Vector3 point = localUp +
                         (percent.x - 0.5f) * 2f * axisA +

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shader: {fileID: 4800000, guid: c924c2546d0d5054699c5a41ce6f04e9, type: 3}
   opticalDepthCompute: {fileID: 7200000, guid: d8c59144778685d49aca56e2de2b9f7e, type: 3}
-  planetCentre: {x: 60061, y: 0, z: 0}
+  planetCentre: {x: 158214.9, y: -740003.3, z: 4077.4402}
   atmosphereRadius: 370.5
   planetRadius: 1
   densityFalloff: 5.08
@@ -22,7 +22,7 @@ MonoBehaviour:
   numInScatteringPoints: 20
   waveLengths: {x: 700, y: 532.8, z: 460}
   scatteringStrength: 10
-  lightDir: {x: 0, y: 0, z: 0}
+  lightDir: {x: -0.9745869, y: 0, z: 0.22400965}
   textureSize: 256
   blueNoise: {fileID: 2800000, guid: 9cbb9cec803df594792795f48acc420c, type: 3}
   ditherStrength: 0

@@ -101,7 +101,9 @@ public class PlanetLOD : MonoBehaviour
     {  
         meshProperties[i].quality = quality;
         meshFilters[i].mesh.Clear();        
-        meshFilters[i].mesh.vertices = planet.CreateVertices(meshProperties[i].quality, planet.shape.radius, i);
+        (var vertices, var uvArray) = planet.CreateVertices(meshProperties[i].quality, planet.shape.radius, i);
+        meshFilters[i].mesh.vertices = vertices;
+        meshFilters[i].mesh.uv = uvArray;
         meshFilters[i].mesh.triangles = planet.CreateTriangles(meshProperties[i].quality);
         meshFilters[i].mesh.RecalculateNormals();
         if (planet.shape.planetParameter == PlanetParameter.Solid)

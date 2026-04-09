@@ -59,8 +59,8 @@ public struct InitGrassJob : IJobParallelFor
         {
             positions[index] = worldPos + offset;
         
-            noises[index] = Unity.Mathematics.noise.pnoise(worldPos.xy, new float2(100f,100f));
-
+            noises[index] = noise.pnoise(worldPos.xy * 0.1f, new float2(100f,100f));
+            
             float3 up = math.normalize(position);
 
             // rotation qui aligne Y → up
