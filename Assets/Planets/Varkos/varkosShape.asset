@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: varkosShape
   m_EditorClassIdentifier: 
   planetParameter: 0
-  radius: 600000
+  radius: 300
   maxQuality: 200
   mediumQuality: 60
   lowQuality: 10
@@ -22,5 +22,5 @@ MonoBehaviour:
   lowQualityDistance: 3000
   seed: 1225
   noiseScale1: 31
-  noiseScale2: 50
+  noiseScale2: 32
   oceanScale: 0.5
