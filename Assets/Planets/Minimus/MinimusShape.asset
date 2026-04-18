@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MinimusShape
   m_EditorClassIdentifier: 
   planetParameter: 0
+  bodyType: 2
   radius: 100
   maxQuality: 100
   mediumQuality: 60

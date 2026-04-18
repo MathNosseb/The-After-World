@@ -96,15 +96,15 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Smooth: 0
+    - _Smooth: 0.2
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
     - _emissionMultiply: 0.05
-    - _maxHeight: 0
-    - _minHeight: 0
+    - _maxHeight: 146.1
+    - _minHeight: 73.7
     m_Colors:
     - _Color: {r: 0.49056602, g: 0.40957633, b: 0.40957633, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

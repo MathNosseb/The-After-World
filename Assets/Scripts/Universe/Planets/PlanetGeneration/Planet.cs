@@ -25,7 +25,6 @@ public class Planet : MonoBehaviour
     public Grass grass;
     public GrassMeshData grassMeshData;
 
-    public bool useCrater;
     public CratersParameters cratersParameters;
 
     public void InitNoise()
@@ -73,16 +72,7 @@ public class Planet : MonoBehaviour
         directions[4] = Vector3.forward;
         directions[5] = Vector3.back;
 
-        NativeArray<float> cratersDepth = new NativeArray<float>((presetQuality + 1) * (presetQuality + 1), Allocator.TempJob);
-        if (useCrater)
-        {
-            for (int cratersPixel = 0; cratersPixel < (presetQuality + 1) * (presetQuality + 1); cratersPixel++)
-            {
-
-                cratersDepth[cratersPixel] = cratersParameters.GetDepthCrater(cratersPixel% (presetQuality + 1), cratersPixel/ (presetQuality + 1));
-            }
-        }
-        
+        Vector3 craterCenter = transform.position + directions[face] * radius;
         var job = new GenerateVerticiesJob
         {
             vertices = new NativeArray<Vector3>((presetQuality + 1) * (presetQuality + 1), Allocator.TempJob),
@@ -98,8 +88,9 @@ public class Planet : MonoBehaviour
             oceanScale = shape.oceanScale,
             noiseScale1 = shape.noiseScale1,
             noiseScale2 = shape.noiseScale2,
-            cratersDepth = cratersDepth,
-            useCrater = useCrater ? 1 : 0
+            moon = shape.bodyType == BodyType.Moon ? 1 : 0,
+            craterCenter = craterCenter
+
         };
         
         var handlejob = job.Schedule((presetQuality + 1) * (presetQuality + 1), 64);
@@ -111,8 +102,6 @@ public class Planet : MonoBehaviour
         job.uvs.Dispose();
         job.vertices.Dispose();
         directions.Dispose();
-        cratersDepth.Dispose();
-
         return (verticies,uvs);
     }
 

@@ -10,14 +10,13 @@ public struct GenerateVerticiesJob : IJobParallelFor
 {
     public NativeArray<Vector3> vertices;
     public NativeArray<Vector2> uvs;
-    [ReadOnly]
-    public NativeArray<Vector3> directions;
-    public int useCrater;
-    [ReadOnly]
-    public NativeArray<float> cratersDepth;
+    [ReadOnly] public NativeArray<Vector3> directions;
+    public Vector3 craterCenter;
+
     public int presetQuality;
     public int face;
     public float radius;
+    public int moon;
 
     public FastNoiseLite continentNoise;
     public FastNoiseLite warpNoise;
@@ -47,14 +46,61 @@ public struct GenerateVerticiesJob : IJobParallelFor
         
         point = point.normalized;
 
-        float noise = GetPlanetHeight(point);
-        if (useCrater == 0)
+        if (moon == 0)
+        {
+            float noise = GetPlanetHeight(point);
             vertices[index] = point * (radius + noise);
+        }
         else
-            vertices[index] = point * (radius + cratersDepth[index]);
-        
+        {
+            //on créer la surface d une lune
+            //la surface doit avoir un trou
+            float craterRadius = 0.3f; // ajuste selon la taille voulue
+            float distance = math.acos(math.dot(point, math.normalize(craterCenter)));
+            float xD = distance / craterRadius; // 0 au centre, 1 au bord
+
+            // N'appliquer le cratère que dans la zone concernée
+            if (xD < 1f)
+            {
+                float craterShape = CraterShape(xD);
+                vertices[index] = point * (radius + craterShape);
+            }
+            else
+            {
+                vertices[index] = point * radius;
+            }
+
+
+        }
+
 
     }
+
+    float CraterShape(float x)
+    {
+        return math.max(math.min(CavityShape(x), RimShape(x)), FloorShape(x));
+    }
+
+    float CavityShape(float x)
+    {
+        return x * x - 1;
+    }
+
+    float RimShape(float x)
+    {
+        float rimWidth = 1.87f;
+        float RimSteepness = 0.3f;
+        x = math.abs(x) - 1 - rimWidth;
+        return RimSteepness * x * x;
+    }
+
+    float FloorShape(float x)
+    {
+        float floorHeight = -1f; // ← négatif pour créer un creux
+        return floorHeight;
+    }
+
+
 
     float GetPlanetHeight(Vector3 p)
     {
