@@ -32,18 +32,19 @@ public struct GenerateVerticiesJob : IJobParallelFor
         int y = index / (presetQuality + 1);
         int x = index % (presetQuality + 1);
 
+        //construction d'un cube
         Vector3 localUp = directions[face];
         Vector3 axisA = new Vector3(localUp.y, localUp.z, localUp.x);
         Vector3 axisB = Vector3.Cross(localUp, axisA);
 
+        //coordonnées UV local
         Vector2 percent = new Vector2(x,y) / presetQuality;
-
         uvs[index] = percent;
 
+        //projection en cube sphere
         Vector3 point = localUp +
                         (percent.x - 0.5f) * 2f * axisA +
                         (percent.y - 0.5f) * 2f * axisB;
-        
         point = point.normalized;
 
         if (moon == 0)
@@ -101,7 +102,12 @@ public struct GenerateVerticiesJob : IJobParallelFor
     }
 
 
-
+    /// <summary>
+    /// transforme une position 3D sur la sphere en hauteur terrain procedural
+    /// chaine de bruits empilé
+    /// </summary>
+    /// <param name="p">point sur la sphere (normalisé)</param>
+    /// <returns>hauteur local au point p</returns>
     float GetPlanetHeight(Vector3 p)
     {
         float continent = continentNoise.GetNoise(p.x, p.y, p.z);

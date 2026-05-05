@@ -14,11 +14,8 @@ public class GenerateGrassTerrain : MonoBehaviour
     {
         grass = grassCompo;
         grass.cmd = new CommandBuffer();
-        
+
         FindFirstObjectByType<Camera>().AddCommandBuffer(grass.cameraEvent, grass.cmd);
-
-        float3 planetPosition = transform.position;
-
         grass.positionsBuffer[face]?.Release();
         grass.rotationBuffer[face]?.Release();
         grass.argsBuffer[face]?.Release();
@@ -27,12 +24,15 @@ public class GenerateGrassTerrain : MonoBehaviour
         Mesh surfaceMesh = grass.surface[face].GetComponent<MeshFilter>().sharedMesh;
         Debug.Log("[INFORMATION] Création de " + grass.density * surfaceMesh.vertexCount + " grass Mesh");
         Vector3[] vertsMesh = surfaceMesh.vertices; // une seule alloc
+        Vector2[] uvsMesh = surfaceMesh.uv;
         Vector3[] normalsMesh = surfaceMesh.normals;
 
         NativeArray<Vector3> verts = new NativeArray<Vector3>(surfaceMesh.vertexCount, Allocator.TempJob);
+        NativeArray<Vector2> uvs = new NativeArray<Vector2>(surfaceMesh.uv.Length, Allocator.TempJob);
         NativeArray<Vector3> normals = new NativeArray<Vector3>(surfaceMesh.normals.Length, Allocator.TempJob);
         verts.CopyFrom(vertsMesh);
         normals.CopyFrom(normalsMesh);
+        uvs.CopyFrom(uvsMesh);
 
         var job = new InitGrassJob
         {
@@ -40,14 +40,22 @@ public class GenerateGrassTerrain : MonoBehaviour
             spread = grass.spread,
             verts = verts,
             normals = normals,
+            uvs = uvs,
             positions = new NativeArray<Vector3>(surfaceMesh.vertexCount * grass.density, Allocator.TempJob),
             rotations = new NativeArray<quaternion>(surfaceMesh.vertexCount * grass.density, Allocator.TempJob),
             noises = new NativeArray<float>(surfaceMesh.vertexCount * grass.density, Allocator.TempJob),
             valid = new NativeArray<bool>(surfaceMesh.vertexCount * grass.density, Allocator.TempJob),
             minDistance = grass.minDistance,
             maxDistance = grass.maxDistance + grass.minDistance,
-            planetPosition = planetPosition,
-            maxAngleTerrain = grass.maxAngleTerrain
+            planetPosition = transform.position,
+            maxAngleTerrain = grass.maxAngleTerrain,
+            continentNoise = grass.continentNoise,
+            warpNoise = grass.warpNoise,
+            mountainNoise = grass.mountainNoise,
+            mountainMaskNoise = grass.mountainMaskNoise,
+            planetRadius = grass.planetRadius,
+            seed = grass.seed,
+            PlanetFacedirection = grass.directions[face]
         };
 
         var handlejob = job.Schedule(surfaceMesh.vertexCount * grass.density, 64);

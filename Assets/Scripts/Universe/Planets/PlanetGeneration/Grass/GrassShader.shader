@@ -19,14 +19,15 @@ Shader "Custom/GrassShader"
             struct v2f
             {
                 float4 pos : SV_POSITION;
-                float3 normal : TEXCOORD0;
+                float3 normal : NORMAL;
                 float uid : TEXCOORD1;
                 float noise : TEXCOORD2;
                 float2 uv : TEXCOORD3;
+                float3 worldNormal : TEXCOORD4;
             };
 
             struct BladeData {
-                float3 position;
+                float3 position;//object space
                 float4 rotation;
                 float noise;
             };
@@ -64,14 +65,15 @@ Shader "Custom/GrassShader"
                 return frac(sin(dot(co, float2(12.9898, 78.233))) * 43758.5453);
             }
 
-            v2f vert(float4 vertex : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD0, uint instanceID : SV_InstanceID)
+            v2f vert(float4 vertex : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD0, uint instanceID : SV_InstanceID, float3 worldNormal : TEXCOORD4)
             {
-                UNITY_SETUP_INSTANCE_ID(vertex);
+                UNITY_SETUP_INSTANCE_ID(instanceID);
 
                 v2f o;
 
                 o.uv = uv;
 
+                //pos en ObjectSpace
                 float3 pos = _Blades[instanceID].position;
 
                 float4 rot = normalize(_Blades[instanceID].rotation);
@@ -80,11 +82,13 @@ Shader "Custom/GrassShader"
                     
                 float3 worldPos = rotateVector(vertex.xyz*0.5, normalize(_Blades[instanceID].rotation)) + mul(_ObjectToWorld, float4(pos, 1.0)).xyz;
 
+                //pos en worldSpace
                 o.pos = mul(UNITY_MATRIX_VP, float4(worldPos, 1.0));
                 o.uid = instanceID;
                 o.noise = _Blades[instanceID].noise;
-                // Normale fixe (important pour éviter les artefacts)
-                o.normal = float3(0,1,0);
+                
+                o.worldNormal = rotateVector(normal, rot);
+                
 
                 return o;
             }
@@ -95,16 +99,19 @@ Shader "Custom/GrassShader"
             float4 frag(v2f i) : SV_Target
             {
                 float variation = lerp(0.7, 1.3, i.noise);
-                float3 color = lerp(_ColorBase.rgb, _ColorTip.rgb, i.uv.y);
+                float3 color = lerp(_ColorBase.rgb, _ColorTip.rgb, i.uv.y) * variation;
 
-                float lightProduct = dot(_dirToSun, i.normal);
-                float lightSaturate = saturate(lightProduct);
-                float lightSmooth = smoothstep(-0.2, 0.3, lightSaturate);
-                float lightBackSide = 1 - lightSmooth;
-                float3 lightColor = color * variation * lightBackSide * 0.1;
+                float3 normal = normalize(i.worldNormal);
+                float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
+
+                float NdotL = saturate(dot(normal, lightDir));
+
+                float3 ambient = color.rgb * float3(0,0.3,1);
+                float3 diffuse = color.rgb * NdotL;
+                return float4(ambient + diffuse, 1.0);
 
 
-                return float4(lightColor, 1.0);
+                // return float4(diffuse, 1.0);
             }
             ENDCG
         }

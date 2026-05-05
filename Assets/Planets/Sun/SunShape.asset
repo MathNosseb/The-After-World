@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: SunShape
   m_EditorClassIdentifier: 
   planetParameter: 0
-  radius: 261600
+  bodyType: 0
+  radius: 1500
   maxQuality: 60
   mediumQuality: 30
   lowQuality: 10

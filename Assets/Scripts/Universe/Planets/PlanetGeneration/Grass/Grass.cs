@@ -18,8 +18,12 @@ public class Grass : ScriptableObject
     public Color BaseColor;
     public Color TopColor;
 
+    public Vector3[] directions;
 
+
+    public float planetRadius;
     public float maxAngleTerrain;
+    public float seed;
 
     [HideInInspector] public Mesh grassMesh;
 
@@ -53,6 +57,18 @@ public class Grass : ScriptableObject
 
     [Range(0,0.3f)]
     public float cropEffect;
+
+
+    //les differents noises -> burst compile compatible
+    [HideInInspector] public FastNoiseLite continentNoise;
+    [HideInInspector] public FastNoiseLite warpNoise;
+    [HideInInspector] public FastNoiseLite mountainNoise;
+    [HideInInspector] public FastNoiseLite mountainMaskNoise;
+
+    //shapeSettings
+    [HideInInspector] public float oceanScale;
+    [HideInInspector] public float noiseScale1;
+    [HideInInspector] public float noiseScale2;
 
     
 }
