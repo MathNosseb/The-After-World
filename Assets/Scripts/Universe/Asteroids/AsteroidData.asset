@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b368fff2b3768ce29d2d84e32b8cc0a, type: 3}
+  m_Name: AsteroidData
+  m_EditorClassIdentifier: 
+  asteroidContainer:
+  - mesh: {fileID: -5883008668241025672, guid: 53600e59a679ff748903e0a06ac164b5, type: 3}
+    color: {r: 0.1981132, g: 0.10425384, b: 0.028969381, a: 0}
+    material: {fileID: 2100000, guid: 732a7c64a35baa945aa21f3c65ba738d, type: 2}
+    count: 28
+    radius: 19.6
+    rotationSpeed: 0
+  - mesh: {fileID: 3615696857037886690, guid: 53600e59a679ff748903e0a06ac164b5, type: 3}
+    color: {r: 0.16293566, g: 0.3490566, b: 0.03457636, a: 0}
+    material: {fileID: 2100000, guid: 301dbcb539633ab16a6435011f29fa22, type: 2}
+    count: 19
+    radius: 22.8
+    rotationSpeed: 0
+  computeShader: {fileID: 7200000, guid: 76645f3a6b2071a67be3e0738e00bbeb, type: 3}
+  kernel: 0

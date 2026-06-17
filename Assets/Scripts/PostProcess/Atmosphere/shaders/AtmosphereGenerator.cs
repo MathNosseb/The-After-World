@@ -1,6 +1,6 @@
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 
 [CreateAssetMenu(menuName = "PostProcessing/Atmosphere")]     
 public class AtmosphereGenerator : PostProcessingEffect
@@ -16,14 +16,19 @@ public class AtmosphereGenerator : PostProcessingEffect
     public Vector3 waveLengths = new Vector3(700, 530, 440);
     public float scatteringStrength = 1;
     public Vector3 lightDir;
-
-
     public int textureSize = 256;
     public Texture2D blueNoise;
     RenderTexture opticalDepthTexture;
     public float ditherStrength = 0.8f;
     public float ditherScale = 4;
     public float intensity = 1;
+    [Range(1,10)]
+    public float reflectedLightOutScatterStrength;
+    [Range(0.05f,2)]
+    public float brightnessAdaptionStrength;
+    [Range(0.001f,1)]
+    public float stepMultiplicator = 1;
+
     bool settingsUpToDate;
 
     void OnEnable() 
@@ -43,7 +48,7 @@ public class AtmosphereGenerator : PostProcessingEffect
         { 
             Graphics.Blit(source, destination);
             return;
-        }
+        } 
          
         Camera cam = Camera.current;
         float scatterR = Mathf.Pow(400 / waveLengths.x, 4) * scatteringStrength; 
@@ -64,6 +69,10 @@ public class AtmosphereGenerator : PostProcessingEffect
         material.SetFloat("_ditherStrength", ditherStrength);
         material.SetFloat("_ditherScale", ditherScale);
         material.SetTexture("_BlueNoise", blueNoise);
+        material.SetFloat("_reflectedLightOutScatterStrength",reflectedLightOutScatterStrength);
+        material.SetFloat("_brightnessAdaptionStrength", brightnessAdaptionStrength);
+        material.SetFloat("_stepMultiplicator", stepMultiplicator);
+
 
         PrecomputeOutScattering(); 
         material.SetTexture("_BakedOpticalDepth", opticalDepthTexture);

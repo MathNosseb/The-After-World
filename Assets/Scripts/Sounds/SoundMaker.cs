@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public enum SoundType {UI, VFX};
+public enum SoundType {UI, VFX, AMBIENT};
 
 [System.Serializable]
 public class SoundMaker
@@ -10,7 +10,7 @@ public class SoundMaker
     public AudioClip clip;
     public AudioSource source;
     public string soundName;
-    public float volume;
-     public bool play;
+    [Range(0f,1f)]public float volume;
+    public bool play;
 }
  

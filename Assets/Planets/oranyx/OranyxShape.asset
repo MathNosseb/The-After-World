@@ -20,7 +20,7 @@ MonoBehaviour:
   maxQualityDistance: 100
   mediumQualityDistance: 300
   lowQualityDistance: 500
-  seed: 538
-  noiseScale1: 66
-  noiseScale2: 15
-  oceanScale: 0.294
+  seed: 490
+  noiseScale1: 22
+  noiseScale2: -12
+  oceanScale: 0.5

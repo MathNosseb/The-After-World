@@ -1,0 +1,59 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+float3 _PlayerPos;
+float _MaxDistance;
+int _BladeCount;
+float3 _CamForward;
+float _Fov;
+float _Crop;
+
+StructuredBuffer<float3> inputPositions;
+StructuredBuffer<float4> inputRotations;
+StructuredBuffer<float> inputNoises;
+
+struct BladeData {
+    float3 position;
+    float4 rotation;
+    float noise;
+};
+
+AppendStructuredBuffer<BladeData> outputBlades;
+
+[numthreads(64,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= (uint)_BladeCount) return; // sécurité obligatoire
+
+    float3 bladePos = inputPositions[id.x];
+    float4 bladRot = inputRotations[id.x];
+    float bladNoise = inputNoises[id.x];
+
+    if (bladNoise < 0) return;
+
+    float3 diff = _PlayerPos - bladePos; 
+    float distSq = dot(diff, diff); // x² + y² + z², pas de sqrt
+    if (distSq > _MaxDistance * _MaxDistance) return;
+
+    //lod2
+    if (distSq > (_MaxDistance * _MaxDistance) * 0.5625 && id.x % 3 == 0) return;
+
+    //lod 1
+    if (distSq > (_MaxDistance * _MaxDistance)/2 && id.x % 2 == 0) return;
+
+    
+
+    //detecttion de la visibilité de l herbe
+    float3 dir = normalize(bladePos - _PlayerPos);
+    float angleD = dot(dir, _CamForward);
+    float halfFovRad = radians(_Fov * 0.5);
+    if (angleD <= (cos(halfFovRad) - _Crop)) return;
+
+    BladeData blade;
+    blade.position = bladePos;
+    blade.rotation = bladRot;
+    blade.noise = bladNoise;
+
+    outputBlades.Append(blade);
+}
+

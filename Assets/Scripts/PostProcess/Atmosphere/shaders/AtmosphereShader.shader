@@ -14,7 +14,7 @@
 
     SubShader
     {
-        Cull Off ZWrite Off ZTest Always
+        Cull Off ZWrite Off ZTest LEqual
 
         Pass
         {
@@ -39,6 +39,9 @@
             float _ditherStrength;
             float _ditherScale;
             float intensity;
+            float _reflectedLightOutScatterStrength;
+            float _brightnessAdaptionStrength;
+            float _stepMultiplicator;
 
             struct appdata {
                 float4 vertex : POSITION;
@@ -123,7 +126,7 @@
 				blueNoise = (blueNoise - 0.5) * _ditherStrength;
 
                 float3 inScatterPoint = rayOrigin;
-                float stepSize = rayLength / (_numInScatteringPoints - 1);
+                float stepSize = rayLength / (_numInScatteringPoints - 1) * _stepMultiplicator;
                 float3 inScatteredLight = 0;
                 float viewRayOpticalDepth = 0;
 
@@ -142,16 +145,16 @@
 
 				// Attenuate brightness of original col (i.e light reflected from planet surfaces)
 				// This is a hacky mess, TODO: figure out a proper way to do this
-				const float brightnessAdaptionStrength = 0.15;
-				const float reflectedLightOutScatterStrength = 3;
-				float brightnessAdaption = dot (inScatteredLight,1) * brightnessAdaptionStrength;
-				float brightnessSum = viewRayOpticalDepth * intensity * reflectedLightOutScatterStrength + brightnessAdaption;
+				//const float brightnessAdaptionStrength = 0.15;
+				//const float reflectedLightOutScatterStrength = 8;
+				float brightnessAdaption = dot (inScatteredLight,1) * _brightnessAdaptionStrength;
+				float brightnessSum = viewRayOpticalDepth * intensity * _reflectedLightOutScatterStrength + brightnessAdaption;
 				float reflectedLightStrength = exp(-brightnessSum);
 				float hdrStrength = saturate(dot(originalCol,1)/3-1);
 				reflectedLightStrength = lerp(reflectedLightStrength, 1, hdrStrength);
 				float3 reflectedLight = originalCol * reflectedLightStrength;
 
-				float3 finalCol = reflectedLight + inScatteredLight;
+				float3 finalCol = reflectedLight + inScatteredLight * saturate(sqrt(rayLength) * 2 / sqrt(_atmosphereRadius));
 
 				
 				return finalCol;
@@ -159,6 +162,7 @@
 
             float4 frag(v2f i) : SV_Target
             {
+                
                 //_dirToSun = normalize(-_WorldSpaceLightPos0.xyz);
                 float4 originalCol = tex2D(_MainTex, i.uv);
                 float sceneDepthNonLinear = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);

@@ -5,6 +5,7 @@ public class Shape : ScriptableObject
 {
     [Header("Planet Parameters")]
     public PlanetParameter planetParameter;
+    public BodyType bodyType;
     public float radius;
 
     [Header("LOD Quality")]

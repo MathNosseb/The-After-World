@@ -40,15 +40,16 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _FoamAmount: 2.26
+    - _FoamAmount: 2.27
     - _FoamCutoff: 1
-    - _FoamScale: 2
-    - _FoamSpeed: 0.5
+    - _FoamScale: 2.06
+    - _FoamSpeed: 0.4
     - _RippleDensity: 4
     - _RippleSilmness: 8
     - _RippleSpeed: 0
-    - _WaveScale: 1
-    - _WaveSpeed: 0.1
+    - _WaveScale: 0.2
+    - _WaveSpeed: 0.2
+    - _emissionMultiply: 0.1
     m_Colors:
     - _BaseColor: {r: 0.21052864, g: 0.43508258, b: 0.5377358, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}

@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: VarkosShading
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: bb215a90e3c9dfd4b886aaab50d14f66, type: 2}
-  minColor: {r: 0.05931826, g: 0.4056604, b: 0.079299286, a: 0.9843137}
-  maxColor: {r: 0.5372549, g: 0.31764707, b: 0.16078432, a: 0.99215686}
-  maxHeight: 330.4
-  minHeight: 300.2
+  minTexture: {fileID: 2800000, guid: b5941888aad74dc40bb05dd23c845630, type: 3}
+  maxTexture: {fileID: 2800000, guid: d9d479c8b6a52ff4cb518f0cfd8832c6, type: 3}
+  maxHeight: 325
+  minHeight: 306.34
   metalic: 0
   smoothness: 0.2
+  Tiling: {x: 20, y: 20}
+  Offset: {x: 0, y: 0}

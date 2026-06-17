@@ -43,10 +43,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //detection du sol
-        grounded = false;
+        grounded = false; 
         Ray ray = new Ray(transform.position, -transform.up);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1.1f) && hit.collider.gameObject != playerContainer.PlayerGO)//detection sol en evitant le joueur
+        if (Physics.Raycast(ray, out hit, 1.2f) && hit.collider.gameObject != playerContainer.PlayerGO)//detection sol en evitant le joueur
         {
             grounded = true;
             groundRefGameObject = hit.collider.gameObject;

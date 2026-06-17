@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: ForanShading
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 3e7e3524ffc94734680fd1d1234ed4ef, type: 2}
-  minColor: {r: 0.6509434, g: 0.54204816, b: 0.08904416, a: 0.99215686}
-  maxColor: {r: 0.44344977, g: 0.6037736, b: 0.0768957, a: 1}
+  minColor: {r: 0.018116832, g: 1, b: 0, a: 0.99215686}
+  maxColor: {r: 0.23944448, g: 0.6039216, b: 0.07843137, a: 1}
   maxHeight: 1079.9
   minHeight: 996.9
   metalic: 0

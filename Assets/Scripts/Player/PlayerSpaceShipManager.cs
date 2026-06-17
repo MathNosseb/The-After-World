@@ -41,15 +41,17 @@ public class PlayerSpaceShipManager : MonoBehaviour
             Debug.Log("entree dans le vaisseau");
             playerContainer.playerMeshRenderer.enabled = false;
             playerContainer.playerCollider.enabled = false;
+            FindFirstObjectByType<Camera>().fieldOfView = 80;
         }
         else
         {
             Debug.Log("sortie du vaisseau");
             playerContainer.playerMeshRenderer.enabled = true;
             playerContainer.playerCollider.enabled = true;
+            FindFirstObjectByType<Camera>().fieldOfView = 60;
 
             //replacement de la camera sur le joueur et reset de la camera
-            playerContainer.cameraT.localPosition = new Vector3(0f,0.5f,0f);
+            playerContainer.cameraT.localPosition = new Vector3(0f,1f,0f);
             playerContainer.cameraT.localRotation = Quaternion.identity;
 
             if (playerContainer.spaceShipOutpoint != null)

@@ -6,9 +6,9 @@ public class Shading : ScriptableObject
     [Header("Material")]
     public Material material;
 
-    [Header("Colors")]
-    public Color minColor;
-    public Color maxColor;
+    [Header("Textures")]
+    public Texture2D minTexture;
+    public Texture2D maxTexture;
 
     [Header("Heights")]
     public float maxHeight;
@@ -17,5 +17,7 @@ public class Shading : ScriptableObject
     [Header("Params")]
     public float metalic;
     public float smoothness;
+    public Vector2 Tiling = new Vector2(1,1);
+    public Vector2 Offset;
 
 }
