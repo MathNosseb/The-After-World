@@ -1,6 +1,6 @@
 # The After World
 
-![Gif du jeu](Docs/trailer2.gif)
+![Gif du jeu](Docs/trailer.gif)
 
 ## Fonctionnalités
 The After World est un jeu développé sur Unity, c'est un jeu qui m'a permi
