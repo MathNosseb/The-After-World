@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEditor.Callbacks;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "PostProcessing/Atmosphere")]     

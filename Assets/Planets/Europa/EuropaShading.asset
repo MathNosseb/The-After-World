@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: EuropaShading
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: e0204855b4442ef4da71123ca36889cb, type: 2}
-  minColor: {r: 0.3490566, g: 0.33753115, b: 0.33753115, a: 1}
-  maxColor: {r: 0.33962262, g: 0.3187967, b: 0.3187967, a: 1}
+  minTexture: {fileID: 2800000, guid: 082cea691812a83fd8ae832d8bc64db4, type: 3}
+  maxTexture: {fileID: 2800000, guid: 082cea691812a83fd8ae832d8bc64db4, type: 3}
   maxHeight: 0
   minHeight: 0
   metalic: 0
   smoothness: 0
+  Tiling: {x: 1, y: 1}
+  Offset: {x: 0, y: 0}
