@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: OranyxShading
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 94d028194a7367a40ad7da436024d162, type: 2}
-  minColor: {r: 0.5660378, g: 0.37865305, b: 0.050729785, a: 1}
-  maxColor: {r: 0.41509432, g: 0.16163056, b: 0.041117832, a: 1}
+  minTexture: {fileID: 2800000, guid: 6d18a2e58e19b8bc58fbd5fd95b28b0a, type: 3}
+  maxTexture: {fileID: 0}
   maxHeight: 240.6
   minHeight: 197.2
   metalic: 0
   smoothness: 0
+  Tiling: {x: 1, y: 1}
+  Offset: {x: 0, y: 0}

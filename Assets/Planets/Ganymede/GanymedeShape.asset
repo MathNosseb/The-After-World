@@ -13,13 +13,14 @@ MonoBehaviour:
   m_Name: GanymedeShape
   m_EditorClassIdentifier: 
   planetParameter: 0
+  bodyType: 0
   radius: 150
   maxQuality: 100
   mediumQuality: 60
   lowQuality: 10
-  maxQualityDistance: 200
-  mediumQualityDistance: 300
-  lowQualityDistance: 500
+  maxQualityDistance: 2000
+  mediumQualityDistance: 3000
+  lowQualityDistance: 5000
   seed: 1609
   noiseScale1: 24
   noiseScale2: 10

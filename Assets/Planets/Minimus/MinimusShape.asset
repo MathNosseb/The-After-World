@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MinimusShape
   m_EditorClassIdentifier: 
   planetParameter: 0
-  bodyType: 2
+  bodyType: 0
   radius: 100
   maxQuality: 100
   mediumQuality: 60
@@ -22,6 +22,6 @@ MonoBehaviour:
   mediumQualityDistance: 200
   lowQualityDistance: 300
   seed: 142
-  noiseScale1: -22
+  noiseScale1: -20
   noiseScale2: -1
   oceanScale: 0.5
