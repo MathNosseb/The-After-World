@@ -30,8 +30,10 @@ public class SpaceShipContainer : MonoBehaviour
     [Header("SpaceShip Parameters")]
     public bool playerInSpaceShip { get; private set; }
     [SerializeField] private float burnStrength = 800f;
+    [SerializeField] private float hyperSpaceSpeed = 8000f;
     [SerializeField] private float sensibility = 250f;
     public float BurnStrength => burnStrength;
+    public float HyperSpaceSpeed => hyperSpaceSpeed;
     public float Sensibility => sensibility;
 
     [Header("instance")]
@@ -67,6 +69,8 @@ public class SpaceShipContainer : MonoBehaviour
             GlobalContainer.inputManager.OnJump += spaceShipController.HandleBurning;
             GlobalContainer.inputManager.OnJump += spaceShipSoundSystem.HandleBurnSound;
             GlobalContainer.inputManager.OnMouseMove += spaceShipController.HandleRotation;
+            GlobalContainer.inputManager.OnSwitch += spaceShipController.HandleSwitch;
+            GlobalContainer.inputManager.OnSwitch += spaceShipSoundSystem.HandleSwitchSound;
             
             suscribedInputs = true;
         }
@@ -80,6 +84,8 @@ public class SpaceShipContainer : MonoBehaviour
         GlobalContainer.inputManager.OnJump -= spaceShipController.HandleBurning;
         GlobalContainer.inputManager.OnJump -= spaceShipSoundSystem.HandleBurnSound;
         GlobalContainer.inputManager.OnMouseMove -= spaceShipController.HandleRotation;
+        GlobalContainer.inputManager.OnSwitch -= spaceShipController.HandleSwitch;
+        GlobalContainer.inputManager.OnSwitch -= spaceShipSoundSystem.HandleSwitchSound;
         
     }
 

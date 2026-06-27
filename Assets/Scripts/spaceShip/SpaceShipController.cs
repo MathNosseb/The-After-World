@@ -21,6 +21,11 @@ public class SpaceShipController : MonoBehaviour, IInteractable
     public bool playerInSpaceShip { get; private set; }//sert uniquement à etre recuperer par le spaceShipContainer
     bool burning = false;
 
+    [Header("Speed")]
+    public Light lightHyperSpeed;
+    bool hyperSpeed = false;
+    
+
 
 
     private void Awake()
@@ -29,6 +34,11 @@ public class SpaceShipController : MonoBehaviour, IInteractable
         targetRotation = transform.rotation;
         smoothRot = transform.rotation;
 
+    }
+
+    void Start()
+    {
+        lightHyperSpeed.enabled = hyperSpeed;
     }
 
     private void Update()
@@ -57,8 +67,13 @@ public class SpaceShipController : MonoBehaviour, IInteractable
             spaceShipContainer.SpaceShipRB.MovePosition(spaceShipContainer.SpaceShipRB.position + planetMove);
         }
 
-        if (spaceShipContainer.playerInSpaceShip && burning)
+        //burn sans hyper speed
+        if (spaceShipContainer.playerInSpaceShip && burning && !hyperSpeed)
             spaceShipContainer.SpaceShipRB.AddForce(spaceShipContainer.SpaceShipGO.transform.forward * spaceShipContainer.BurnStrength);
+
+        //burn avec hyper speed
+        if (spaceShipContainer.playerInSpaceShip && burning && hyperSpeed)
+            spaceShipContainer.SpaceShipRB.AddForce(spaceShipContainer.SpaceShipGO.transform.forward * spaceShipContainer.HyperSpaceSpeed);
 
         spaceShipContainer.SpaceShipRB.MoveRotation(smoothRot);
 
@@ -136,6 +151,16 @@ public class SpaceShipController : MonoBehaviour, IInteractable
             spaceShipContainer.gaz.Play();
         else
             spaceShipContainer.gaz.Stop();
+    }
+
+    public void HandleSwitch()
+    {
+        if (!spaceShipContainer.playerInSpaceShip)
+            return;
+        Debug.Log("hyper speed");
+        hyperSpeed = !hyperSpeed;
+
+        lightHyperSpeed.enabled = hyperSpeed;
     }
 
     public void Interact(PlayerContainer playerContainer)

@@ -7,6 +7,7 @@ public class InputManager : MonoBehaviour
     public event Action<Vector3> OnMove;
     public event Action<bool> OnJump;
     public event Action OnInteract;
+    public event Action OnSwitch;
     public event Action OnPadUp;
     public event Action OnPadDown;
 
@@ -21,6 +22,12 @@ public class InputManager : MonoBehaviour
         //Move
         Vector3 moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
         OnMove?.Invoke(moveDirection);//on invoque meme si on bouge pas car il y a un Slerp et des valeurs � 0
+
+        // R pressed
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            OnSwitch?.Invoke();
+        }
 
         //Jump
         bool jumping;
