@@ -8,6 +8,7 @@ public class SpaceShipSoundSystem : MonoBehaviour
 
     [Header("FX")]
     SoundMaker burningSound;
+    SoundMaker switchSound;
 
     private void Awake()
     {
@@ -23,6 +24,11 @@ public class SpaceShipSoundSystem : MonoBehaviour
             {
                 burningSound = sound;
             }
+
+            if (sound.soundName == "hyperspeed_switch")
+            {
+                switchSound = sound;
+            }
         }
     }
 
@@ -37,5 +43,18 @@ public class SpaceShipSoundSystem : MonoBehaviour
         }
         if (burning) burningSound.play = true;
         else burningSound.play = false;
+    }
+
+    public void HandleSwitchSound()
+    {
+        Debug.Log("sound");
+        if (!spaceShipContainer.playerInSpaceShip) return;
+        if (switchSound == null)
+        {
+            Debug.LogError("switch sound non trouv�");
+            return;
+        }
+        switchSound.playOneTime = true;
+
     }
 }

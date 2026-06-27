@@ -16,7 +16,24 @@ public class SoundsManager : MonoBehaviour
                 playSound(sound);
             }else
                 stopSound(sound);   
+
+            if (sound.playOneTime == true)
+            {
+                playOneTime(sound);
+            }
+            
         }
+    }
+
+    void playOneTime(SoundMaker sound)
+    {
+        AudioSource source = sound.source;
+        if (source.isPlaying)
+            return;
+        source.volume = sound.volume;
+        source.clip = sound.clip;
+        source.Play();
+        sound.playOneTime = false;
     }
 
     void playSound(SoundMaker sound)
